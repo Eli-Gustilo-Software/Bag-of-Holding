@@ -3,7 +3,6 @@ package com.example.thebagofholding
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -23,12 +22,12 @@ class MainActivity : AppCompatActivity() {
         this.supportActionBar?.setDisplayShowCustomEnabled(true)
         this.supportActionBar?.elevation = 0.0f
 
-        // menu should be considered as top level destinations.
+//         menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
+                R.id.navigation_purse, R.id.navigation_character, R.id.navigation_new_item, R.id.navigation_character_creation_screen))
         setupActionBarWithNavController(navController, appBarConfiguration)
-
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
 }

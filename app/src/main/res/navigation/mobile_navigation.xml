@@ -3,23 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_character_creation_screen">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_purse"
         android:name="com.example.thebagofholding.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="Purse"
+        tools:layout="@layout/fragment_purse" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_character"
         android:name="com.example.thebagofholding.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:label="Character"
+        tools:layout="@layout/fragment_character" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_new_item"
         android:name="com.example.thebagofholding.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:label="New Item"
+        tools:layout="@layout/fragment_new_item" />
+
+    <fragment
+        android:id="@+id/navigation_character_creation_screen"
+        android:name="com.example.thebagofholding.ui.CharacterCreationFragment"
+        android:label="Character Creation"
+        tools:layout="@layout/character_creation_screen" />
+
+
 </navigation>
