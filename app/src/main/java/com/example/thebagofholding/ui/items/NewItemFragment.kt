@@ -1,4 +1,4 @@
-package com.example.thebagofholding.ui.home
+package com.example.thebagofholding.ui.items
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.R
 
-class HomeFragment : Fragment() {
+class NewItemFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var newItemViewModel: NewItemViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_purse, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
+        newItemViewModel =
+                ViewModelProvider(this).get(NewItemViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_new_item, container, false)
+        val textView: TextView = root.findViewById(R.id.text_notifications)
+        newItemViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

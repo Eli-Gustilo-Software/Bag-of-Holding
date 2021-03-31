@@ -1,4 +1,4 @@
-package com.example.thebagofholding.ui.dashboard
+package com.example.thebagofholding.ui.purse
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,23 +10,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.R
 
-class DashboardFragment : Fragment() {
+class PurseFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var purseViewModel: PurseViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-
-        val root = inflater.inflate(R.layout.fragment_character, container, false)
-
-//        dashboardViewModel =
-//                ViewModelProvider(this).get(DashboardViewModel::class.java)
-//        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
+        purseViewModel =
+                ViewModelProvider(this).get(PurseViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_purse, container, false)
+        val textView: TextView = root.findViewById(R.id.text_home)
+        purseViewModel.text.observe(viewLifecycleOwner, Observer {
+            textView.text = it
+        })
         return root
     }
 }
