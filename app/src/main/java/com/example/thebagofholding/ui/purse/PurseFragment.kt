@@ -22,9 +22,7 @@ class PurseFragment : Fragment() {
         purseViewModel =
                 ViewModelProvider(this).get(PurseViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_purse, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
         purseViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
         })
         return root
     }
