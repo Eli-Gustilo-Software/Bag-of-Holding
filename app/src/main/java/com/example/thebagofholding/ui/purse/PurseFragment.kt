@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.R
 
 class PurseFragment : Fragment() {
-
     private lateinit var purseViewModel: PurseViewModel
 
     override fun onCreateView(
@@ -19,11 +18,35 @@ class PurseFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        purseViewModel =
-                ViewModelProvider(this).get(PurseViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_purse, container, false)
+
+
+
+        purseViewModel = ViewModelProvider(this).get(PurseViewModel::class.java)
         purseViewModel.text.observe(viewLifecycleOwner, Observer {
         })
+
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bronze = view?.findViewById<TextView>(R.id.purse_money_1_4_textview)
+        val silver = view?.findViewById<TextView>(R.id.purse_money_2_4_textview)
+        val gold = view?.findViewById<TextView>(R.id.purse_money_3_4_textview)
+        val truesilver = view?.findViewById<TextView>(R.id.purse_money_4_4_textview)
+        val bronzeAmount = view?.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
+        val silverAmount = view?.findViewById<TextView>(R.id.purse_money_2_4_amount_edittext)
+        val goldAmount = view?.findViewById<TextView>(R.id.purse_money_3_4_amount_edittext)
+        val truesilverAmount = view?.findViewById<TextView>(R.id.purse_money_4_4_amount_edittext)
+
+        bronze?.text = "Bronze"
+        silver?.text = "Silver"
+        gold?.text = "Gold"
+        truesilver?.text = "True Silver"
+        bronzeAmount?.text = "156"
+        silverAmount?.text = "41865"
+        goldAmount?.text = "4899"
+        truesilverAmount?.text = "4564566"
     }
 }

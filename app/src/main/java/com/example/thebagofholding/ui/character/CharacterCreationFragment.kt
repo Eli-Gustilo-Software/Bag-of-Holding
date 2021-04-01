@@ -21,6 +21,15 @@ class CharacterCreationFragment : Fragment() {
 
     init {
         testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+        testArrayString.add("TestCharacter")
+
     }
 
     override fun onCreateView(

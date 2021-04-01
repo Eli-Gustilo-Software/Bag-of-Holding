@@ -8,10 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CharacterCreationRecyclerAdapter (var characterList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     class CCViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val characterNameTextView: TextView = view.findViewById(R.id.character_creation_textview_name_cell)
 

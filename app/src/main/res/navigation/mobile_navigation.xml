@@ -35,4 +35,10 @@
         android:label="Bag of Holding Selection Screen"
         tools:layout="@layout/bag_holding_main_screen" />
 
+    <fragment
+        android:id="@+id/navigation_bag_holding_weapons_list"
+        android:name="com.example.thebagofholding.ui.mainbag.WeaponListFragment"
+        android:label="Bag of Holding Weapons List"
+        tools:layout="@layout/bag_weapons_list" />
+
 </navigation>
