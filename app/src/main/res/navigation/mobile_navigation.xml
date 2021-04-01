@@ -15,7 +15,8 @@
         android:id="@+id/navigation_character"
         android:name="com.example.thebagofholding.ui.character.CharacterFragment"
         android:label="Character"
-        tools:layout="@layout/fragment_character" />
+        tools:layout="@layout/fragment_character" >
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_new_item"
@@ -33,12 +34,31 @@
         android:id="@+id/navigation_bag_holding_main_screen"
         android:name="com.example.thebagofholding.ui.mainbag.MainBagSelectionFragment"
         android:label="Bag of Holding Selection Screen"
-        tools:layout="@layout/bag_holding_main_screen" />
+        tools:layout="@layout/bag_holding_main_screen" >
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_bag_holding_weapons_list"
         android:name="com.example.thebagofholding.ui.mainbag.WeaponListFragment"
         android:label="Bag of Holding Weapons List"
         tools:layout="@layout/bag_weapons_list" />
+
+    <fragment
+        android:id="@+id/navigation_bag_holding_armor_list"
+        android:name="com.example.thebagofholding.ui.mainbag.ArmorListFragment"
+        android:label="Bag of Holding Armor List"
+        tools:layout="@layout/bag_armor_apparal_list" />
+
+    <fragment
+        android:id="@+id/navigation_bag_holding_consumables_list"
+        android:name="com.example.thebagofholding.ui.mainbag.ConsumablesListFragment"
+        android:label="Bag of Holding Consumables List"
+        tools:layout="@layout/bag_consumables_list" />
+
+    <fragment
+        android:id="@+id/navigation_bag_holding_misc_list"
+        android:name="com.example.thebagofholding.ui.mainbag.MiscellaneousListFragment"
+        android:label="Bag of Holding Miscellaneous List"
+        tools:layout="@layout/bag_misc_list" />
 
 </navigation>

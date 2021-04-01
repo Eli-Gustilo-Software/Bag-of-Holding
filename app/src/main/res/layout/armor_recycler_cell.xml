@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/cardview_dark_background"
+    >
+
+
+    <ImageView
+        android:id="@+id/armor_cell_imageview"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/armor_cell_name_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="The Sword of Power"
+        app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview"
+        app:layout_constraintTop_toTopOf="@+id/armor_cell_imageview" />
+
+    <TextView
+        android:id="@+id/armor_cell_effect1_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Damage: D+5"
+        app:layout_constraintBottom_toBottomOf="@+id/armor_cell_imageview"
+        app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

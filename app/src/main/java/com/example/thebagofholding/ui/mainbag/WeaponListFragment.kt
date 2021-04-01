@@ -21,7 +21,6 @@ class WeaponListFragment : Fragment(){
         weaponsListTestArray.add("Sword of f")
         weaponsListTestArray.add("Sword of g")
         weaponsListTestArray.add("Sword of b")
-
     }
 
     override fun onCreateView(
@@ -40,7 +39,7 @@ class WeaponListFragment : Fragment(){
 
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
