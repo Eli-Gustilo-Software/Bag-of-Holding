@@ -7,16 +7,97 @@
     tools:context=".ui.items.NewItemFragment">
 
     <TextView
-        android:id="@+id/text_notifications"
-        android:layout_width="match_parent"
+        android:id="@+id/new_item_title_textview"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="New Item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/new_item_imageview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/new_item_title_textview"
+        app:layout_constraintStart_toStartOf="@+id/new_item_title_textview"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_title_textview"
+        tools:src="@tools:sample/avatars" />
+
+    <EditText
+        android:id="@+id/new_item_name_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:autofillHints="New Item Name"
+        android:hint="New Item Name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_type_spinner" />
+
+    <Spinner
+        android:id="@+id/new_item_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_imageview" />
+
+    <EditText
+        android:id="@+id/new_item_effect_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:autofillHints="New Item Effect"
+        android:inputType="textAutoCorrect"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/new_item_name_edittext"
+        app:layout_constraintStart_toStartOf="@+id/new_item_name_edittext"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_name_edittext"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/new_item_description_editext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:autofillHints="New Item Description"
+        android:inputType="textAutoCorrect"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/new_item_effect_edittext"
+        app:layout_constraintStart_toStartOf="@+id/new_item_effect_edittext"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_effect_edittext" />
+
+    <Button
+        android:id="@+id/new_item_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="100dp"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/new_item_create_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="100dp"
+        android:text="Create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

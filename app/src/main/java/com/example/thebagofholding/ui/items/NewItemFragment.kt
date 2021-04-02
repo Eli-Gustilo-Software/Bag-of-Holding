@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.R
 
 class NewItemFragment : Fragment() {
-
     private lateinit var newItemViewModel: NewItemViewModel
 
     override fun onCreateView(
@@ -22,10 +21,15 @@ class NewItemFragment : Fragment() {
         newItemViewModel =
                 ViewModelProvider(this).get(NewItemViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_new_item, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
+
+
+
         newItemViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
         })
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 }

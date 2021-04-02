@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/cardview_dark_background"
+    android:layout_marginBottom="10dp"
     >
 
 
@@ -16,14 +17,14 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/ic_armor" />
 
     <TextView
         android:id="@+id/armor_cell_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="The Sword of Power"
+        android:text="Armor of Celedor"
         app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview"
         app:layout_constraintTop_toTopOf="@+id/armor_cell_imageview" />
 

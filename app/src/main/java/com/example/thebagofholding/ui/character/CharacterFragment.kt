@@ -13,6 +13,8 @@ import com.example.thebagofholding.R
 
 class CharacterFragment : Fragment() {
     private lateinit var mainBagButton: Button
+    private lateinit var coinPurseButton : Button
+    private lateinit var newItemButton: Button
     private lateinit var characterViewModel: CharacterViewModel
 
 
@@ -36,11 +38,27 @@ class CharacterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+
+        //Buttons
         mainBagButton = view.findViewById(R.id.character_main_bag_button)
         super.onViewCreated(view, savedInstanceState)
 
         mainBagButton.setOnClickListener(){
             findNavController().navigate(R.id.navigation_bag_holding_main_screen)
+        }
+
+        coinPurseButton = view.findViewById(R.id.character_coin_purse_button)
+        super.onViewCreated(view, savedInstanceState)
+
+        coinPurseButton.setOnClickListener(){
+            findNavController().navigate(R.id.navigation_purse)
+        }
+
+        newItemButton = view.findViewById(R.id.charcater_new_item_button)
+        super.onViewCreated(view, savedInstanceState)
+
+        newItemButton.setOnClickListener(){
+            findNavController().navigate(R.id.navigation_new_item)
         }
     }
 }

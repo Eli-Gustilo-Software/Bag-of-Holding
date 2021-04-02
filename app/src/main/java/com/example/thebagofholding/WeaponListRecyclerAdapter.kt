@@ -3,18 +3,31 @@ package com.example.thebagofholding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class WeaponListRecyclerAdapter (var weaponList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+data class WeaponItemData (
+    val image: Int,
+    val name: String,
+    val weaponEffectOne: String
+    )
+
+class WeaponListRecyclerAdapter (var weaponItemList: ArrayList<WeaponItemData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class WeaponsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val weaponNameTextView: TextView = view.findViewById(R.id.weapon_cell_name_textview)
+        val weaponImageImageView: ImageView = view.findViewById(R.id.weapon_cell_imageview)
+        val weaponEffectOneTextView: TextView = view.findViewById(R.id.weapon_cell_effect1_textview)
 
         init {
             // Define click listener for the ViewHolder's View.
             weaponNameTextView.text = "Testing this is where this is set"
         }
+    }
+
+    override fun getItemCount(): Int {
+        return weaponItemList.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,12 +37,15 @@ class WeaponListRecyclerAdapter (var weaponList: ArrayList<String>) : RecyclerVi
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //TODO figure out how to access a data class properties from here
-        val weaponNameHolder = holder as WeaponsViewHolder
-        val weaponName = weaponList[position]
-        weaponNameHolder.weaponNameTextView.text = weaponName
+        val weaponObjectViewHolder = holder as WeaponsViewHolder
+        val weaponName = weaponItemList[position].name
+        val weaponImage = weaponItemList[position].image
+        val weaponEffectOne = weaponItemList[position].weaponEffectOne
+
+        weaponObjectViewHolder.weaponNameTextView.text = weaponName
+        weaponObjectViewHolder.weaponImageImageView.setBackgroundResource(weaponImage)
+        weaponObjectViewHolder.weaponEffectOneTextView.text = weaponEffectOne
     }
 
-    override fun getItemCount(): Int {
-        return weaponList.size
-    }
+
 }

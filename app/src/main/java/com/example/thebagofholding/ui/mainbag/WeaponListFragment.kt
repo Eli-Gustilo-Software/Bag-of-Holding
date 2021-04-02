@@ -8,19 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.R
+import com.example.thebagofholding.WeaponItemData
 import com.example.thebagofholding.WeaponListRecyclerAdapter
 
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
-    private var weaponsListTestArray = ArrayList<String>()
+    private var weaponsListTestArray = ArrayList<WeaponItemData>()
 
     init {
-        weaponsListTestArray.add("Sword of Doom")
-        weaponsListTestArray.add("Sword of t")
-        weaponsListTestArray.add("Sword of f")
-        weaponsListTestArray.add("Sword of g")
-        weaponsListTestArray.add("Sword of b")
+        val testWeapon2 = WeaponItemData((R.drawable.ic_armor), "Sword of Bob", "D+6 (Adds +2 Fire)")
+        val testWeapon3 = WeaponItemData((R.drawable.ic_armor), "Stick", "D+2")
+        val testWeapon4 = WeaponItemData((R.drawable.ic_armor), "Dagger of Doom", "D+100 (Breaks on contact)")
+        val testWeapon5 = WeaponItemData((R.drawable.ic_armor), "Cestus", "D+2 (Uses Unarmed)")
+
+        weaponsListTestArray.add(testWeapon2)
+        weaponsListTestArray.add(testWeapon3)
+        weaponsListTestArray.add(testWeapon4)
+        weaponsListTestArray.add(testWeapon5)
     }
 
     override fun onCreateView(
