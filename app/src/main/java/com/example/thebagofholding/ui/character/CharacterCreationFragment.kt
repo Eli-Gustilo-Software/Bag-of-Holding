@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.CharacterCreationRecyclerAdapter
+import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.R
 import com.example.thebagofholding.ui.items.NewItemViewModel
 
@@ -17,19 +18,14 @@ class CharacterCreationFragment : Fragment() {
     private lateinit var newItemViewModel: NewItemViewModel
     private lateinit var characterCreationRecyclerView: RecyclerView
     private var characterCreationRecyclerAdapter: CharacterCreationRecyclerAdapter? = null
-    private var testArrayString = ArrayList<String>()
+    private var characterCreationRecyclerCharacterArray = ArrayList<CharacterInformation>()
+
+
+    private var recyclerViewFirstCell = CharacterInformation("Create a New Character",null,null,null,null)
 
     init {
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-        testArrayString.add("TestCharacter")
-
+        //TODO make this better. Look more pretty and work smoother.
+        characterCreationRecyclerCharacterArray.add(recyclerViewFirstCell)
     }
 
     override fun onCreateView(
@@ -41,7 +37,7 @@ class CharacterCreationFragment : Fragment() {
         characterCreationRecyclerView = root.findViewById(R.id.character_creation_recyclerview)
 
         if (characterCreationRecyclerAdapter == null){//create it
-            characterCreationRecyclerAdapter = CharacterCreationRecyclerAdapter(testArrayString)
+            characterCreationRecyclerAdapter = CharacterCreationRecyclerAdapter(characterCreationRecyclerCharacterArray)
             characterCreationRecyclerView.layoutManager = LinearLayoutManager(this.activity)
             characterCreationRecyclerView.adapter = characterCreationRecyclerAdapter
             characterCreationRecyclerAdapter!!.notifyDataSetChanged()

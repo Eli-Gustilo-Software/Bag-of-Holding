@@ -7,12 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class WeaponItemData (
-    val image: Int,
-    val name: String,
-    val weaponEffectOne: String
-    )
-
 class WeaponListRecyclerAdapter (var weaponItemList: ArrayList<WeaponItemData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class WeaponsViewHolder(view: View) : RecyclerView.ViewHolder(view) {

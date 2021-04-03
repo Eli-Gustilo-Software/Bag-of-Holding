@@ -7,11 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class MiscellaneousItemData (
-    val miscImage: Int,
-    val miscName: String,
-    val miscEffectsOne: String
-        )
 
 class MiscellaneousListRecyclerAdapter (var miscList: ArrayList<MiscellaneousItemData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

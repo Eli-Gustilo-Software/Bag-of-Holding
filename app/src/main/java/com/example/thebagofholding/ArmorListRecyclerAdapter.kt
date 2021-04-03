@@ -8,12 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class ArmorItemData (
-    val armorImage: Int,
-    val armorName: String,
-    val armorEffectsOne: String
-)
-
 class ArmorListRecyclerAdapter (var armorList: ArrayList<ArmorItemData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class ArmorViewHolder(view: View) : RecyclerView.ViewHolder(view) {

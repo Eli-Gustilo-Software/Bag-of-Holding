@@ -7,12 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class ConsumablesItemData (
-    val consumablesImage: Int,
-    val consumablesName: String,
-    val consumablesEffectsOne: String
-)
-
 class ConsumablesListRecyclerAdapter (var consumablesList: ArrayList<ConsumablesItemData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class ConsumablesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
