@@ -11,7 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="New Item"
+        android:text="Just a Few More Steps..."
+        android:textSize="32sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,36 +26,29 @@
         app:layout_constraintEnd_toEndOf="@+id/new_item_title_textview"
         app:layout_constraintStart_toStartOf="@+id/new_item_title_textview"
         app:layout_constraintTop_toBottomOf="@+id/new_item_title_textview"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/ic_armor" />
+
 
     <EditText
         android:id="@+id/new_item_name_edittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="120dp"
         android:autofillHints="New Item Name"
         android:hint="New Item Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_item_type_spinner" />
-
-    <Spinner
-        android:id="@+id/new_item_type_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_item_imageview" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_constraint_layout" />
 
     <EditText
         android:id="@+id/new_item_effect_edittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:autofillHints="New Item Effect"
+        android:hint="Your Item Effects"
         android:inputType="textAutoCorrect"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/new_item_name_edittext"
         app:layout_constraintStart_toStartOf="@+id/new_item_name_edittext"
         app:layout_constraintTop_toBottomOf="@+id/new_item_name_edittext"
@@ -66,7 +61,7 @@
         android:layout_marginTop="32dp"
         android:autofillHints="New Item Description"
         android:inputType="textAutoCorrect"
-        android:text="TextView"
+        android:hint="Item Description (Optional)"
         app:layout_constraintEnd_toEndOf="@+id/new_item_effect_edittext"
         app:layout_constraintStart_toStartOf="@+id/new_item_effect_edittext"
         app:layout_constraintTop_toBottomOf="@+id/new_item_effect_edittext" />
@@ -80,7 +75,8 @@
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_description_editext" />
 
     <Button
         android:id="@+id/new_item_create_button"
@@ -91,7 +87,8 @@
         android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_description_editext" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -100,4 +97,43 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"
         />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/spinner_constraint_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/new_item_imageview"
+        app:layout_constraintEnd_toEndOf="@+id/new_item_imageview"
+        app:layout_constraintStart_toStartOf="@+id/new_item_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/new_item_imageview">
+
+        <Spinner
+            android:id="@+id/new_item_type_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@color/cardview_dark_background"
+            app:layout_constraintBottom_toBottomOf="@+id/spinner_constraint_layout"
+            app:layout_constraintEnd_toEndOf="@+id/spinner_constraint_layout"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/new_item_spinner_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Item Type:"
+            app:layout_constraintBottom_toBottomOf="@+id/spinner_constraint_layout"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/spinner_constraint_layout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -100,7 +100,7 @@ object DataMaster {
                         if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
                             val characterObject = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
                             Log.d(tag, "Character to be returned is $characterObject")
-                            return characterArray
+                            return characterArray//TODO this isn't gonna work.
                         }
                     }else{//we don't have a current character
                         //what now?
