@@ -17,8 +17,8 @@ import com.example.thebagofholding.R
 import com.example.thebagofholding.ui.items.NewItemViewModel
 import kotlin.math.log
 
-class CharacterCreationFragment : Fragment(), DataMaster.DataMasterInterface {
-    private lateinit var newItemViewModel: NewItemViewModel
+class CharacterCreationFragment : Fragment() {
+    private lateinit var characterViewModel : CharacterViewModel
     private lateinit var characterCreationRecyclerView: RecyclerView
     private var characterCreationRecyclerAdapter: CharacterCreationRecyclerAdapter? = null
     private var characterCreationRecyclerCharacterArray = ArrayList<CharacterInformation>()
@@ -28,7 +28,6 @@ class CharacterCreationFragment : Fragment(), DataMaster.DataMasterInterface {
     private var recyclerViewFirstCell = CharacterInformation("Create a New Character",null,null,null,null)
 
     init {
-        DataMaster.objectToNotify = this
     }
 
     override fun onCreateView(
@@ -39,29 +38,26 @@ class CharacterCreationFragment : Fragment(), DataMaster.DataMasterInterface {
         val root = inflater.inflate(R.layout.fragment_character_creation, container, false)
         characterCreationRecyclerView = root.findViewById(R.id.character_creation_recyclerview)
 
-        if (characterCreationRecyclerAdapter == null){//create it
-            characterCreationRecyclerAdapter = CharacterCreationRecyclerAdapter(characterCreationRecyclerCharacterArray)
-            characterCreationRecyclerView.layoutManager = LinearLayoutManager(this.activity)
-            characterCreationRecyclerView.adapter = characterCreationRecyclerAdapter
-            characterCreationRecyclerAdapter!!.notifyDataSetChanged()
-        }else{//it is created and we need to sync data.
 
-        }
 
-        newItemViewModel = ViewModelProvider(this).get(NewItemViewModel::class.java)
-        newItemViewModel.text.observe(viewLifecycleOwner, Observer {
 
+        characterViewModel = ViewModelProvider(this).get(CharacterViewModel::class.java)
+        characterViewModel.characterData.observe(viewLifecycleOwner, Observer {
+            characterCreationRecyclerCharacterArray = it
+            if (characterCreationRecyclerAdapter == null){//create it
+                characterCreationRecyclerView.layoutManager = LinearLayoutManager(this.activity)
+                characterCreationRecyclerAdapter = CharacterCreationRecyclerAdapter(characterCreationRecyclerCharacterArray)
+                characterCreationRecyclerView.adapter = characterCreationRecyclerAdapter
+                characterCreationRecyclerAdapter!!.notifyDataSetChanged()
+            }else{//it is created and we need to sync data.
+                characterCreationRecyclerAdapter!!.updateData(characterCreationRecyclerCharacterArray)
+                characterCreationRecyclerAdapter!!.notifyDataSetChanged()
+            }
         })
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun giveCharacterInfo(characterList: ArrayList<CharacterInformation>) {
-        recyclerViewFirstCell = characterList.first()
-        Log.d(TAG, "character from giveCharacterInfo = $recyclerViewFirstCell")
-        characterCreationRecyclerAdapter?.updateData(characterList)
     }
 }

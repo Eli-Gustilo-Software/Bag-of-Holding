@@ -16,7 +16,6 @@ class CharacterFragment : Fragment() {
     private lateinit var mainBagButton: Button
     private lateinit var coinPurseButton : Button
     private lateinit var newItemButton: Button
-    private lateinit var characterViewModel : CharacterViewModel
 
 
     override fun onCreateView(
@@ -29,9 +28,7 @@ class CharacterFragment : Fragment() {
 
 
         //TODO figure out how to use the view model
-        characterViewModel = ViewModelProvider(this).get(CharacterViewModel::class.java)
-        characterViewModel.text.observe(viewLifecycleOwner, Observer {
-        })
+
 
         return root
     }

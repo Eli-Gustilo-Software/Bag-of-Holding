@@ -60,7 +60,7 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
                     Log.d(tag, "v = $v")
 
                     when {
-                        //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
+                        //Check if it is the Enter-Key,     Check if the Enter Key was pressed down
                         ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) -> {
                             characterNameInputEditText.clearFocus()
                             val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

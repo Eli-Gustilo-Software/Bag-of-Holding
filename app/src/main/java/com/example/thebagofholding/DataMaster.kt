@@ -87,20 +87,20 @@ object DataMaster {
         objectToNotify?.giveCharacterInfo(characterArray)
     }
 
-    fun retrieveCharacterInformation() : CharacterInformation{
+    fun retrieveCharacterInformation() : ArrayList<CharacterInformation>{
         val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         //TODO does this characterKEY thing allow for multiple characters?
             if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinent has a file called characters
                 val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
                 if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
                     characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
-                    if (sharedPrefs.contains(CURRENT_CHARACTER_INFORMATION_KEY)){ //if we have a current character//TODO is this right?
+                    if (sharedPrefs.contains(CURRENT_CHARACTER_INFORMATION_KEY)){ //if we have a current character//TODO is this right? this calls a specific character. we want to call many.
                         val currentCharacterName = sharedPrefs.getString(CURRENT_CHARACTER_INFORMATION_KEY, null) //TODO how will this work with multiple characters?
                         val currentCharacterJSON = characterHashtable[currentCharacterName] //give the character name to the hashtable to get back the characterInformation object as a JSON blob.
                         if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
                             val characterObject = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
                             Log.d(tag, "Character to be returned is $characterObject")
-                            return characterObject
+                            return characterArray
                         }
                     }else{//we don't have a current character
                         //what now?
@@ -109,7 +109,7 @@ object DataMaster {
             }else{//there is no file characters in the cabinet TODO that means never been saved??
                 //what do I return
             }
-        return CharacterInformation("Character not Found", null, null, null, null)
+        return characterArray
     }
 
 
@@ -118,36 +118,36 @@ object DataMaster {
     //TODO how do I keep track of these items? Duplicates? An id? use UUID object 
 
     //SAVE
-    fun saveItemArmor(armorItem: ArmorItemData){
+    fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
 
     }
 
-    fun saveItemWeapon(weaponItem: WeaponItemData){
+    fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
 
     }
 
-    fun saveItemConsumable(consumableItem: ConsumablesItemData){
+    fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
 
     }
 
-    fun saveItemMiscellaneous(miscellaneousItem: MiscellaneousItemData){
+    fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
 
     }
 
     //DELETE
-    fun deleteItemArmor(armorItem: ArmorItemData){
+    fun deleteItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
 
     }
 
-    fun deleteItemWeapon(weaponItem: WeaponItemData){
+    fun deleteItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
 
     }
 
-    fun deleteItemConsumable(consumableItem: ConsumablesItemData){
+    fun deleteItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
 
     }
 
-    fun deleteItemMiscellaneous(miscellaneousItem: MiscellaneousItemData){
+    fun deleteItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
 
     }
 
