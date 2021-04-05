@@ -16,8 +16,6 @@ class NewItemFragment : Fragment() {
     private lateinit var backButton : Button
     private lateinit var createButton : Button
 
-
-    private lateinit var testData : DataMaster
     private var armorListTestArray = ArrayList<ArmorItemData>()
     private var consumablesListTestArray = ArrayList<ConsumablesItemData>()
     private var miscListTestArray = ArrayList<MiscellaneousItemData>()
@@ -45,8 +43,6 @@ class NewItemFragment : Fragment() {
                 ViewModelProvider(this).get(NewItemViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_new_item, container, false)
 
-        testData = DataMaster(this.requireContext())
-
         newItemViewModel.text.observe(viewLifecycleOwner, Observer {
         })
         return root
@@ -62,11 +58,11 @@ class NewItemFragment : Fragment() {
 
         backButton.setOnClickListener(){
             val testCharacter = CharacterInformation("TestCharacterName", armorListTestArray, weaponsListTestArray, consumablesListTestArray, miscListTestArray)
-            testData.saveCharacterInformation(testCharacter)
+            DataMaster.saveCharacterInformation(testCharacter)
         }
 
         createButton.setOnClickListener(){
-            testData.retrieveCharacterInformation("TestCharacterName")
+            DataMaster.retrieveCharacterInformation()
         }
     }
 }

@@ -2,22 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/character_creation_cell_constraint_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="75dp"
+    android:layout_marginStart="30dp"
+    android:layout_marginEnd="30dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
     android:background="@color/cardview_dark_background"
-    android:layout_marginBottom="10dp"
     >
 
-    <EditText
-        android:id="@+id/character_creation_edittext_name_cell"
+    <TextView
+        android:id="@+id/character_creation_new_character_always_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Character"
-        android:textSize="24sp"
-        android:hint="Create a New Character"
+        android:text="Click to Make New Character"
         android:textColorHint="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

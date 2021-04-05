@@ -1,6 +1,7 @@
 package com.example.thebagofholding.ui.character
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +12,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.CharacterCreationRecyclerAdapter
 import com.example.thebagofholding.CharacterInformation
+import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
 import com.example.thebagofholding.ui.items.NewItemViewModel
+import kotlin.math.log
 
-class CharacterCreationFragment : Fragment() {
+class CharacterCreationFragment : Fragment(), DataMaster.DataMasterInterface {
     private lateinit var newItemViewModel: NewItemViewModel
     private lateinit var characterCreationRecyclerView: RecyclerView
     private var characterCreationRecyclerAdapter: CharacterCreationRecyclerAdapter? = null
     private var characterCreationRecyclerCharacterArray = ArrayList<CharacterInformation>()
+    private var TAG = "CharacterCreationFragment"
 
 
     private var recyclerViewFirstCell = CharacterInformation("Create a New Character",null,null,null,null)
 
     init {
-        //TODO make this better. Look more pretty and work smoother.
-        characterCreationRecyclerCharacterArray.add(recyclerViewFirstCell)
+        DataMaster.objectToNotify = this
     }
 
     override fun onCreateView(
@@ -33,7 +36,7 @@ class CharacterCreationFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.character_creation_screen, container, false)
+        val root = inflater.inflate(R.layout.fragment_character_creation, container, false)
         characterCreationRecyclerView = root.findViewById(R.id.character_creation_recyclerview)
 
         if (characterCreationRecyclerAdapter == null){//create it
@@ -47,11 +50,18 @@ class CharacterCreationFragment : Fragment() {
 
         newItemViewModel = ViewModelProvider(this).get(NewItemViewModel::class.java)
         newItemViewModel.text.observe(viewLifecycleOwner, Observer {
+
         })
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun giveCharacterInfo(characterList: ArrayList<CharacterInformation>) {
+        recyclerViewFirstCell = characterList.first()
+        Log.d(TAG, "character from giveCharacterInfo = $recyclerViewFirstCell")
+        characterCreationRecyclerAdapter?.updateData(characterList)
     }
 }

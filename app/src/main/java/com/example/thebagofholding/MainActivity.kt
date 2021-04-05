@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity() {
 //        this.supportActionBar?.elevation = 0.0f
 
 //         menu should be considered as top level destinations.
+
+        //create dataMaster
+        //TODO how do i pass this around? Is this even instantiated???
+        DataMaster.initWith(application)
+
+
         appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_character, R.id.navigation_character_creation_screen))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)

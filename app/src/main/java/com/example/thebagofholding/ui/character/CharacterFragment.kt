@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.thebagofholding.R
@@ -15,8 +16,7 @@ class CharacterFragment : Fragment() {
     private lateinit var mainBagButton: Button
     private lateinit var coinPurseButton : Button
     private lateinit var newItemButton: Button
-    private lateinit var characterViewModel: CharacterViewModel
-
+    private lateinit var characterViewModel : CharacterViewModel
 
 
     override fun onCreateView(
