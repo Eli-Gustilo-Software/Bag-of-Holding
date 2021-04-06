@@ -130,20 +130,23 @@ class NewItemFragment : Fragment() {
                 when (newItemType) {//TODO should these be enums? what is the point of ENUMS?
                     "weapon" -> { //Weapon
                         val newWeapon = WeaponItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
-                        //TODO I need a character.
-                        DataMaster.saveItemWeapon()
+                        val character = DataMaster.retrieveCharacterInformation()[0]
+                        DataMaster.saveItemWeapon(character, newWeapon)
                     }
                     "armor" -> { //Armor/Apparel
-                        newItemType = "armor"
-                        Log.d(TAG, "newItem type = $newItemType")
+                        val newArmor = ArmorItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val character = DataMaster.retrieveCharacterInformation()[0]
+                        DataMaster.saveItemArmor(character, newArmor)
                     }
                     "consumable" -> { //Consumable
-                        newItemType = "consumable"
-                        Log.d(TAG, "newItem type = $newItemType")
+                        val newConsumable = ConsumablesItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val character = DataMaster.retrieveCharacterInformation()[0]
+                        DataMaster.saveItemConsumable(character, newConsumable)
                     }
                     "misc" -> { //Miscellaneous
-                        newItemType = "misc"
-                        Log.d(TAG, "newItem type = $newItemType")
+                        val newMisc = MiscellaneousItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val character = DataMaster.retrieveCharacterInformation()[0]
+                        DataMaster.saveItemMiscellaneous(character, newMisc)
                     }
                 }
             }

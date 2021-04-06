@@ -99,8 +99,9 @@ object DataMaster {
                         val currentCharacterJSON = characterHashtable[currentCharacterName] //give the character name to the hashtable to get back the characterInformation object as a JSON blob.
                         if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
                             val characterObject = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
+                            characterArray.add(characterObject)//this will be an array of one?
                             Log.d(tag, "Character to be returned is $characterObject")
-                            return characterArray//TODO this isn't gonna work.
+                            return characterArray//TODO this isn't gonna work. is it?
                         }
                     }else{//we don't have a current character
                         //what now?
@@ -123,7 +124,21 @@ object DataMaster {
     }
 
     fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
+        val characterWithItem = characterOwner.characterWeaponItemsList?.add(weaponItem)
+        val characterInformationAsJSON = Gson().toJson(characterWithItem)//TODO is this right?
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)//TODO is this the same hashtable? same key?
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
 
+        editor?.apply()
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        characterArray.add(characterOwner)//TODO is this right?
+        objectToNotify?.giveCharacterInfo(characterArray)
     }
 
     fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
