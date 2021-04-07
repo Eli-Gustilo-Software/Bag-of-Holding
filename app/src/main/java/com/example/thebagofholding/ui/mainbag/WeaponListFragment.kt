@@ -7,25 +7,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thebagofholding.R
-import com.example.thebagofholding.WeaponItemData
-import com.example.thebagofholding.WeaponListRecyclerAdapter
+import com.example.thebagofholding.*
 
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
-    private var weaponsListTestArray = ArrayList<WeaponItemData>()
+    private var weaponsListArray = ArrayList<WeaponItemData>()
+    private lateinit var currentCharacter : CharacterInformation
 
     init {
-        val testWeapon2 = WeaponItemData((R.drawable.ic_armor), "Sword of Bob", "D+6 (Adds +2 Fire)")
-        val testWeapon3 = WeaponItemData((R.drawable.ic_armor), "Stick", "D+2")
-        val testWeapon4 = WeaponItemData((R.drawable.ic_armor), "Dagger of Doom", "D+100 (Breaks on contact)")
-        val testWeapon5 = WeaponItemData((R.drawable.ic_armor), "Cestus", "D+2 (Uses Unarmed)")
-
-        weaponsListTestArray.add(testWeapon2)
-        weaponsListTestArray.add(testWeapon3)
-        weaponsListTestArray.add(testWeapon4)
-        weaponsListTestArray.add(testWeapon5)
+        if (DataMaster.retrieveCharacterInformation() != null){
+            currentCharacter = DataMaster.retrieveCharacterInformation()!!//TODO is this current character infromation?? Rename?
+            for (item in currentCharacter.characterWeaponItemsList!!){
+                weaponsListArray.add(item)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -36,7 +32,7 @@ class WeaponListFragment : Fragment(){
         val root = inflater.inflate(R.layout.bag_weapons_list, container, false)
         weaponListRecyclerView = root.findViewById(R.id.weapons_list_recyclerView)
         if (weaponListRecyclerAdapter == null){ //create it
-            weaponListRecyclerAdapter = WeaponListRecyclerAdapter(weaponsListTestArray)
+            weaponListRecyclerAdapter = WeaponListRecyclerAdapter(weaponsListArray)
             weaponListRecyclerView.layoutManager = LinearLayoutManager(this.activity)
             weaponListRecyclerView.adapter = weaponListRecyclerAdapter
             weaponListRecyclerAdapter!!.notifyDataSetChanged()

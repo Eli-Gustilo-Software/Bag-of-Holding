@@ -47,14 +47,18 @@ object DataMaster {
     private val DATA_MASTER_KEY = "data_master_key"
     private val CHARACTER_HASHTABLE_KEY = "character_hashtable_key"
     private val CURRENT_CHARACTER_INFORMATION_KEY = "current_character_information_key"
-    private var characterArray = ArrayList<CharacterInformation>()
+    private var characterArray = ArrayList<CharacterInformation>() //TODO can this be moved down?
     private var characterHashtable = Hashtable<String, String>()
     var objectToNotify : DataMasterInterface? = null
     lateinit var applicationDataMaster : Application
+//    lateinit var currentCharacter : CharacterInformation
 
 
     interface DataMasterInterface {
-        fun giveCharacterInfo(characterList: ArrayList<CharacterInformation>)
+        //TODO do i want two functions to giveAllCharacters vs giveCurrentCharacter?
+//        fun giveCharacterInfo(characterList: ArrayList<CharacterInformation>)
+        fun giveCharacterInfo(characterInfo: CharacterInformation)
+        fun giveAllCharactersInfo(characterInfoArray: ArrayList<CharacterInformation>)
     }
 
     fun initWith (application: Application){
@@ -68,9 +72,6 @@ object DataMaster {
         //take that hashtable turn it into JSON
         //store that JSON in a file in the DATA_MASTER_KEY cabinet with key CHARACTER_HASHTABLE_KEY
         //store characterName with CURRENT_CHARACTER_INFORMATION_KEY so we can use that name to run through the entire hashmap to grab the current character.
-        //last step may not be necessary.
-
-
         val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Character to be saved is: $character")
@@ -80,31 +81,27 @@ object DataMaster {
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
         editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten?
-
         editor?.apply()
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterArray = ArrayList<CharacterInformation>()
         characterArray.add(character)
-        objectToNotify?.giveCharacterInfo(characterArray)
+        objectToNotify?.giveAllCharactersInfo(characterArray)
     }
 
-    fun retrieveCharacterInformation() : ArrayList<CharacterInformation>{
+    fun retrieveAllCharactersInformation() : ArrayList<CharacterInformation>{
         val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         //TODO does this characterKEY thing allow for multiple characters?
             if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinent has a file called characters
                 val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
                 if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
                     characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
-                    if (sharedPrefs.contains(CURRENT_CHARACTER_INFORMATION_KEY)){ //if we have a current character//TODO is this right? this calls a specific character. we want to call many.
-                        val currentCharacterName = sharedPrefs.getString(CURRENT_CHARACTER_INFORMATION_KEY, null) //TODO how will this work with multiple characters?
-                        val currentCharacterJSON = characterHashtable[currentCharacterName] //give the character name to the hashtable to get back the characterInformation object as a JSON blob.
-                        if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
-                            val characterObject = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
-                            characterArray.add(characterObject)//this will be an array of one?
-                            Log.d(tag, "Character to be returned is $characterObject")
-                            return characterArray//TODO this isn't gonna work. is it?
-                        }
-                    }else{//we don't have a current character
-                        //what now?
+                    for (item in characterHashtable){//get all keys of all existing character
+                        val characterAsJSON = item.value//for key get character Value
+                        val characterAsCharacterObject = Gson().fromJson(characterAsJSON, CharacterInformation::class.java)//Got character object.
+                        characterArray.add(characterAsCharacterObject)//this will be an array of one?
+                        Log.d(tag, "Characters to be returned is $characterAsCharacterObject")
+                        objectToNotify?.giveAllCharactersInfo(characterArray) //TODO is this necessary???? it doesn't seem to update screen when you create new character
+                        return characterArray//TODO this isn't gonna work. is it? Can this array have characters not added that arent supposed to? If i call this 20 times does it add chars 20 times?
                     }
                 }
             }else{//there is no file characters in the cabinet TODO that means never been saved??
@@ -113,43 +110,111 @@ object DataMaster {
         return characterArray
     }
 
+    fun retrieveCharacterInformation() : CharacterInformation?{
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        //TODO does this characterKEY thing allow for multiple characters?
+        if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinet has a file called characters
+            val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
+            if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
+                characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
+                if (sharedPrefs.contains(CURRENT_CHARACTER_INFORMATION_KEY)){ //if we have a current character
+                    val currentCharacterName = sharedPrefs.getString(CURRENT_CHARACTER_INFORMATION_KEY, null) //We save characters by name so get name
+                    val currentCharacterJSON = characterHashtable[currentCharacterName] //give the character name to the hashtable to get back the characterInformation object as a JSON blob.
+                    if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
+                        val character = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
+                        Log.d(tag, "Character to be retrieved is $character")
+                        objectToNotify?.giveCharacterInfo(character)//TODO is this necessary???? it doesn't seem to update screen when you create new character
+                        return character
+                    }
+                }else{//we don't have a current character
+                    //what now?
+                }
+            }
+        }else{//there is no file characters in the cabinet TODO that means never been saved??
+            //what do I return
+        }
+        return null
+    }
+
 
     //ITEMS
     //TODO Should I make this a inner class known as Saver?
-    //TODO how do I keep track of these items? Duplicates? An id? use UUID object 
+    //TODO how do I keep track of these items? Duplicates? An id? use UUID object
 
     //SAVE
     fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
-
-    }
-
-    fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
         val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
-        val characterWithItem = characterOwner.characterWeaponItemsList?.add(weaponItem)
-        val characterInformationAsJSON = Gson().toJson(characterWithItem)//TODO is this right?
+        Log.d(tag, "Item to be saved is: $armorItem character to save to is $characterOwner")
+        characterOwner.characterArmorItemsList?.add(armorItem)
+        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+        val characterInformationAsJSON = Gson().toJson(characterOwner)//TODO is this right?
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
         characterHashtable.put(characterName, characterInformationAsJSON)
         val characterHashtableJSON = Gson().toJson(characterHashtable)//TODO is this the same hashtable? same key?
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
         editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
-
         editor?.apply()
+        //TODO is this right? do i want to give back the character?
+        objectToNotify?.giveCharacterInfo(characterOwner)
+    }
+
+    fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){//TODO this seems to break when I create two of the same item. and then totally breaks the app and can no longer be opened.
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
+        characterOwner.characterWeaponItemsList?.add(weaponItem)
+        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+        val characterInformationAsJSON = Gson().toJson(characterOwner)//TODO is this right?
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        characterArray.add(characterOwner)//TODO is this right?
-        objectToNotify?.giveCharacterInfo(characterArray)
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)//TODO is this the same hashtable? same key?
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        //TODO is this right? do i want to give back the character?
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be saved is: $consumableItem character to save to is $characterOwner")
+        characterOwner.characterConsumablesItemsList?.add(consumableItem)
+        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+        val characterInformationAsJSON = Gson().toJson(characterOwner)//TODO is this right?
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)//TODO is this the same hashtable? same key?
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        //TODO is this right? do i want to give back the character?
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
+        characterOwner.characterMiscellaneousItemList?.add(miscellaneousItem)
+        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+        val characterInformationAsJSON = Gson().toJson(characterOwner)//TODO is this right?
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)//TODO is this the same hashtable? same key?
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        //TODO is this right? do i want to give back the character?
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    //DELETE
+    //DELETE TODO how do I make this use UUID of object???
     fun deleteItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
 
     }
