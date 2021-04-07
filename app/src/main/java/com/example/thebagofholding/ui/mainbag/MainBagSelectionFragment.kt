@@ -36,7 +36,7 @@ class MainBagSelectionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //On Click Listeners for Buttons
-        //TODO Make sure items can have mutliple stacks of them. Aka 10 health potions.
+        //TODO Make sure items can have multiple stacks of them. Aka 10 health potions.
 
         weaponsListButton.setOnClickListener(){
             findNavController().navigate(R.id.navigation_bag_holding_weapons_list)

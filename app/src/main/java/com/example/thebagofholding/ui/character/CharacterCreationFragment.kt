@@ -1,7 +1,6 @@
 package com.example.thebagofholding.ui.character
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.CharacterCreationRecyclerAdapter
 import com.example.thebagofholding.CharacterInformation
-import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
-import com.example.thebagofholding.ui.items.NewItemViewModel
-import kotlin.math.log
 
 class CharacterCreationFragment : Fragment() {
-    private lateinit var characterViewModel : CharacterViewModel
+    private lateinit var characterCreationViewModel : CharacterCreationViewModel
     private lateinit var characterCreationRecyclerView: RecyclerView
     private var characterCreationRecyclerAdapter: CharacterCreationRecyclerAdapter? = null
     private var characterCreationRecyclerCharacterArray = ArrayList<CharacterInformation>()
@@ -41,8 +37,8 @@ class CharacterCreationFragment : Fragment() {
 
 
 
-        characterViewModel = ViewModelProvider(this).get(CharacterViewModel::class.java)
-        characterViewModel.characterData.observe(viewLifecycleOwner, Observer {
+        characterCreationViewModel = ViewModelProvider(this).get(CharacterCreationViewModel::class.java)
+        characterCreationViewModel.characterData.observe(viewLifecycleOwner, Observer {
             characterCreationRecyclerCharacterArray = it
             if (characterCreationRecyclerAdapter == null){//create it
                 characterCreationRecyclerView.layoutManager = LinearLayoutManager(this.activity)

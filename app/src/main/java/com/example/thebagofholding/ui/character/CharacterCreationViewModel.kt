@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.DataMaster
 
-class CharacterViewModel : ViewModel(), DataMaster.DataMasterInterface {
+class CharacterCreationViewModel : ViewModel(), DataMaster.DataMasterInterface {
     private val TAG = "CharacterViewModel"
     val characterData = MutableLiveData<ArrayList<CharacterInformation>>()
 
@@ -29,6 +29,6 @@ class CharacterViewModel : ViewModel(), DataMaster.DataMasterInterface {
 
     override fun giveAllCharactersInfo(characterInfoArray: ArrayList<CharacterInformation>) {
         Log.d(TAG, "characters from giveAllCharacterInfo = $characterInfoArray")
-        characterData.postValue(characterInfoArray)
+        characterData.postValue(characterInfoArray)//TODO I am posting value twice i think? I get duplicate characters that aren't actually saving.
     }
 }
