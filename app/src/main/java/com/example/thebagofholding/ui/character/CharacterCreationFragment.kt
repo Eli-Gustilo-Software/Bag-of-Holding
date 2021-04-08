@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thebagofholding.CharacterCreationRecyclerAdapter
 import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.R
 
@@ -19,9 +18,6 @@ class CharacterCreationFragment : Fragment() {
     private var characterCreationRecyclerAdapter: CharacterCreationRecyclerAdapter? = null
     private var characterCreationRecyclerCharacterArray = ArrayList<CharacterInformation>()
     private var TAG = "CharacterCreationFragment"
-
-
-    private var recyclerViewFirstCell = CharacterInformation("Create a New Character",null,null,null,null)
 
     init {
     }
@@ -34,9 +30,7 @@ class CharacterCreationFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_character_creation, container, false)
         characterCreationRecyclerView = root.findViewById(R.id.character_creation_recyclerview)
 
-
-
-
+        //ViewModel and RecyclerViewAdapter
         characterCreationViewModel = ViewModelProvider(this).get(CharacterCreationViewModel::class.java)
         characterCreationViewModel.characterData.observe(viewLifecycleOwner, Observer {
             characterCreationRecyclerCharacterArray = it

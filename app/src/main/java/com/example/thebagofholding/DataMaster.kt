@@ -9,37 +9,41 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 data class ArmorItemData(
-        val uuid: UUID,
         val armorImage: Int,
         val armorName: String,
-        val armorEffectsOne: String
+        val armorEffectsOne: String,
+        val armorUUID: UUID
 )
 
 data class CharacterInformation(
         val characterName: String,
         //TODO do i want these to be nullable? I could give the rando things that need it empty arrays? which is better?
-        val characterArmorItemsList: ArrayList<ArmorItemData>?,
-        val characterWeaponItemsList: ArrayList<WeaponItemData>?,
-        val characterConsumablesItemsList: ArrayList<ConsumablesItemData>?,
-        val characterMiscellaneousItemList: ArrayList<MiscellaneousItemData>?
+        val characterArmorItemsList: ArrayList<ArmorItemData>,
+        val characterWeaponItemsList: ArrayList<WeaponItemData>,
+        val characterConsumablesItemsList: ArrayList<ConsumablesItemData>,
+        val characterMiscellaneousItemList: ArrayList<MiscellaneousItemData>,
+        val characterUUID: UUID
 )
 
 data class ConsumablesItemData(
         val consumablesImage: Int,
         val consumablesName: String,
-        val consumablesEffectsOne: String
+        val consumablesEffectsOne: String,
+        val consumablesUUID: UUID
 )
 
 data class MiscellaneousItemData(
         val miscImage: Int,
         val miscName: String,
-        val miscEffectsOne: String
+        val miscEffectsOne: String,
+        val miscUUID: UUID
 )
 
 data class WeaponItemData(
         val image: Int,
         val name: String,
-        val weaponEffectOne: String
+        val weaponEffectOne: String,
+        val weaponUUID: UUID
 )
 
 object DataMaster {
@@ -208,24 +212,74 @@ object DataMaster {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    //TODO NEED TO DEAL WITH CURRENCY
+    //TODO NEED TO DEAL WITH CURRENCY. How best to get type from the user.
 
-    //DELETE TODO how do I make this use UUID of object???
+    //DELETE TODO I need to deal with long touches and a contextual menu.
     fun deleteItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be removed is: $armorItem character to remove from is $characterOwner")
+        characterOwner.characterArmorItemsList.remove(armorItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        val characterInformationAsJSON = Gson().toJson(characterOwner)
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun deleteItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be removed is: $weaponItem character to remove from is $characterOwner")
+        characterOwner.characterWeaponItemsList.remove(weaponItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        val characterInformationAsJSON = Gson().toJson(characterOwner)
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun deleteItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be removed is: $consumableItem character to remove from is $characterOwner")
+        characterOwner.characterConsumablesItemsList.remove(consumableItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        val characterInformationAsJSON = Gson().toJson(characterOwner)
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun deleteItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
-
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Item to be removed is: $miscellaneousItem character to remove from is $characterOwner")
+        characterOwner.characterMiscellaneousItemList.remove(miscellaneousItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        val characterInformationAsJSON = Gson().toJson(characterOwner)
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        objectToNotify?.giveCharacterInfo(characterOwner)
     }
+
+
 
     //TRANSFER via Hermez
 //    fun transferItemArmor(armorItem: ArmorItemData){

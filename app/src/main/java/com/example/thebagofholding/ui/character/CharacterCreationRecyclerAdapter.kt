@@ -1,4 +1,4 @@
-package com.example.thebagofholding
+package com.example.thebagofholding.ui.character
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -14,6 +14,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.thebagofholding.CharacterInformation
+import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 enum class CharacterViewHolderTypes(val typeKey: Int){
     NEW_CHARACTER_BUTTON(1),
@@ -91,7 +96,7 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
                 }
                 createButton.setOnClickListener(){
                     Log.d(tag, "characterSaved is $newCharacterName")
-                    DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList()))
+                    DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), UUID.randomUUID()))
                     dialog.dismiss()
                 }
             }

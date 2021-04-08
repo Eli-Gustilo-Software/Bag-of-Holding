@@ -1,6 +1,7 @@
 package com.example.thebagofholding.ui.purse
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.R
+
 
 class PurseFragment : Fragment() {
     private lateinit var purseViewModel: PurseViewModel
@@ -29,16 +31,35 @@ class PurseFragment : Fragment() {
         return root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bronze = view?.findViewById<TextView>(R.id.purse_money_1_4_textview)
-        val silver = view?.findViewById<TextView>(R.id.purse_money_2_4_textview)
-        val gold = view?.findViewById<TextView>(R.id.purse_money_3_4_textview)
-        val truesilver = view?.findViewById<TextView>(R.id.purse_money_4_4_textview)
-        val bronzeAmount = view?.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
-        val silverAmount = view?.findViewById<TextView>(R.id.purse_money_2_4_amount_edittext)
-        val goldAmount = view?.findViewById<TextView>(R.id.purse_money_3_4_amount_edittext)
-        val truesilverAmount = view?.findViewById<TextView>(R.id.purse_money_4_4_amount_edittext)
+
+        //BRONZE
+        val bronze = view.findViewById<TextView>(R.id.purse_money_1_4_textview)
+        val bronzeAmount = view.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
+        val filter = InputFilter { source, start, end, dest, dstart, dend ->
+            for (i in start until end) {
+                if (!Character.isDigit(source[i])) {
+                    return@InputFilter ""
+                }
+            }
+            null
+        }
+        bronzeAmount.filters = arrayOf(filter)
+
+        //SILVER
+        val silver = view.findViewById<TextView>(R.id.purse_money_2_4_textview)
+        val silverAmount = view.findViewById<TextView>(R.id.purse_money_2_4_amount_edittext)
+
+        //GOLD
+        val gold = view.findViewById<TextView>(R.id.purse_money_3_4_textview)
+        val goldAmount = view.findViewById<TextView>(R.id.purse_money_3_4_amount_edittext)
+
+        //TRUE SILVER
+        val truesilver = view.findViewById<TextView>(R.id.purse_money_4_4_textview)
+        val truesilverAmount = view.findViewById<TextView>(R.id.purse_money_4_4_amount_edittext)
 
         bronze?.text = "Bronze"
         silver?.text = "Silver"

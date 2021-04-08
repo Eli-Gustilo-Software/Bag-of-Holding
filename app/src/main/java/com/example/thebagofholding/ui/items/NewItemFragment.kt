@@ -15,6 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.thebagofholding.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class NewItemFragment : Fragment() {
@@ -41,15 +43,15 @@ class NewItemFragment : Fragment() {
     private var weaponsListTestArray = ArrayList<WeaponItemData>()
 
     init {
-        val testWeapon2 = ArmorItemData((R.drawable.ic_armor), "Potion of Health", "D+5")
-        val testWeapon3 = ConsumablesItemData((R.drawable.ic_armor), "Potion of Strength", "D+2")
-        val testWeapon4 = MiscellaneousItemData((R.drawable.ic_armor), "Poison", "D+100")
-        val testWeapon5 = WeaponItemData((R.drawable.ic_armor), "Cestus", "D+2 (Uses Unarmed)")
-
-        armorListTestArray.add(testWeapon2)
-        consumablesListTestArray.add(testWeapon3)
-        miscListTestArray.add(testWeapon4)
-        weaponsListTestArray.add(testWeapon5)
+//        val testWeapon2 = ArmorItemData((R.drawable.ic_armor), "Potion of Health", "D+5")
+//        val testWeapon3 = ConsumablesItemData((R.drawable.ic_armor), "Potion of Strength", "D+2")
+//        val testWeapon4 = MiscellaneousItemData((R.drawable.ic_armor), "Poison", "D+100")
+//        val testWeapon5 = WeaponItemData((R.drawable.ic_armor), "Cestus", "D+2 (Uses Unarmed)")
+//
+//        armorListTestArray.add(testWeapon2)
+//        consumablesListTestArray.add(testWeapon3)
+//        miscListTestArray.add(testWeapon4)
+//        weaponsListTestArray.add(testWeapon5)
     }
 
     override fun onCreateView(
@@ -129,28 +131,28 @@ class NewItemFragment : Fragment() {
             if (newItemName != null && newItemEffect != null && newItemType != null){//item exists
                 when (newItemType) {//TODO should these be enums? what is the point of ENUMS?
                     "weapon" -> { //Weapon
-                        val newWeapon = WeaponItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val newWeapon = WeaponItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                             DataMaster.saveItemWeapon(character, newWeapon)
                         }
                     }
                     "armor" -> { //Armor/Apparel
-                        val newArmor = ArmorItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val newArmor = ArmorItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemArmor(character, newArmor)
                         }
                     }
                     "consumable" -> { //Consumable
-                        val newConsumable = ConsumablesItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val newConsumable = ConsumablesItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemConsumable(character, newConsumable)
                         }
                     }
                     "misc" -> { //Miscellaneous
-                        val newMisc = MiscellaneousItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!)
+                        val newMisc = MiscellaneousItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemMiscellaneous(character, newMisc)

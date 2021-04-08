@@ -39,25 +39,25 @@
 
     <fragment
         android:id="@+id/navigation_bag_holding_weapons_list"
-        android:name="com.example.thebagofholding.ui.mainbag.WeaponListFragment"
+        android:name="com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListFragment"
         android:label="Bag of Holding Weapons List"
         tools:layout="@layout/bag_weapons_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_armor_list"
-        android:name="com.example.thebagofholding.ui.mainbag.ArmorListFragment"
+        android:name="com.example.thebagofholding.ui.mainbag.armorlist.ArmorListFragment"
         android:label="Bag of Holding Armor List"
         tools:layout="@layout/bag_armor_apparal_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_consumables_list"
-        android:name="com.example.thebagofholding.ui.mainbag.ConsumablesListFragment"
+        android:name="com.example.thebagofholding.ui.mainbag.consumableslist.ConsumablesListFragment"
         android:label="Bag of Holding Consumables List"
         tools:layout="@layout/bag_consumables_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_misc_list"
-        android:name="com.example.thebagofholding.ui.mainbag.MiscellaneousListFragment"
+        android:name="com.example.thebagofholding.ui.mainbag.miscellaneouslist.MiscellaneousListFragment"
         android:label="Bag of Holding Miscellaneous List"
         tools:layout="@layout/bag_misc_list" />
 
