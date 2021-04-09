@@ -5,18 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.thebagofholding.CharacterInformation
+import com.example.thebagofholding.CharacterPurseData
+import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
 
 class CharacterFragment : Fragment() {
     private lateinit var mainBagButton: Button
     private lateinit var coinPurseButton : Button
     private lateinit var newItemButton: Button
+    private lateinit var currentCharacterNameTextView : TextView
+    private lateinit var currentCharacter : CharacterInformation
 
+    init {
+        if (DataMaster.retrieveCharacterInformation() != null){
+            currentCharacter = DataMaster.retrieveCharacterInformation()!!//TODO is this current character infromation?? Rename?
+        }
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -34,7 +45,9 @@ class CharacterFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        //CharacterName TextView
+        currentCharacterNameTextView = view.findViewById(R.id.character_name_textview)
+        currentCharacterNameTextView.text = "${currentCharacter.characterName}'s Bag of Holding"
 
         //Buttons
         mainBagButton = view.findViewById(R.id.character_main_bag_button)

@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
-import com.example.thebagofholding.ui.character.CharacterCreationViewModel
-import com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListRecyclerAdapter
 
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView

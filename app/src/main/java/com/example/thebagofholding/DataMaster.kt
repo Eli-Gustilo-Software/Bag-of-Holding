@@ -22,6 +22,7 @@ data class CharacterInformation(
         val characterWeaponItemsList: ArrayList<WeaponItemData>,
         val characterConsumablesItemsList: ArrayList<ConsumablesItemData>,
         val characterMiscellaneousItemList: ArrayList<MiscellaneousItemData>,
+        var characterPurseData: CharacterPurseData,
         val characterUUID: UUID
 )
 
@@ -37,6 +38,13 @@ data class MiscellaneousItemData(
         val miscName: String,
         val miscEffectsOne: String,
         val miscUUID: UUID
+)
+
+data class CharacterPurseData(
+        var bronze: String, //TODO should this be a string or int?
+        var silver: String,
+        var gold: String,
+        var truesilver: String
 )
 
 data class WeaponItemData(
@@ -279,6 +287,23 @@ object DataMaster {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
+    //PURSE //TODO make more advanced at some point.
+    fun saveMoney (characterOwner: CharacterInformation, newCharacterPurse: CharacterPurseData){
+        val sharedPrefs = applicationDataMaster.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "purse to be saved is: $newCharacterPurse character to save to is $characterOwner")
+        characterOwner.characterPurseData = newCharacterPurse
+        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+        val characterInformationAsJSON = Gson().toJson(characterOwner)
+        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+        val characterName = characterOwner.characterName
+        characterHashtable.put(characterName, characterInformationAsJSON)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.apply()
+        objectToNotify?.giveCharacterInfo(characterOwner)
+    }
 
 
     //TRANSFER via Hermez

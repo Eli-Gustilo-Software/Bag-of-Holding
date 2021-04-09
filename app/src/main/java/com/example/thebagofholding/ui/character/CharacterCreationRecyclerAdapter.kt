@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.CharacterInformation
+import com.example.thebagofholding.CharacterPurseData
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
 import java.util.*
@@ -96,7 +97,7 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
                 }
                 createButton.setOnClickListener(){
                     Log.d(tag, "characterSaved is $newCharacterName")
-                    DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), UUID.randomUUID()))
+                    DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), CharacterPurseData("0","0","0","0"), UUID.randomUUID()))
                     dialog.dismiss()
                 }
             }

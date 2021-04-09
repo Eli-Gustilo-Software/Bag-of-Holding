@@ -19,7 +19,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars"
+        android:background="@drawable/ic_misc_item_1"
         />
 
     <TextView

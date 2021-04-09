@@ -4,18 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/character_creation_cell_constraint_layout"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="150dp"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="30dp"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="15dp"
-    android:background="@color/cardview_dark_background"
+    android:background="@drawable/ic_scroll_wide"
     >
 
     <TextView
         android:id="@+id/character_creation_new_character_always_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="5dp"
         android:text="Click to Make New Character"
         android:textColorHint="@color/white"
         android:textSize="24sp"

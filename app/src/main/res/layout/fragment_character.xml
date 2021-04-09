@@ -31,6 +31,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:text="BagOfHolding"
+        android:background="@drawable/ic_purse"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="@+id/character_name_textview"
         app:layout_constraintStart_toStartOf="@+id/character_name_textview" />
@@ -41,6 +42,7 @@
         android:layout_height="75dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="64dp"
+        android:background="@drawable/ic_purse"
         android:text="Coin Purse"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
@@ -52,6 +54,7 @@
         android:layout_marginTop="64dp"
         android:layout_marginEnd="32dp"
         android:text="New Item"
+        android:background="@drawable/ic_new_item_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 

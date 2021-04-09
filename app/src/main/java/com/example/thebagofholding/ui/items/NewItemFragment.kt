@@ -131,28 +131,28 @@ class NewItemFragment : Fragment() {
             if (newItemName != null && newItemEffect != null && newItemType != null){//item exists
                 when (newItemType) {//TODO should these be enums? what is the point of ENUMS?
                     "weapon" -> { //Weapon
-                        val newWeapon = WeaponItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
+                        val newWeapon = WeaponItemData((R.drawable.ic_weapon_sword), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                             DataMaster.saveItemWeapon(character, newWeapon)
                         }
                     }
                     "armor" -> { //Armor/Apparel
-                        val newArmor = ArmorItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
+                        val newArmor = ArmorItemData((R.drawable.ic_helmet), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemArmor(character, newArmor)
                         }
                     }
                     "consumable" -> { //Consumable
-                        val newConsumable = ConsumablesItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
+                        val newConsumable = ConsumablesItemData((R.drawable.ic_potion), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemConsumable(character, newConsumable)
                         }
                     }
                     "misc" -> { //Miscellaneous
-                        val newMisc = MiscellaneousItemData((R.drawable.ic_armor), newItemName!!, newItemEffect!!, UUID.randomUUID())
+                        val newMisc = MiscellaneousItemData((R.drawable.ic_misc_item_1), newItemName!!, newItemEffect!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemMiscellaneous(character, newMisc)
