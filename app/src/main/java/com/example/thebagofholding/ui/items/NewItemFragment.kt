@@ -124,7 +124,7 @@ class NewItemFragment : Fragment() {
 
         //BUTTONS
         backButton.setOnClickListener(){
-            findNavController().navigate(R.id.navigation_bag_holding_main_screen)
+            findNavController().navigate(R.id.navigation_character)
         }
 
         createButton.setOnClickListener(){

@@ -107,6 +107,7 @@ object DataMaster {
                 val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
                 if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
                     characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
+                    characterArray.clear()
                     for (item in characterHashtable){//get all keys of all existing character
                         val characterAsJSON = item.value//for key get character Value
                         val characterAsCharacterObject = Gson().fromJson(characterAsJSON, CharacterInformation::class.java)//Got character object.

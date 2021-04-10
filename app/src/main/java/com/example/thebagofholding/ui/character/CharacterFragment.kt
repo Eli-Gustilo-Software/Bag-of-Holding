@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,9 +18,9 @@ import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
 
 class CharacterFragment : Fragment() {
-    private lateinit var mainBagButton: Button
-    private lateinit var coinPurseButton : Button
-    private lateinit var newItemButton: Button
+    private lateinit var mainBagButton: ImageButton
+    private lateinit var coinPurseButton : ImageButton
+    private lateinit var newItemButton: ImageButton
     private lateinit var currentCharacterNameTextView : TextView
     private lateinit var currentCharacter : CharacterInformation
 

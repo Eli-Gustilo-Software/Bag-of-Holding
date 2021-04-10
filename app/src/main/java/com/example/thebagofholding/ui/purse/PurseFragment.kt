@@ -17,6 +17,7 @@ import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.CharacterPurseData
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
+import org.w3c.dom.Text
 
 
 class PurseFragment : Fragment() {
@@ -57,8 +58,9 @@ class PurseFragment : Fragment() {
 
         //Views and Listeners and Edit Texts //TODO I could  make it so the initial zero is deleted on new characters on click.
         //BRONZE
-        val bronzeTextView = view.findViewById<TextView>(R.id.purse_money_1_4_textview)
+        val bronzeTextView = view.findViewById<TextView>(R.id.purse_money_1_4_textview) //TODO should these be class variables or stay here? what is good convention?
         val bronzeAmountEditText = view.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
+        val characterPurseTextView = view.findViewById<TextView>(R.id.purse_top_textview)
 
         //Filter to only allow digits: Phone popup is in XML
         val filterBronze = InputFilter { source, start, end, dest, dstart, dend ->
@@ -262,6 +264,7 @@ class PurseFragment : Fragment() {
         silverTextView?.text = "Silver Coins"
         goldTextView?.text = "Gold Coins"
         truesilverTextView?.text = "True Silver Coins"
+        characterPurseTextView.text = "${currentCharacter.characterName}'s Coin Purse"
 
         //TODO can this ever be null and break???
         bronzeAmountEditText?.text = currentCharacter.characterPurseData.bronze
