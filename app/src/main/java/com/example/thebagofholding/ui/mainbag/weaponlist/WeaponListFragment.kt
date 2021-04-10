@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,7 @@ import com.example.thebagofholding.*
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
     private lateinit var weaponListViewModel: WeaponListViewModel
+    private lateinit var weaponListOwnerTextView : TextView
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
     private var weaponsListArray = ArrayList<WeaponItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -45,6 +47,10 @@ class WeaponListFragment : Fragment(){
                 weaponListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //Character Name TextView
+        weaponListOwnerTextView = root.findViewById(R.id.weapons_list_title)
+        weaponListOwnerTextView.text = "${currentCharacter.characterName}'s Weapons"
 
         return root
     }

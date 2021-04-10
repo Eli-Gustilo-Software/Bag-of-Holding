@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/cardview_dark_background"
+    >
 
-    <Button
+    <ImageButton
         android:id="@+id/bag_weapons_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="W"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_weapon_sword"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,15 +23,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Weapons"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/bag_weapons_button"
         app:layout_constraintStart_toStartOf="@+id/bag_weapons_button"
         app:layout_constraintTop_toBottomOf="@+id/bag_weapons_button" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bag_armor_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="A/A"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_helmet"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -57,25 +60,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Armor/Apparel"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/bag_armor_button"
         app:layout_constraintStart_toStartOf="@+id/bag_armor_button"
         app:layout_constraintTop_toBottomOf="@+id/bag_armor_button" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bag_consumables_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="P/C"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_potion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bag_misc_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Misc"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_misc_item_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -87,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Potions/Consumbales"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/bag_consumables_button"
         app:layout_constraintStart_toStartOf="@+id/bag_consumables_button"
         app:layout_constraintTop_toBottomOf="@+id/bag_consumables_button" />
@@ -97,6 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Miscellaneous"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/bag_misc_button"
         app:layout_constraintStart_toStartOf="@+id/bag_misc_button"
         app:layout_constraintTop_toBottomOf="@+id/bag_misc_button" />

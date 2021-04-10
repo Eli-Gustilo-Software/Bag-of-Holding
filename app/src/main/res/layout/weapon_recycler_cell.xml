@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="The Sword of Power"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/weapon_cell_imageview"
         app:layout_constraintTop_toTopOf="@+id/weapon_cell_imageview" />
 
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Damage: D+5"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/weapon_cell_imageview"
         app:layout_constraintStart_toEndOf="@+id/weapon_cell_imageview" />
 

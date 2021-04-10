@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.example.thebagofholding.ui.mainbag.armorlist.ArmorListViewModel
 class ConsumablesListFragment : Fragment(){
     private lateinit var consumablesListRecyclerView: RecyclerView
     private lateinit var consumablesListViewModel: ConsumablesListViewModel
+    private lateinit var consumablesListOwnerTextView : TextView
     private var consumablesListRecyclerAdapter: ConsumablesListRecyclerAdapter? = null
     private var consumablesListArray = ArrayList<ConsumablesItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -50,6 +52,10 @@ class ConsumablesListFragment : Fragment(){
                 consumablesListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //Character Name TextView
+        consumablesListOwnerTextView = root.findViewById(R.id.consumables_list_title)
+        consumablesListOwnerTextView.text = "${currentCharacter.characterName}'s Consumables"
 
         return root
     }

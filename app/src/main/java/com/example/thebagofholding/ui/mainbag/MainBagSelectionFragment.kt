@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.thebagofholding.R
 
 class MainBagSelectionFragment : Fragment() {
-    private lateinit var weaponsListButton : Button
-    private lateinit var armorListButton : Button
-    private lateinit var consumablesListButton : Button
-    private lateinit var miscListButton : Button
+    private lateinit var weaponsListButton : ImageButton
+    private lateinit var armorListButton : ImageButton
+    private lateinit var consumablesListButton : ImageButton
+    private lateinit var miscListButton : ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater,

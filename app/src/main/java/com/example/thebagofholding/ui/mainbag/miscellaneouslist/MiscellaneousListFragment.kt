@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.example.thebagofholding.ui.mainbag.consumableslist.ConsumablesListVie
 class MiscellaneousListFragment : Fragment(){
     private lateinit var miscListRecyclerView: RecyclerView
     private lateinit var miscListViewModel : MiscellaneousListViewModel
+    private lateinit var miscListOwnerTextView : TextView
     private var miscListRecyclerAdapter: MiscellaneousListRecyclerAdapter? = null
     private var miscListArray = ArrayList<MiscellaneousItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -50,6 +52,11 @@ class MiscellaneousListFragment : Fragment(){
                 miscListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //Character Name TextView
+        miscListOwnerTextView = root.findViewById(R.id.misc_list_title)
+        miscListOwnerTextView.text = "${currentCharacter.characterName}'s Miscellaneous Items"
+
         return root
     }
 

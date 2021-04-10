@@ -30,6 +30,7 @@ class NewItemFragment : Fragment() {
     private lateinit var newItemNameEditText: EditText
     private lateinit var newItemEffectEditText: EditText
     private lateinit var newItemDescriptionEditText: EditText
+    private lateinit var newItemImageView : ImageView
 
     //New Item Variables
     private var newItemType: String? = null
@@ -77,6 +78,7 @@ class NewItemFragment : Fragment() {
         newItemNameEditText = view.findViewById(R.id.new_item_name_edittext)
         newItemEffectEditText = view.findViewById(R.id.new_item_effect_edittext)
         newItemDescriptionEditText = view.findViewById(R.id.new_item_description_editext)
+        newItemImageView = view.findViewById(R.id.new_item_imageview)
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -180,18 +182,22 @@ class NewItemFragment : Fragment() {
                 when (position) {//TODO should these be enums? what is the point of ENUMS?
                     0 -> { //Weapon
                         newItemType = "weapon"
+                        newItemImageView.setBackgroundResource(R.drawable.ic_weapon_sword) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                         Log.d(TAG, "newItem type = $newItemType")
                     }
                     1 -> { //Armor/Apparel
                         newItemType = "armor"
+                        newItemImageView.setBackgroundResource(R.drawable.ic_helmet) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                         Log.d(TAG, "newItem type = $newItemType")
                     }
                     2 -> { //Consumable
                         newItemType = "consumable"
+                        newItemImageView.setBackgroundResource(R.drawable.ic_potion) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                         Log.d(TAG, "newItem type = $newItemType")
                     }
                     3 -> { //Miscellaneous
                         newItemType = "misc"
+                        newItemImageView.setBackgroundResource(R.drawable.ic_misc_item_1) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                         Log.d(TAG, "newItem type = $newItemType")
                     }
                 }
@@ -200,5 +206,8 @@ class NewItemFragment : Fragment() {
                 //What to do?
             }
         }
+
+        //IMAGE VIEW
+        newItemImageView.setBackgroundResource(R.drawable.ic_armor)
     }
 }

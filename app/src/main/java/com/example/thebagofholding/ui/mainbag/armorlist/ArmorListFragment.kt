@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListViewModel
 class ArmorListFragment : Fragment(){
     private lateinit var armorListRecyclerView: RecyclerView
     private lateinit var armorListViewModel: ArmorListViewModel
+    private lateinit var armorListOwnerNameTextView : TextView
     private var armorListRecyclerAdapter: ArmorListRecyclerAdapter? = null
     private var armorListArray = ArrayList<ArmorItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -50,6 +52,11 @@ class ArmorListFragment : Fragment(){
                 armorListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //Character Name TextView
+        armorListOwnerNameTextView = root.findViewById(R.id.armor_list_title)
+        armorListOwnerNameTextView.text = "${currentCharacter.characterName}'s Apparel"
+
         return root
     }
 
