@@ -5,16 +5,15 @@
 <!--        android:id="@+id/navigation_purse"-->
 <!--        android:icon="@drawable/ic_home_black_24dp"-->
 <!--        android:title="Purse" />-->
+    <item
+        android:id="@+id/navigation_fragment_campfire"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="Campfire" />
 
     <item
         android:id="@+id/navigation_character"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="Character" />
-
-<!--    <item-->
-<!--        android:id="@+id/navigation_new_item"-->
-<!--        android:icon="@drawable/ic_notifications_black_24dp"-->
-<!--        android:title="New Item" />-->
 
     <item
         android:id="@+id/navigation_character_creation_screen"

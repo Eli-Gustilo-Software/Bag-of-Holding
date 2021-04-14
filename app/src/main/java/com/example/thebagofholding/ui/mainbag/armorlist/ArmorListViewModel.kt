@@ -30,4 +30,8 @@ class ArmorListViewModel : ViewModel(), DataMaster.DataMasterInterface {
     override fun giveAllCharactersInfo(characterInfoArray: ArrayList<CharacterInformation>) {
         Log.d(TAG, "characters from giveAllCharacterInfo = $characterInfoArray")
     }
+
+    override fun giveFriendsList(friendsList: ArrayList<String>) {
+        Log.d(TAG, "friends from giveFriendsList = $friendsList")
+    }
 }

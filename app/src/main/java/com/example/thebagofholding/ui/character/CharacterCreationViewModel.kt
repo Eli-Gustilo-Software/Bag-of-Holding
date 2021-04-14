@@ -31,4 +31,8 @@ class CharacterCreationViewModel : ViewModel(), DataMaster.DataMasterInterface {
         Log.d(TAG, "characters from giveAllCharacterInfo = $characterInfoArray")
         characterData.postValue(characterInfoArray)//TODO I am posting value twice i think? I get duplicate characters that aren't actually saving.
     }
+
+    override fun giveFriendsList(friendsList: ArrayList<String>) {
+        Log.d(TAG, "friends from giveFriendsList = $friendsList")
+    }
 }

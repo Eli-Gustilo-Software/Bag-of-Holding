@@ -111,8 +111,10 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
         private val context = super.itemView.context
         init {
             // Define click listener for the ViewHolder's View.
+            //TODO make this a longclick and double check box thing.
             characterNameCell.setOnClickListener(){
-                Log.d(tag, "characterNameCell clicked")
+                Log.d(tag, "characterNameCell clicked ${characterNameTextView.text}")
+                DataMaster.changeCharacter(characterNameTextView.text.toString())
             }
         }
     }

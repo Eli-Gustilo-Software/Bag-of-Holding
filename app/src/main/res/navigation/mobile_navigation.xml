@@ -61,4 +61,10 @@
         android:label="Bag of Holding Miscellaneous List"
         tools:layout="@layout/bag_misc_list" />
 
+    <fragment
+        android:id="@+id/navigation_fragment_campfire"
+        android:name="com.example.thebagofholding.ui.campfire.CampfireFragment"
+        android:label="Your Campfire"
+        tools:layout="@layout/fragment_campfire" />
+
 </navigation>

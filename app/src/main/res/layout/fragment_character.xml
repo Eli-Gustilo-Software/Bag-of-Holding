@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.character.CharacterFragment"
-    android:background="@drawable/leather_background_lightbrown"
+    android:background="@color/cardview_dark_background"
     >
 
     <TextView
