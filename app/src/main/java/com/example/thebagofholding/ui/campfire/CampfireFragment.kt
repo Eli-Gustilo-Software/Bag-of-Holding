@@ -54,7 +54,7 @@ class CampfireFragment : Fragment() {
         //Set button listeners
         campfireFindFriendsButton.setOnClickListener(){
             Log.d(TAG, "button clicked to get all friends")
-            DataMaster.findOtherPlayers()
+            DataMaster.resetHermez()
         }
     }
 }

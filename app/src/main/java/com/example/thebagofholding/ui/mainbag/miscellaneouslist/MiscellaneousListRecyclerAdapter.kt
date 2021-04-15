@@ -35,6 +35,26 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                             Log.d(tag, "delete menu called.")
                             DataMaster.deleteItemMiscellaneous(itemCharacterOwner, itemMiscellaneousData)
                         }
+
+                        R.id.item_popup_menu_transfer->{
+                            Log.d(tag, "transfer menu called")
+                            val popupMenuTransfer= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
+                            //get list of all other characters found
+                            if (DataMaster.findOtherPlayers().size == 0){
+                                //no other players found
+                                popupMenuTransfer.menu.add("No Nearby Players Found")
+                            }else{
+                                for (player in DataMaster.findOtherPlayers()){
+                                    popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
+                                        //player name clicked
+                                        Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${itemMiscellaneousData.miscName}")
+                                        DataMaster.transferItemMiscellaneous(itemCharacterOwner, player, itemMiscellaneousData)
+                                        true
+                                    }
+                                }
+                            }
+                            popupMenuTransfer.show()
+                        }
                     }
                     true
                 }

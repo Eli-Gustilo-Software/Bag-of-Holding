@@ -7,10 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.OtherPlayerCharacterInformation
 
 class CampfireViewModel : ViewModel(), DataMaster.DataMasterInterface {
     private val TAG = "CampfireViewModel"
-    val characterData = MutableLiveData<ArrayList<String>>()
+    val characterData = MutableLiveData<ArrayList<OtherPlayerCharacterInformation>>()
 
     init {
         getCharacterInfo()
@@ -32,7 +33,7 @@ class CampfireViewModel : ViewModel(), DataMaster.DataMasterInterface {
         Log.d(TAG, "characters from giveAllCharacterInfo = $characterInfoArray")
     }
 
-    override fun giveFriendsList(friendsList: ArrayList<String>) {
+    override fun giveFriendsList(friendsList: ArrayList<OtherPlayerCharacterInformation>) {
         Log.d(TAG, "friends from giveFriendsList = $friendsList")
         characterData.postValue(friendsList)
     }

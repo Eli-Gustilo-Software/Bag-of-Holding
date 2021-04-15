@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.OtherPlayerCharacterInformation
 import com.example.thebagofholding.R
 import kotlin.collections.ArrayList
 
-class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class CampfireOtherPlayersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "CampfireOtherPlayersViewHolder"
         private val context = super.itemView.context
@@ -31,7 +32,7 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<String>) : Recycl
         //replace the name of the textview here
         val nameHolder = holder as CampfireOtherPlayersViewHolder
         for (item in otherPlayersList){
-            nameHolder.nameTextView.text = item
+            nameHolder.nameTextView.text = item.otherPlayerCharacterName
         }
     }
 
@@ -41,7 +42,7 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<String>) : Recycl
         return otherPlayersList.size
     }
 
-    fun updateData(characterInformationList: ArrayList<String>){
+    fun updateData(characterInformationList: ArrayList<OtherPlayerCharacterInformation>){
         otherPlayersList = characterInformationList
         notifyDataSetChanged()
     }

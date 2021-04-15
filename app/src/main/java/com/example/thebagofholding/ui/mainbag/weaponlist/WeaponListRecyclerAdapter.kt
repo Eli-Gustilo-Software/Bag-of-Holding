@@ -7,12 +7,11 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thebagofholding.CharacterInformation
-import com.example.thebagofholding.DataMaster
-import com.example.thebagofholding.R
-import com.example.thebagofholding.WeaponItemData
+import com.example.thebagofholding.*
 
 class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+
     class WeaponsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "WeaponsViewHolder"
         lateinit var itemWeaponData: WeaponItemData
@@ -23,6 +22,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         private val weaponCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.weapon_cell_constraint_layout)
 
         init {
+            //Setup
             weaponCellConstraintLayout.setOnLongClickListener(){
                 val popupMenu= PopupMenu(view.context,it) //TODO need to move this to the right of the screen.
                 popupMenu.inflate(R.menu.item_popup_menu)
@@ -32,6 +32,26 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
                         R.id.item_popup_menu_delete->{
                             Log.d(tag, "delete menu called.")
                             DataMaster.deleteItemWeapon(itemCharacterOwner, itemWeaponData)
+                        }
+
+                        R.id.item_popup_menu_transfer->{
+                            Log.d(tag, "transfer menu called")
+                            val popupMenuTransfer= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
+                            //get list of all other characters found
+                            if (DataMaster.findOtherPlayers().size == 0){
+                                //no other players found
+                                popupMenuTransfer.menu.add("No Nearby Players Found")
+                            }else{
+                                for (player in DataMaster.findOtherPlayers()){
+                                    popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
+                                        //player name clicked
+                                        Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${weaponNameTextView.text}")
+                                        DataMaster.transferItemWeapon(itemCharacterOwner, player, itemWeaponData)
+                                        true
+                                    }
+                                }
+                            }
+                            popupMenuTransfer.show()
                         }
                     }
                     true

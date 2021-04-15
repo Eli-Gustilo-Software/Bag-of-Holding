@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.OtherPlayerCharacterInformation
 
 class MiscellaneousListViewModel : ViewModel(), DataMaster.DataMasterInterface {
     private val TAG = "MiscellaneousListViewModel"
@@ -31,7 +32,7 @@ class MiscellaneousListViewModel : ViewModel(), DataMaster.DataMasterInterface {
         Log.d(TAG, "characters from giveAllCharacterInfo = $characterInfoArray")
     }
 
-    override fun giveFriendsList(friendsList: ArrayList<String>) {
+    override fun giveFriendsList(friendsList: ArrayList<OtherPlayerCharacterInformation>) {
         Log.d(TAG, "friends from giveFriendsList = $friendsList")
     }
 }
