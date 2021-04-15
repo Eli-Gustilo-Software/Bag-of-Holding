@@ -285,6 +285,7 @@ class Hermez(context: Context, serviceType: String) {
 
         fun resetDiscovery(){
             nsdManagerClient?.stopServiceDiscovery(discoveryListener)
+            discoverListenerInUse = false
             nsdManagerClient = null
             mHashtable.clear()
 
