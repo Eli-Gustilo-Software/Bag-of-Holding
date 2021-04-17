@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         //create dataMaster
         //TODO how do i pass this around? Is this even instantiated???
-        DataMaster.initWith(application)
+        DataMaster.initWith(application, this)
 
 
         appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_character, R.id.navigation_character_creation_screen))

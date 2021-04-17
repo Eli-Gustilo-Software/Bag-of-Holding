@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
 class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-
     class WeaponsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "WeaponsViewHolder"
         lateinit var itemWeaponData: WeaponItemData

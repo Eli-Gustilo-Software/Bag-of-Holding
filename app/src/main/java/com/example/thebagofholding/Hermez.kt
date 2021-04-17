@@ -37,11 +37,12 @@ import kotlin.collections.ArrayList
 const val MESSAGE_TERMINATOR = "\r\n"
 //This Class is split into two different inner classes Server and Client
 class Hermez(context: Context, serviceType: String) {
+    var hermezLiveDevices : MutableLiveData<ArrayList<HermezDevice>> = MutableLiveData()
+    var hermezLiveMessage : MutableLiveData<HermezMessage> = MutableLiveData()
     private val tag = "Hermez"
     private var mServiceType: String = serviceType
     private var mServiceName: String? = null
     private var mArrayOfDevicesFound: ArrayList<HermezDevice>? = ArrayList()
-    private var mMutableLiveDataDevices : MutableLiveData<HermezDevice> = MutableLiveData()
     private var mContext = context
     private var mHashtable = Hashtable<String, Socket>()
     private var objectToNotify: HermezDataInterface? = null
@@ -79,7 +80,6 @@ class Hermez(context: Context, serviceType: String) {
         fun serviceFailed(serviceType: String, serviceName: String?, error: HermezError)
         fun messageCannotBeSentToDevices(hermezMessage: HermezMessage, error: HermezError)
         fun devicesFound(deviceList: ArrayList<HermezDevice>) //todo mutable
-        fun devicesFoundMutable(deviceList : MutableLiveData<HermezDevice>)
         fun resolveFailed(serviceType: String, serviceName: String, error: HermezError)
     }
 
@@ -248,6 +248,7 @@ class Hermez(context: Context, serviceType: String) {
                         } else {
                             val message = Gson().fromJson(line, HermezMessage::class.java)
                             Log.d(tag, "parsed message is $message")
+                            hermezLiveMessage.postValue(message)
                             objectToNotify?.messageReceived(message)
                         }
                     } catch (e: IOException) {
@@ -362,15 +363,17 @@ class Hermez(context: Context, serviceType: String) {
                         mArrayOfDevicesFound?.add(HermezDevice(item.key))
                     }
                     if (objectToNotify != null && mArrayOfDevicesFound != null){
+                        hermezLiveDevices.postValue(mArrayOfDevicesFound)
                         objectToNotify!!.devicesFound(mArrayOfDevicesFound!!)
                     }
                     //Log.d(tag, "mHashtable is filled with ${serviceInfo.serviceName} and $localPortClient")
                     //Log.d(tag, "connection state = ${localPortClient.isConnected}")
-                    val newMessage = HermezMessage("NSDClientClass did connect to service name ${serviceInfo.serviceName}", "", "0", HermezDevice(serviceInfo.serviceName), myDeviceName)
-                    val runnable = hermezBrowser?.ClientWriter(newMessage, localPortClient)
-                    val writerThread = Thread(runnable)
-                    writerThread.start()
-                } catch (e: UnknownHostException) {
+//                    val newMessage = HermezMessage("NSDClientClass did connect to service name ${serviceInfo.serviceName}", "", "0", HermezDevice(serviceInfo.serviceName), myDeviceName)
+//                    val runnable = hermezBrowser?.ClientWriter(newMessage, localPortClient)
+//                    val writerThread = Thread(runnable)
+//                    writerThread.start()
+                }
+                catch (e: UnknownHostException) {
                     Log.e(TAG, "Unknown host. ${e.localizedMessage}")
                     objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
                 }

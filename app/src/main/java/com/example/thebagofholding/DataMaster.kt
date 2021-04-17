@@ -3,7 +3,11 @@ package com.example.thebagofholding
 import android.app.Application
 import android.os.Build
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.thebagofholding.ui.mainbag.miscellaneouslist.MiscellaneousListRecyclerAdapter
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -83,13 +87,41 @@ object DataMaster: Hermez.HermezDataInterface {
         fun giveFriendsList(friendsList : ArrayList<OtherPlayerCharacterInformation>)
     }
 
-    fun initWith (application: Application){
+    fun initWith (application: Application, lifecycleOwner: LifecycleOwner){
         applicationDataMaster = application
         //TODO I would like to initilizae heremz here but memory leak
         hermez = Hermez(application.applicationContext, "_bag_of_holding._tcp")
         hermez.setDeviceName(phoneName)//TODO this needs to be a specific device id.
         hermez.findAvailableDevices()
         hermez.initWithDelegate(this)
+
+        //another way to basically have an interface and pass data.
+        hermez.hermezLiveDevices.observe(lifecycleOwner, androidx.lifecycle.Observer  {
+            val arrayListOfOtherUsers = it
+            Log.d(tag, "devicesFound called. List = $arrayListOfOtherUsers")
+            for (user in arrayListOfOtherUsers){
+                if (user.name == phoneName){
+                    //do not get character data
+                    //todo what if they have the same phoneName/type? UUID?
+                }else{//not my device so get their character data.
+                    val arrayForSingleDevice = ArrayList<Hermez.HermezDevice>()
+                    arrayForSingleDevice.add(Hermez.HermezDevice(user.name))
+                    val currentCharacter = retrieveCharacterInformation()
+                    if (currentCharacter != null){//our character exists
+                        val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+                        val mpCharacterAsJson = Gson().toJson(mpCharacter)
+                        hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", arrayForSingleDevice) //our own device is listed here?
+                    }else{
+                    //does not exist so send our device name instead
+                    }
+                }
+            }
+        })
+
+        hermez.hermezLiveMessage.observe(lifecycleOwner, androidx.lifecycle.Observer {
+            val message = it
+            Log.d(tag, "the mutableLiveMessage = $message")
+        })
     }
 
     //CHARACTERS
@@ -392,21 +424,30 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     override fun messageReceived(hermezMessage: Hermez.HermezMessage) {
-        Log.d(tag, "messageReceived called")
+        Log.d("messageReceived", "messageReceived called: = $hermezMessage")
         when (hermezMessage.message) {
             "Give me character details" -> {//todo get a better name for this string/key ENUM?? //also what do i do if I don't have a character? Do i need to reset? or only register my own service once I have a character?
-                if (hermezMessage.sendingDevice.name == phoneName){ //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
+                //todo is this breaking things? this is the only place otherPlayersArray is set
+                if (hermezMessage.sendingDevice.name == phoneName){
+                //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
                 }else{//it is someone else's phone
-                    otherPlayersArray.clear()
-                    val otherPlayerCharacterInformation = Gson().fromJson(hermezMessage.json, OtherPlayerCharacterInformation::class.java)
-                    otherPlayersArray.add(otherPlayerCharacterInformation)
-                    if (retrieveCharacterInformation() != null){//my own character exists and I can pass them back to whoever asked for it.
-                        val characterAsJson = Gson().toJson(retrieveCharacterInformation())//todo send only uuid and name
-                        val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it.
-                        senderArrayList.add(hermezMessage.sendingDevice)
-                        Log.d(tag, "characterAsJson = $characterAsJson")
-                        Log.d(tag, "arrayList who sent me message = $senderArrayList")//todo i can give myself this array list here
+                    val otherPlayerCharacterInformation = Gson().fromJson(hermezMessage.json, OtherPlayerCharacterInformation::class.java) //get their character
+                    if (otherPlayersArray.contains(otherPlayerCharacterInformation)){
+                        //otherPlayer array already has it. aka do nothing? Or toast?
+                    }else{
+                        otherPlayersArray.add(otherPlayerCharacterInformation)
+                        val currentCharacter = retrieveCharacterInformation()
+                        if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
+                            val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+                            val mpCharacterAsJson = Gson().toJson(mpCharacter)
+                            val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it.
+                            senderArrayList.add(hermezMessage.sendingDevice)
+                            hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
+                            Log.d(tag, "characterAsJson = $mpCharacterAsJson")
+                            Log.d(tag, "arrayList who sent me message = $senderArrayList")
+                        }
                     }
+
                 }
             }
             "TRANSFER" ->{//todo need to send call back to remove item from old player inventory
@@ -489,7 +530,7 @@ object DataMaster: Hermez.HermezDataInterface {
                     }
                 }
                 if (hermezMessage.messageID.contains("M_T")){//make this prettier and change when statement syntax
-                    Log.d(tag, "M_T sucess called")
+                    Log.d(tag, "M_T success called")
                     val receivedItemMiscData = Gson().fromJson(hermezMessage.json, MiscellaneousItemData::class.java)
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
@@ -510,6 +551,7 @@ object DataMaster: Hermez.HermezDataInterface {
 
     override fun serviceFailed(serviceType: String, serviceName: String?, error: Hermez.HermezError) {
         Log.d(tag, "serviceFailed called")
+        //todo add deletion of missing players
     }
 
     override fun messageCannotBeSentToDevices(hermezMessage: Hermez.HermezMessage, error: Hermez.HermezError) {
@@ -517,40 +559,40 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     override fun devicesFound(deviceList: ArrayList<Hermez.HermezDevice>) {
-        Log.d(tag, "devicesFound called")
-//        otherPlayersArray.clear()
-        for (item in deviceList){
-            if (item.name == phoneName){
-                //do not get character data
-                //todo what if they have the same phoneName/type? UUID?
-            }else{//not my device so get their character data.
-//                otherPlayersArray.add(item.name
-                val currentCharacter = DataMaster.retrieveCharacterInformation()
-                if (currentCharacter != null){//our character exists
-                    val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
-                    val mpCharacterAsJson = Gson().toJson(mpCharacter)
-                    hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", deviceList) //our own device is listed here?
-                }else{//does not exist so send our device name instead
-
-                }
-            }
-        }
-
-        //todo how do i go from a list of string names to a list of character objects?
-        /*
-        * steps
-        * 1) get names of devices on networks
-        * 2) ask all names of devices on network to send me a message with their character details as a json blob
-        * 3) get their json blob and turn it into a character object here.
-        * 4) return new characterArray to UI
-        * */
-    }
-
-    override fun devicesFoundMutable(deviceList: MutableLiveData<Hermez.HermezDevice>) {
-        TODO("Not yet implemented")
+//        Log.d(tag, "devicesFound called. List = $deviceList")
+////        otherPlayersArray.clear()
+//        for (item in deviceList){
+//            if (item.name == phoneName){
+//                //do not get character data
+//                //todo what if they have the same phoneName/type? UUID?
+//            }else{//not my device so get their character data.
+////                otherPlayersArray.add(item.name
+//                val arrayForSingleDevice = ArrayList<Hermez.HermezDevice>()
+//                arrayForSingleDevice.add(Hermez.HermezDevice(item.name))
+//                val currentCharacter = retrieveCharacterInformation()
+//                if (currentCharacter != null){//our character exists
+//                    val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+//                    val mpCharacterAsJson = Gson().toJson(mpCharacter)
+//                    hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", arrayForSingleDevice) //our own device is listed here?
+//                }else{//does not exist so send our device name instead
+//
+//                }
+//            }
+//        }
+//
+//        //todo how do i go from a list of string names to a list of character objects?
+//        /*
+//        * steps
+//        * 1) get names of devices on networks
+//        * 2) ask all names of devices on network to send me a message with their character details as a json blob
+//        * 3) get their json blob and turn it into a character object here.
+//        * 4) return new characterArray to UI
+//        * */
     }
 
     override fun resolveFailed(serviceType: String, serviceName: String, error: Hermez.HermezError) {
-        Log.d(tag, "resolveFailed called")
+        Log.d(tag, "resolveFailed called $serviceType $serviceName $error")
+//        if (otherPlayersArray.contains(serviceName))
+        //todo add deletion of missing players
     }
 }

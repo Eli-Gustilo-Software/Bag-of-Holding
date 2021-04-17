@@ -20,25 +20,19 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
         }
     }
 
-    // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.character_recycler_cell, viewGroup, false)
         return CampfireOtherPlayersViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        //replace the name of the textview here
         val nameHolder = holder as CampfireOtherPlayersViewHolder
         for (item in otherPlayersList){
             nameHolder.nameTextView.text = item.otherPlayerCharacterName
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount(): Int {
-        //return plus one to add the addCharacterButton
         return otherPlayersList.size
     }
 
