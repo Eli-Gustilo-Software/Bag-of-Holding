@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         //create dataMaster
         //TODO how do i pass this around? Is this even instantiated???
-        DataMaster.initWith(application, this)
+        DataMaster.initWith(applicationContext, this)
 
 
         appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_character, R.id.navigation_character_creation_screen))
@@ -39,5 +39,10 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onStop() {
+        DataMaster.cleanup()
+        super.onStop()
     }
 }
