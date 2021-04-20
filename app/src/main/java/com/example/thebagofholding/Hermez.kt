@@ -130,7 +130,7 @@ class Hermez(context: Context, serviceType: String) {
     fun resetService(){
         //While hopefully unnecessary it may be desirable to be able to throw the whole process away and begin again.
         hermezBrowser?.resetDiscovery()
-        hermezService?.resetRegistration()
+//        hermezService?.resetRegistration()
     }
 
     fun cleanup(){
@@ -641,12 +641,15 @@ class Hermez(context: Context, serviceType: String) {
             override fun run() {
                 val writer: PrintWriter
                 try {
-                    writer = PrintWriter(socket.getOutputStream())
-                    val jsonString = Gson().toJson(hermezMessage)
-                    Log.d(tag, "jsonString is $jsonString")
-                    writer.print(jsonString + MESSAGE_TERMINATOR)
-                    writer.flush()
-                    //writer.close()
+                    Log.d(tag, "state of socket is ${socket.isConnected}")
+                    if (socket.isConnected){
+                        writer = PrintWriter(socket.getOutputStream())
+                        val jsonString = Gson().toJson(hermezMessage)
+                        Log.d(tag, "jsonString is $jsonString")
+                        writer.print(jsonString + MESSAGE_TERMINATOR)
+                        writer.flush()
+                        //writer.close()
+                    }
                 } catch (e: IOException) {
                     // If the writer fails to initialize there was an io problem, close your connection
                     socket.close()

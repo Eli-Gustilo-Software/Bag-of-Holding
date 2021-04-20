@@ -3,14 +3,19 @@ package com.example.thebagofholding
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration : AppBarConfiguration
+    private lateinit var mainActivityLifecycle: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +32,13 @@ class MainActivity : AppCompatActivity() {
 //         menu should be considered as top level destinations.
 
         //create dataMaster
-        //TODO how do i pass this around? Is this even instantiated???
-        DataMaster.initWith(applicationContext, this)
+        mainActivityLifecycle = this
+        //I put this in because sometimes in would crach on load saying lateinnit things weren't loaded.
+        //goal was to wait a few seceonds for thnigs to get rocking
+        GlobalScope.launch { // launch new coroutine in background and continue
+            delay(0) // non-blocking delay for 1 second (default time unit is ms)
+            DataMaster.initWith(applicationContext, mainActivityLifecycle)
+        }
 
 
         appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_character, R.id.navigation_character_creation_screen))
