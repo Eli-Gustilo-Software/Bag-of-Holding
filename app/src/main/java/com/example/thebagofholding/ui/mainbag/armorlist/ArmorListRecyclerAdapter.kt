@@ -48,7 +48,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${armorNameTextView.text}")
-                                        DataMaster.transferItemArmor(itemCharacterOwner, player, itemArmorData)
+                                        DataMaster.transferItemArmor(player, itemArmorData)
                                         true
                                     }
                                 }

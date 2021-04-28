@@ -36,6 +36,7 @@ class WeaponListFragment : Fragment(){
         //ViewModel and RecyclerViewAdapter
         weaponListViewModel = ViewModelProvider(this).get(WeaponListViewModel::class.java)
         weaponListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+            currentCharacter = it
             weaponListRecyclerView = root.findViewById(R.id.weapons_list_recyclerView)
             if (weaponListRecyclerAdapter == null){ //create it
                 weaponListRecyclerAdapter = WeaponListRecyclerAdapter(currentCharacter)
@@ -44,7 +45,6 @@ class WeaponListFragment : Fragment(){
                 weaponListRecyclerAdapter!!.notifyDataSetChanged()
             }else{//is created, so update.
                 weaponListRecyclerAdapter!!.updateData(currentCharacter)
-                weaponListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
 

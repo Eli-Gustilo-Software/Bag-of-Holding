@@ -1,4 +1,4 @@
-package com.example.thebagofholding
+package com.eligustilo.Hermez
 
 import android.content.Context
 import android.net.nsd.NsdManager
@@ -7,7 +7,6 @@ import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -16,12 +15,12 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.PrintWriter
+import java.lang.Exception
 import java.net.*
 import java.util.*
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.ArrayList
+
 
 /*
 * This Library is setup to transfer data from a 'Discoverer' to a 'Broadcaster'/'Registerer'
@@ -39,23 +38,23 @@ import kotlin.collections.ArrayList
 const val MESSAGE_TERMINATOR = "\r\n"
 //This Class is split into two different inner classes Server and Client
 class Hermez(context: Context, serviceType: String) {
-    var hermezLiveDevices : MutableLiveData<ArrayList<HermezDevice>> = MutableLiveData()
-    var hermezLiveMessage : MutableLiveData<HermezMessage> = MutableLiveData()
     private val tag = "Hermez"
     private var mServiceType: String = serviceType
     private var mServiceName: String? = null
     private var mArrayOfDevicesFound: ArrayList<HermezDevice>? = ArrayList()
     private var mContext = context
     private var mHashtable = Hashtable<String, Socket>()
+    private var messageQueue = ArrayList<HermezMessage>()
     private var objectToNotify: HermezDataInterface? = null
     private var hermezService: HermezService? = null
     private var hermezBrowser: HermezBrowser? = null
     private val unknownZeroConfigDevice: HermezDevice = HermezDevice("Unknown Device")
-    private val myDeviceName : HermezDevice = HermezDevice(Build.MODEL)
+    private var myDeviceName : HermezDevice = HermezDevice(Build.MODEL)
 
     init {
         hermezService = HermezService()
         hermezBrowser = HermezBrowser()
+
     }
 
     enum class HermezError {
@@ -63,25 +62,25 @@ class Hermez(context: Context, serviceType: String) {
     }
 
     data class HermezDevice(
-        val name: String,
+            val name: String,
     )
 
     data class HermezMessage(
-        val message: String,
-        val json: String,
-        val messageID: String,
-        val receivingDevice: HermezDevice,
-        val sendingDevice: HermezDevice)
+            val message: String,
+            val json: String,
+            val messageID: String,
+            val receivingDevice: HermezDevice,
+            val sendingDevice: HermezDevice)
 
 
     // All devices on the network will create there own zero config service with (1) a common service type and (2) unique service names (for each device)
     interface HermezDataInterface {
         fun serviceStarted(serviceType: String, serviceName: String)
         fun serviceStopped(serviceType: String, serviceName: String)
-        fun messageReceived(hermezMessage: HermezMessage) //todo mutable
+        fun messageReceived(hermezMessage: HermezMessage)
         fun serviceFailed(serviceType: String, serviceName: String?, error: HermezError)
         fun messageCannotBeSentToDevices(hermezMessage: HermezMessage, error: HermezError)
-        fun devicesFound(deviceList: ArrayList<HermezDevice>) //todo mutable
+        fun devicesFound(deviceList: ArrayList<HermezDevice>)
         fun resolveFailed(serviceType: String, serviceName: String, error: HermezError)
     }
 
@@ -99,6 +98,7 @@ class Hermez(context: Context, serviceType: String) {
     fun setDeviceName(deviceName: String) {
         // will be used to set unique name of device
         mServiceName = deviceName
+        myDeviceName = HermezDevice(deviceName)
         if (mServiceName != null && mServiceType != null) {
             HermezService().registerService()
         } else {
@@ -107,7 +107,12 @@ class Hermez(context: Context, serviceType: String) {
     }
 
     fun findAvailableDevices() {
-        hermezBrowser?.discoverService()
+        //this activates the search feature. In conjunction with the setDeviceName and/or setServiceName will activate Hermez.
+        GlobalScope.launch { // launch new coroutine in background and continue
+            delay(50) // non-blocking delay for 1 second (default time unit is ms)
+            hermezBrowser?.discoverService()
+            clearMessageQueue()
+        }
     }
 
     fun sendMessageToDevices(message: String, json: String, messageID: String, devices: ArrayList<HermezDevice>) {
@@ -116,31 +121,47 @@ class Hermez(context: Context, serviceType: String) {
         for (device in devices){
             val zConfigDevice  = HermezDevice(device.name)
             val mMessage = HermezMessage(message, json, messageID, zConfigDevice, myDeviceName)
-            Log.d(tag, "message= $mMessage")
-            val deviceToTalkToKey = zConfigDevice.name
-            val socketOfDeviceToTalkTo = mHashtable[deviceToTalkToKey]
-            if (socketOfDeviceToTalkTo != null) {
-                val runnable = hermezBrowser?.ClientWriter(mMessage, socketOfDeviceToTalkTo)
-                val writerThread = Thread(runnable)
-                writerThread.start()
+            Log.d(tag, "new message in queue= $mMessage")
+            if (!messageQueue.contains(mMessage)){
+                messageQueue.add(mMessage) //this queue automatically sends its messages if possible. See clearMessageQueue
             }
         }
     }
 
     fun resetService(){
         //While hopefully unnecessary it may be desirable to be able to throw the whole process away and begin again.
+        hermezService?.resetRegistration()
+        Thread.sleep(500) //maybe we want to wait a second for registration to go
         hermezBrowser?.resetDiscovery()
-//        hermezService?.resetRegistration()
-    }
-
-    fun cleanup(){
-        hermezBrowser?.cleanup()
-        hermezService?.cleanup()
     }
 
 
     fun initWithDelegate(delegate: HermezDataInterface? = null) {
+        //this sets the object/activity/fragment to receive data from Hermez. This is required.
         this.objectToNotify = delegate
+    }
+
+    private fun clearMessageQueue(){
+        Thread{//async
+            while (true){//while(true) will always run
+                if (messageQueue.isNotEmpty()){
+                    //send the message if possible
+                    val instanceOfMessageQueue = ArrayList(messageQueue)
+                    for (message in instanceOfMessageQueue){
+                        if (mHashtable.containsKey(message.receivingDevice.name)){
+                            val socket = mHashtable.get(message.receivingDevice.name)
+                            if (socket != null) {
+                                val runnable = hermezBrowser?.ClientWriter(message, socket)
+                                val writerThread = Thread(runnable)
+                                writerThread.start()
+                            }
+                        }
+                    }
+                }
+                Thread.sleep(3000)
+                //todo what if its empty???
+            }
+        }.start()
     }
 
     //SERVER CODE (Registration)
@@ -148,7 +169,6 @@ class Hermez(context: Context, serviceType: String) {
         private var localPortServer = 101
         private var nsdManagerServer: NsdManager? = null
         private var connectedClientsServer: MutableList<Socket> = CopyOnWriteArrayList()
-        private var currentRegistrationListener : NsdManager.RegistrationListener? = null
 
         private fun initializeServerSocket() {
             // Initialize a server socket on the next available port.
@@ -180,7 +200,7 @@ class Hermez(context: Context, serviceType: String) {
 
 
         fun registerService() {
-            initializeServerSocket()//todo is this always reusing this socket? theres just one? is this the bug? it loses this?
+            initializeServerSocket()
             val serviceInfo = NsdServiceInfo().apply {
                 // The name is subject to change based on conflicts
                 // with other services advertised on the same network.
@@ -188,16 +208,13 @@ class Hermez(context: Context, serviceType: String) {
                 serviceType = mServiceType
                 port = localPortServer
             }
-            currentRegistrationListener = null//todo is this right?
-            currentRegistrationListener = initializeRegistrationListener()
             nsdManagerServer = (mContext.getSystemService(Context.NSD_SERVICE) as NsdManager).apply {
-                registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, currentRegistrationListener)
+                registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
             }
-
         }
 
         fun resetRegistration(){
-            nsdManagerServer?.unregisterService(currentRegistrationListener)
+            nsdManagerServer?.unregisterService(registrationListener)
             nsdManagerServer = null
             GlobalScope.launch { // launch new coroutine in background and continue
                 delay(3000) // non-blocking delay for 1 second (default time unit is ms)
@@ -205,92 +222,42 @@ class Hermez(context: Context, serviceType: String) {
             }
         }
 
-        fun cleanup(){
-            nsdManagerServer?.unregisterService(currentRegistrationListener)
-            nsdManagerServer = null
-        }
-
-        private fun initializeRegistrationListener() : NsdManager.RegistrationListener { //creates a new registrationListener upon demand. fixes some bugs.
-            // Instantiate a new RegistrationListener
-            val newRegistrationListener = object : NsdManager.RegistrationListener {
-                override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
-                    // Save the service name. Android may have changed it in order to
-                    // resolve a conflict, so update the name you initially requested
-                    // with the name Android actually used.
-                    val registrationListenerServiceName = NsdServiceInfo.serviceName
-                    val registrationListenerServicePort = NsdServiceInfo.port
-                    val type = NsdServiceInfo.serviceType
-                    objectToNotify?.serviceStarted(mServiceType, mServiceName!!)
-                    Log.d(tag, "It worked! Service is registered! Service name is $registrationListenerServiceName Service port is $registrationListenerServicePort and Service type is $type")
-                }
-
-                override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                    // Registration failed! Put debugging code here to determine why.
-                    Log.e(tag, "Registration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
-                    GlobalScope.launch { // launch new coroutine in background and continue
-                        delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-                        //todo toast?
-                        resetRegistration() //todo do i need to create a new listener?
-                    }
-                }
-
-                override fun onServiceUnregistered(arg0: NsdServiceInfo) {
-                    // Service has been unregistered. This only happens when you call
-                    // NsdManager.unregisterService() and pass in this listener.
-                    Log.i(tag, "yourService: $arg0 has been unregistered.")
-                    //todo when would this ever happen? is there a use case where we want to be undiscoverable? private mode? we can see but can't be seen?
-                }
-
-                override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                    // Unregistration failed. Put debugging code here to determine why.
-                    Log.e(tag, "Unregistration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
-                    //todo when would this ever happen? is there a use case where we want to be undiscoverable? private mode? we can see but can't be seen?
-                }
+        private val registrationListener = object : NsdManager.RegistrationListener {
+            override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
+                // Save the service name. Android may have changed it in order to
+                // resolve a conflict, so update the name you initially requested
+                // with the name Android actually used.
+                val registrationListenerServiceName = NsdServiceInfo.serviceName
+                val registrationListenerServicePort = NsdServiceInfo.port
+                val type = NsdServiceInfo.serviceType
+                objectToNotify?.serviceStarted(mServiceType, mServiceName!!)
+                Log.d(tag, "It worked! Service is registered! Service name is $registrationListenerServiceName Service port is $registrationListenerServicePort and Service type is $type")
             }
-            return newRegistrationListener
-        }
 
-//        private val registrationListener = object : NsdManager.RegistrationListener {
-//            override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
-//                // Save the service name. Android may have changed it in order to
-//                // resolve a conflict, so update the name you initially requested
-//                // with the name Android actually used.
-//                val registrationListenerServiceName = NsdServiceInfo.serviceName
-//                val registrationListenerServicePort = NsdServiceInfo.port
-//                val type = NsdServiceInfo.serviceType
-//                objectToNotify?.serviceStarted(mServiceType, mServiceName!!)
-//                Log.d(tag, "It worked! Service is registered! Service name is $registrationListenerServiceName Service port is $registrationListenerServicePort and Service type is $type")
-//            }
-//
-//            override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-//                // Registration failed! Put debugging code here to determine why.
-//                Log.e(tag, "Registration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
-//                GlobalScope.launch { // launch new coroutine in background and continue
-//                    delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-//                    //todo toast?
-//                    resetRegistration() //todo do i need to create a new listener?
-//                }
-//            }
-//
-//            override fun onServiceUnregistered(arg0: NsdServiceInfo) {
-//                // Service has been unregistered. This only happens when you call
-//                // NsdManager.unregisterService() and pass in this listener.
-//                Log.i(tag, "yourService: $arg0 has been unregistered.")
-//                //todo when would this ever happen? is there a use case where we want to be undiscoverable? private mode? we can see but can't be seen?
-//            }
-//
-//            override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-//                // Unregistration failed. Put debugging code here to determine why.
-//                Log.e(tag, "Unregistration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
-//                //todo when would this ever happen? is there a use case where we want to be undiscoverable? private mode? we can see but can't be seen?
-//            }
-//        }
+            override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                // Registration failed! Put debugging code here to determine why.
+                Log.e(tag, "Registration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
+            }
+
+            override fun onServiceUnregistered(arg0: NsdServiceInfo) {
+                // Service has been unregistered. This only happens when you call
+                // NsdManager.unregisterService() and pass in this listener.
+                Log.i(tag, "yourService: $arg0 has been unregistered.")
+            }
+
+            override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                // Unregistration failed. Put debugging code here to determine why.
+                Log.e(tag, "Unregistration failed. ServiceInfo = $serviceInfo and error code = $errorCode")
+            }
+        }
 
         private inner class ServiceReader(private val client: Socket) : Runnable {
             private val tag = "ServiceReader"
             override fun run() {
                 var line: String?
                 val reader: BufferedReader
+
+                //FIRST create a BufferedReader only once
 
                 try {
                     reader = BufferedReader(InputStreamReader(client.getInputStream()))
@@ -301,18 +268,52 @@ class Hermez(context: Context, serviceType: String) {
                     return
                 }
 
-                while (true) {
+                while (true) { //aka always
+
+                    //SECOND try and read normally
+
                     try {
                         line = reader.readLine()
                         Log.d(tag, "line read is $line")
-                        if (line == null) {
+                        if (line == null) { //if the line is null then remove. Often is caused by losing socket.
                             connectedClientsServer.remove(client)
                             break
-                        } else {
-                            val message = Gson().fromJson(line, HermezMessage::class.java)
+                        } else { //else the line actually exists and we should try and read it.
+                            val message = Gson().fromJson(line, HermezMessage::class.java) //try and read it.
                             Log.d(tag, "parsed message is $message")
-                            hermezLiveMessage.postValue(message)
-                            objectToNotify?.messageReceived(message)
+                            if (message != null){
+
+                                //THIRD if we get a message tell the sender we got it .
+
+                                //PING is also meant to ensure device is valid on network. Fix Google's flakiness
+                                //we send a ping to anyone who sends us a message. They will validate that you exist. ClientWriter will validate.
+                                val pingMessage = HermezMessage("PING", "", message.messageID, message.sendingDevice, message.receivingDevice)
+                                Log.d(tag, "message received from device: ${message.sendingDevice.name}, mHashtable: $mHashtable")
+
+                                if(!mHashtable.containsKey(message.sendingDevice.name)) { //if we don't have the message senders name then we need to restart discovery. todo can this be moved?
+                                    hermezBrowser?.resetDiscovery(false)
+                                }
+                                val writer: PrintWriter
+                                try {
+                                    writer = PrintWriter(client.getOutputStream())
+                                    val jsonString = Gson().toJson(pingMessage)
+                                    Log.d(tag, "jsonString is $jsonString")
+                                    writer.print(jsonString + MESSAGE_TERMINATOR)
+                                    writer.flush()
+                                    //writer.close()
+                                } catch (e: IOException) {
+                                    // If the writer fails to initialize there was an io problem, close your connection
+                                    client.close()
+                                    objectToNotify?.messageCannotBeSentToDevices(pingMessage, HermezError.MESSAGE_NOT_SENT)
+                                    //todo we should add this to a message queue???
+                                }
+
+
+                                //FOURTH give message to ui in a synchronized manner.
+                                synchronized(objectToNotify!!) {
+                                    objectToNotify?.messageReceived(message)
+                                }
+                            }
                         }
                     } catch (e: IOException) {
                         connectedClientsServer.remove(client)
@@ -328,15 +329,9 @@ class Hermez(context: Context, serviceType: String) {
         private var nsdManagerClient: NsdManager? = null
         private var multicastLock: WifiManager.MulticastLock? = null
         private var discoverListenerInUse: Boolean = false
-        private var currentDiscoveryListener : DiscoveryListener? = null
-        private var currentResolveListener : NsdManager.ResolveListener? = null
-//        private var resolvingArray = ArrayList<String>()
-        private var resolveListenerBusy = AtomicBoolean(false)
-        private var pendingNsdServices = ConcurrentLinkedQueue<NsdServiceInfo>()
-        private var resolvedNsdServices: MutableList<NsdServiceInfo> = Collections.synchronizedList(ArrayList<NsdServiceInfo>())
 
         fun discoverService() {
-            //Multicast is required to see all devices but consumes power, we turn it off as soon as searching is done.
+            //Multicast is required to see all devices but consumes power, we turn it off as soon as searching is done. todo we should test and ensure it is actually off. We almost constantly search...
             multicastLock = (mContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).createMulticastLock(tag)
             multicastLock?.setReferenceCounted(true)
             multicastLock?.acquire()
@@ -344,10 +339,8 @@ class Hermez(context: Context, serviceType: String) {
 
             when (discoverListenerInUse) {
                 false -> {
-                    discoverListenerInUse = true//todo do i still need to do this?
-                    currentDiscoveryListener = null //todo is this right?
-                    currentDiscoveryListener = initializeDiscoveryListener()
-                    nsdManagerClient!!.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, currentDiscoveryListener)
+                    discoverListenerInUse = true
+                    nsdManagerClient!!.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
                 }
                 true -> {
                     Log.e(tag, "Only need to search for devices once. The Library will give you an updated array list of all found devices with serviceType")
@@ -355,307 +348,180 @@ class Hermez(context: Context, serviceType: String) {
             }
         }
 
-        fun resetDiscovery(){
-            nsdManagerClient?.stopServiceDiscovery(currentDiscoveryListener)
-            discoverListenerInUse = false
+        fun resetDiscovery(clearHashtable: Boolean = true){ //this is a Kotlin feature that allows me to be passed in a boolean check when called. true == default
+            nsdManagerClient?.stopServiceDiscovery(discoveryListener)
             nsdManagerClient = null
-            mHashtable.clear()
+            discoverListenerInUse = false
+            if(clearHashtable) {//default is true
+                mHashtable.clear()
+            }
 
             GlobalScope.launch { // launch new coroutine in background and continue
-                delay(5000) // non-blocking delay for 1 second (default time unit is ms)
+                delay(3000) // non-blocking delay for 1 second (default time unit is ms)
                 discoverService()
             }
         }
 
-        fun cleanup(){
-            nsdManagerClient?.stopServiceDiscovery(currentDiscoveryListener)
-            discoverListenerInUse = false
-            nsdManagerClient = null
-            mHashtable.clear()
-        }
+        private val discoveryListener = object : DiscoveryListener {
+            override fun onDiscoveryStarted(regType: String) {
+                Log.d(tag, "Service discovery started. Attempting to find serviceType.")
+            }
 
-        private fun initializeDiscoveryListener() : DiscoveryListener {
-            // Instantiate a new DiscoveryListener
-            val newDiscoveryListener = object : DiscoveryListener {
-                override fun onDiscoveryStarted(regType: String) {
-                    Log.d(tag, "Service discovery started. Attempting to find regType??: $regType")
-                }
-
-                override fun onServiceFound(service: NsdServiceInfo) {
-                    // A service was found! Do something with it.
-                    Log.d(tag, "Service discovery success $service found")
+            override fun onServiceFound(service: NsdServiceInfo) {
+                // A service was found! Do something with it.
+                Log.d(tag, "Service discovery success $service found")
+                val nameOfServiceFound = service.serviceName
+                if(!mHashtable.containsKey(nameOfServiceFound)) {
+                    nsdManagerClient?.resolveService(service, MyResolveListener())
                     multicastLock?.release()
                     multicastLock = null
-                    currentResolveListener = initializeResolveListener()//todo do i need to make this an array to handle all individual resolves?
-//                    if (resolvingArray.contains(service.serviceName)){
-//                        //is already being resolved/is resolved
-//                    }else{
-//                        //resolve it
-//                        nsdManagerClient?.resolveService(service, currentResolveListener)
-//                        resolvingArray.add(service.serviceName)
-//                    }
-
-                    // If the resolver is free, resolve the service to get all the details
-                    if (resolveListenerBusy.compareAndSet(false, true)) {
-                        nsdManagerClient?.resolveService(service, currentResolveListener)
-                    }
-                    else {
-                        // Resolver was busy. Add the service to the list of pending services
-                        pendingNsdServices.add(service)
-                    }
                 }
+            }
 
-                override fun onServiceLost(service: NsdServiceInfo) {
-                    // When the network service is no longer available.
-                    // Internal bookkeeping code goes here.
-                    Log.e(tag, "service lost: ${service.serviceName}")
-                    multicastLock?.release()
-                    multicastLock = null //todo this is probably not right. does this turn off mutlicast for just this device or make it so we can't see anyone anymore??
-                    objectToNotify?.serviceFailed(mServiceType, (service.serviceName), HermezError.SERVICE_FAILED)
+            override fun onServiceLost(service: NsdServiceInfo) {
+                // When the network service is no longer available.
+                // Internal bookkeeping code goes here.
+                Log.e(tag, "service lost: ${service.serviceName}")
+                multicastLock?.release()
+                multicastLock = null
+                objectToNotify?.serviceFailed(mServiceType, (service.serviceName), HermezError.SERVICE_FAILED)
+                //resetDiscovery()
+            }
 
-                    // If the lost service was in the queue of pending services, remove it
-                    var iterator = pendingNsdServices.iterator()
-                    while (iterator.hasNext()) {
-                        if (iterator.next().serviceName == service.serviceName)
-                            iterator.remove()
-                    }
+            override fun onDiscoveryStopped(serviceType: String) {
+                Log.i(tag, "Discovery stopped: $serviceType")
+                multicastLock?.release()
+                multicastLock = null
+                objectToNotify?.serviceStopped(mServiceType, (unknownZeroConfigDevice.name))
+            }
 
-                    // If the lost service was in the list of resolved services, remove it
-                    synchronized(resolvedNsdServices) {
-                        iterator = resolvedNsdServices.iterator()
-                        while (iterator.hasNext()) {
-                            if (iterator.next().serviceName == service.serviceName)
-                                iterator.remove()
-                        }
-                    }
+            override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e(tag, "Discovery failed: Error code:$errorCode")
+                multicastLock?.release()
+                multicastLock = null
+                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
+            }
 
-                    //todo we need to remove ourselves from the mArrayOfDevicesFound
-                    //remove our lost service from our list
-                    mHashtable.remove(service.serviceName)//todo is this right???
-                    Log.d(tag, "mHashtable: $mHashtable")
+            override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e(tag, "Discovery failed: Error code:$errorCode")
+                multicastLock?.release()
+                multicastLock = null
+                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
+            }
+        }
+
+        private inner class MyResolveListener : NsdManager.ResolveListener {
+            private val TAG = "resolveListener"
+
+            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                // Called when the resolve fails. Use the error code to debug.
+                Log.e(TAG, "Resolve failed: $errorCode")
+                objectToNotify?.resolveFailed(mServiceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+            }
+
+            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                Log.d(TAG, "Resolve Succeeded. $serviceInfo")
+                try {
+                    // Connect to the host
+                    var localPortClient = Socket(serviceInfo.host, serviceInfo.port)
+
+                    mHashtable.put(serviceInfo.serviceName, localPortClient)
+                    Log.d(TAG, "mHashtable: ${mHashtable}")
                     mArrayOfDevicesFound?.clear()
-                    for (item in mHashtable) {
+                    for (item in mHashtable){
                         mArrayOfDevicesFound?.add(HermezDevice(item.key))
                     }
-                    if (objectToNotify != null && mArrayOfDevicesFound != null) {
-                        hermezLiveDevices.postValue(mArrayOfDevicesFound)//todo if i replace the reso
+                    if (objectToNotify != null && mArrayOfDevicesFound != null){
                         objectToNotify!!.devicesFound(mArrayOfDevicesFound!!)
-//                        resetDiscovery()
                     }
+                    //Log.d(tag, "mHashtable is filled with ${serviceInfo.serviceName} and $localPortClient")
+                    //Log.d(tag, "connection state = ${localPortClient.isConnected}")
+                    val newMessage = HermezMessage("NSDClientClass did connect to service name ${serviceInfo.serviceName}", "", "0", HermezDevice(serviceInfo.serviceName), myDeviceName)
+                    val runnable = hermezBrowser?.ClientWriter(newMessage, localPortClient)
+                    val writerThread = Thread(runnable)
+                    writerThread.start()
+                } catch (e: UnknownHostException) {
+                    Log.e(TAG, "Unknown host. ${e.localizedMessage}")
+                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+                } catch (e: ConnectException) {
+                    Log.e(TAG, e.localizedMessage)
+                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+
                 }
-
-                override fun onDiscoveryStopped(serviceType: String) {
-                    Log.i(tag, "Discovery stopped: $serviceType")
-                    multicastLock?.release()
-                    multicastLock = null
-                    objectToNotify?.serviceStopped(mServiceType, (unknownZeroConfigDevice.name))
-                    //todo is this the same as serviceLose?
-                    GlobalScope.launch { // launch new coroutine in background and continue
-                        delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-                        //todo toast?
-                        resetDiscovery()
-                    }
-                }
-
-                override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    Log.e(tag, "Discovery failed: Error code:$errorCode")
-                    multicastLock?.release()
-                    multicastLock = null
-                    objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
-                    GlobalScope.launch { // launch new coroutine in background and continue
-                        delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-                        //todo toast?
-                        resetDiscovery()
-                    }
-                }
-
-                override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    Log.e(tag, "Discovery failed: Error code:$errorCode")
-                    multicastLock?.release()
-                    multicastLock = null
-                    objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
-                    //todo when do we purposefully stop?
-                }
-            }
-            return newDiscoveryListener
-        }
-
-//        private val discoveryListener = object : DiscoveryListener {
-//            override fun onDiscoveryStarted(regType: String) {
-//                Log.d(tag, "Service discovery started. Attempting to find serviceType.")
-//            }
-//
-//            override fun onServiceFound(service: NsdServiceInfo) {
-//                // A service was found! Do something with it.
-//                Log.d(tag, "Service discovery success $service found")
-//                multicastLock?.release()
-//                multicastLock = null
-//                nsdManagerClient?.resolveService(service, MyResolveListener())
-//            }
-//
-//            override fun onServiceLost(service: NsdServiceInfo) {
-//                // When the network service is no longer available.
-//                // Internal bookkeeping code goes here.
-//                Log.e(tag, "service lost: ${service.serviceName}")
-//                multicastLock?.release()
-//                multicastLock = null
-//                objectToNotify?.serviceFailed(mServiceType, (service.serviceName), HermezError.SERVICE_FAILED)
-//                GlobalScope.launch { // launch new coroutine in background and continue
-//                    delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-//                    //todo toast?
-//                    resetDiscovery()
-//                }
-//            }
-//
-//            override fun onDiscoveryStopped(serviceType: String) {
-//                Log.i(tag, "Discovery stopped: $serviceType")
-//                multicastLock?.release()
-//                multicastLock = null
-//                objectToNotify?.serviceStopped(mServiceType, (unknownZeroConfigDevice.name))
-//                //todo is this the same as serviceLose?
-//                GlobalScope.launch { // launch new coroutine in background and continue
-//                    delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-//                    //todo toast?
-//                    resetDiscovery()
-//                }
-//            }
-//
-//            override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-//                Log.e(tag, "Discovery failed: Error code:$errorCode")
-//                multicastLock?.release()
-//                multicastLock = null
-//                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
-//                GlobalScope.launch { // launch new coroutine in background and continue
-//                    delay(3000) // non-blocking delay for 1 second (default time unit is ms)
-//                    //todo toast?
-//                    resetDiscovery()
-//                }
-//            }
-//
-//            override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-//                Log.e(tag, "Discovery failed: Error code:$errorCode")
-//                multicastLock?.release()
-//                multicastLock = null
-//                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
-//                //todo when do we purposefully stop?
-//            }
-//        }
-
-        private fun initializeResolveListener() : NsdManager.ResolveListener {
-            val newResolveListener =  object : NsdManager.ResolveListener {
-                private val TAG = "resolveListener"
-
-                override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                    // Called when the resolve fails. Use the error code to debug.
-//                    resolvingArray.remove(serviceInfo.serviceName)
-                    Log.e(TAG, "Resolve failed: $errorCode")
-                    objectToNotify?.resolveFailed(mServiceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
-                    //todo can i try and reset on just this specific service that failed?
-                }
-
-                override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                    Log.d(TAG, "Resolve Succeeded. $serviceInfo")
-                    // Register the newly resolved service into our list of resolved services
-                    resolvedNsdServices.add(serviceInfo)
-//                    resolvingArray.remove(serviceInfo.serviceName)
-
-                    // Process the newly resolved service
-                    try {
-                        // Connect to the host
-                        val localPortClient = Socket(serviceInfo.host, serviceInfo.port) //todo this can connect failed: ECONNREFUSED (Connection refused) and explodes
-
-                        mHashtable.put(serviceInfo.serviceName, localPortClient)
-                        Log.d(TAG, "mHashtable: $mHashtable")
-                        mArrayOfDevicesFound?.clear()
-                        for (item in mHashtable) {
-                            Log.d(TAG, "item in mHashtable: $item and hashtable = $mHashtable")
-
-                            mArrayOfDevicesFound?.add(HermezDevice(item.key))
-                        }
-                        if (objectToNotify != null && mArrayOfDevicesFound != null) {
-                            hermezLiveDevices.postValue(mArrayOfDevicesFound)//todo if i replace the reso
-                            objectToNotify!!.devicesFound(mArrayOfDevicesFound!!)
-                        }
-                    } catch (e: UnknownHostException) {
-                        Log.e(TAG, "Unknown host. ${e.localizedMessage}")
-                        objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
-                    }
-
-                    // Process the next service waiting to be resolved
-                    resolveNextInQueue()
-                }
-            }
-            return newResolveListener
-        }
-
-        // Resolve next NSD service pending resolution
-        private fun resolveNextInQueue() {
-            // Get the next NSD service waiting to be resolved from the queue
-            val nextNsdService = pendingNsdServices.poll()
-            if (nextNsdService != null) {
-                // There was one. Send to be resolved.
-                nsdManagerClient?.resolveService(nextNsdService, currentResolveListener)
-            }
-            else {
-                // There was no pending service. Release the flag
-                resolveListenerBusy.set(false)
             }
         }
 
-//        private inner class MyResolveListener : NsdManager.ResolveListener {
-//            private val TAG = "resolveListener"
-//
-//            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-//                // Called when the resolve fails. Use the error code to debug.
-//                Log.e(TAG, "Resolve failed: $errorCode")
-//                objectToNotify?.resolveFailed(mServiceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
-//                //todo can i try and reset on just this specific service that failed?
-//            }
-//
-//            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-//                Log.d(TAG, "Resolve Succeeded. $serviceInfo")
-//                try {
-//                    // Connect to the host
-//                    val localPortClient = Socket(serviceInfo.host, serviceInfo.port) //todo this can connect failed: ECONNREFUSED (Connection refused)
-//
-//                    mHashtable.put(serviceInfo.serviceName, localPortClient)
-//                    Log.d(TAG, "mHashtable: $mHashtable")
-//                    mArrayOfDevicesFound?.clear()
-//                    for (item in mHashtable){
-//                        mArrayOfDevicesFound?.add(HermezDevice(item.key))
-//                    }
-//                    if (objectToNotify != null && mArrayOfDevicesFound != null){
-//                        hermezLiveDevices.postValue(mArrayOfDevicesFound)//todo if i replace the reso
-//                        objectToNotify!!.devicesFound(mArrayOfDevicesFound!!)
-//                    }
-//                }
-//                catch (e: UnknownHostException) {
-//                    Log.e(TAG, "Unknown host. ${e.localizedMessage}")
-//                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
-//                }
-//            }
-//        }
-
-        inner class ClientWriter(val hermezMessage: HermezMessage, val socket: Socket) : Runnable { //todo does this que? do we need to handle said que?
+        inner class ClientWriter(val hermezMessage: HermezMessage, val socket: Socket) : Runnable {
             private val tag = "ClientWriter"
             override fun run() {
                 val writer: PrintWriter
+
+                //FIRST send the message.
                 try {
-                    Log.d(tag, "state of socket is ${socket.isConnected}")
-                    if (socket.isConnected){
-                        writer = PrintWriter(socket.getOutputStream())
-                        val jsonString = Gson().toJson(hermezMessage)
-                        Log.d(tag, "jsonString is $jsonString")
-                        writer.print(jsonString + MESSAGE_TERMINATOR)
-                        writer.flush()
-                        //writer.close()
+                    writer = PrintWriter(socket.getOutputStream())
+                    val jsonString = Gson().toJson(hermezMessage)
+                    Log.d(tag, "jsonString is $jsonString")
+                    writer.print(jsonString + MESSAGE_TERMINATOR)
+                    writer.flush()
+
+                    //SECOND begin a countdown as we await their PING confirmation
+
+                    val startTime = System.currentTimeMillis() //fetch starting time
+                    var timedOut = false
+                    val inputStreamSocket = socket.getInputStream()
+                    while(inputStreamSocket.available() == 0 && !timedOut){//while there is no data and we are not timed out we wait for the ping for x seconds.
+                        Thread.sleep(1000) //this is meant to put the thread to sleep and only check once a second the if check. So 10 checks total.
+                        if (System.currentTimeMillis() - startTime > 10000) {//if waiting ping takes too long then we are timeout.
+                            timedOut = true
+                        }
                     }
+                    if(timedOut) { //we timed out on receiving the ping so delete them and re-find.
+                        Log.d(tag, "We timedOut: Handle Ping error!")
+                        val removeDevice = hermezMessage.receivingDevice
+                        if (mHashtable.containsKey(removeDevice.name)) {
+                            mHashtable.remove(removeDevice.name)
+                            resetDiscovery(false)//
+                        }
+
+                        //THIRD we most likely got a PING but lets check.
+
+                    }else{//we are not timeOut and we got a message
+                        var line: String?
+                        val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+                        line = reader.readLine() //read the message
+                        if (line == null) { //device is available but no data is given. This should never be called.
+                            //todo ensure this is never called.
+                            Log.d(tag, "This should never be called. If it is......good luck.")
+                            //there was no ping and we need to reacquire
+                            //todo resetDiscovery?
+                        } else {
+                            //we almost certainly got a ping and we are good. Nothing else should ever be sent to this other than a PING
+                            val message = Gson().fromJson(line, HermezMessage::class.java)
+                            if (message != null){
+                                if (message.message == "PING"  ){//we got pinged in response to the message we sent.
+                                    Log.d(tag, "parsed message is $message and should be ping")
+                                    messageQueue.remove(hermezMessage)
+
+                                }else{//we got a message but not a ping. We should never call this.
+                                    Log.d(tag, "parsed message is $message....This should never be called.")
+                                }
+                            }else{ //gson message is null. and should never happen.
+                                //todo handle this
+                            }
+                        }
+                    }
+
+                    //writer.close()
                 } catch (e: IOException) {
                     // If the writer fails to initialize there was an io problem, close your connection
                     socket.close()
                     objectToNotify?.messageCannotBeSentToDevices(hermezMessage, HermezError.MESSAGE_NOT_SENT)
+                } catch (e: Exception) {
+                    Log.d(tag, "error = ${e.localizedMessage}")
                 }
             }//runnable close when fun run() ends.
         }
     }
 }
+
+

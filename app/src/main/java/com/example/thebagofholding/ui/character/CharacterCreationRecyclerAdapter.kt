@@ -9,9 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.CharacterInformation
@@ -27,7 +25,7 @@ enum class CharacterViewHolderTypes(val typeKey: Int){
 }
 
 class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    class CharacterCreationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CharacterCreationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "CCViewHolder"
         private val characterCreationButton: ConstraintLayout = view.findViewById(R.id.character_creation_cell_constraint_layout)
         private val context = super.itemView.context
@@ -96,9 +94,15 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
                     dialog.dismiss()
                 }
                 createButton.setOnClickListener(){
-                    Log.d(tag, "characterSaved is $newCharacterName")
-                    DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), CharacterPurseData("0","0","0","0"), UUID.randomUUID()))
-                    dialog.dismiss()
+                    //Ensure the name is a valid, goodish name.
+                    if (newCharacterName == ""){
+                        Toast.makeText(context, "Please hit enter.", Toast.LENGTH_LONG).show()
+                    }else{
+                        Log.d(tag, "characterSaved is $newCharacterName")
+                        DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), CharacterPurseData("0","0","0","0"), UUID.randomUUID()))
+                        notifyDataSetChanged()
+                        dialog.dismiss()
+                    }
                 }
             }
         }
@@ -111,10 +115,22 @@ class CharacterCreationRecyclerAdapter (var characterList: ArrayList<CharacterIn
         private val context = super.itemView.context
         init {
             // Define click listener for the ViewHolder's View.
-            //TODO make this a longclick and double check box thing.
-            characterNameCell.setOnClickListener(){
-                Log.d(tag, "characterNameCell clicked ${characterNameTextView.text}")
-                DataMaster.changeCharacter(characterNameTextView.text.toString())
+
+            characterNameCell.setOnLongClickListener(){
+                val popupMenu= PopupMenu(view.context,it) //TODO need to move this to the right of the screen.
+                popupMenu.inflate(R.menu.character_confirmation_window)
+                popupMenu.setOnMenuItemClickListener {item->
+                    when(item.itemId)
+                    {
+                        R.id.change_character_confirmation_window_confirm->{
+                            Log.d(tag, "characterNameCell clicked ${characterNameTextView.text}")
+                            DataMaster.changeCharacter(characterNameTextView.text.toString())
+                        }
+                    }
+                    true
+                }
+                popupMenu.show()
+                true
             }
         }
     }

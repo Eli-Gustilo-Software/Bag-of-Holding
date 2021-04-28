@@ -1,10 +1,13 @@
 package com.example.thebagofholding.ui.campfire
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.OtherPlayerCharacterInformation
@@ -15,8 +18,24 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
     class CampfireOtherPlayersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "CampfireOtherPlayersViewHolder"
         private val context = super.itemView.context
-        val nameTextView = view.findViewById<TextView>(R.id.character_name_cell_textview)
+        private val otherPlayerCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.character_creation_mother_constraintlayout)
+        val otherPlayerNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         init {
+            otherPlayerCellConstraintLayout.setOnLongClickListener(){
+                val popupMenu= PopupMenu(view.context,it) //TODO need to move this to the right of the screen.
+                popupMenu.inflate(R.menu.campfire_interactions_popup_menu)
+                popupMenu.setOnMenuItemClickListener {item->
+                    when(item.itemId)
+                    {
+                        R.id.campfire_whisper_button->{
+                            Log.d(tag, "campfire whisper was called to ${otherPlayerNameTextView.text}")
+                        }
+                    }
+                    true
+                }
+                popupMenu.show()
+                true
+            }
         }
     }
 
@@ -28,7 +47,7 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val nameHolder = holder as CampfireOtherPlayersViewHolder
         for (item in otherPlayersList){
-            nameHolder.nameTextView.text = item.otherPlayerCharacterName
+            nameHolder.otherPlayerNameTextView.text = item.otherPlayerCharacterName
         }
     }
 

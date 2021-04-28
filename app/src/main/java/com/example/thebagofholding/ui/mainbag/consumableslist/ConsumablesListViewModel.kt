@@ -17,7 +17,7 @@ class ConsumablesListViewModel : ViewModel(), DataMaster.DataMasterInterface {
     }
 
     private fun getCharacterInfo(){
-        //TODO this is supposed to get info from the dataMaster? but the override function is how the data master gives us data.....also there should always be a new character button regardless of zero size.
+        //TODO this is supposed to get info from the dataMaster? but the override function is how the data master gives us data...
         val characterInfo = DataMaster.retrieveCharacterInformation()
         //TODO what is this grabbing? there is nothing to be grabbed??? It could be null? the character could not exsits
         characterData.postValue(characterInfo!!)

@@ -41,6 +41,7 @@ class ArmorListFragment : Fragment(){
         //ViewModel and RecyclerViewAdapter
         armorListViewModel = ViewModelProvider(this).get(ArmorListViewModel::class.java)
         armorListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+            currentCharacter = it
             armorListRecyclerView = root.findViewById(R.id.armor_list_recyclerView)
             if (armorListRecyclerAdapter == null){ //create it
                 armorListRecyclerAdapter = ArmorListRecyclerAdapter(currentCharacter)

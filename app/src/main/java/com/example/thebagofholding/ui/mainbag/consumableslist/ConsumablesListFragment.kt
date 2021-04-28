@@ -41,6 +41,7 @@ class ConsumablesListFragment : Fragment(){
         //ViewModel and RecyclerViewAdapter
         consumablesListViewModel = ViewModelProvider(this).get(ConsumablesListViewModel::class.java)
         consumablesListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+            currentCharacter = it
             consumablesListRecyclerView = root.findViewById(R.id.consumables_list_recyclerView)
             if (consumablesListRecyclerAdapter == null){ //create it
                 consumablesListRecyclerAdapter = ConsumablesListRecyclerAdapter(currentCharacter)

@@ -32,12 +32,12 @@ class MainActivity : AppCompatActivity() {
 //         menu should be considered as top level destinations.
 
         //create dataMaster
-        mainActivityLifecycle = this
+
         //I put this in because sometimes in would crach on load saying lateinnit things weren't loaded.
         //goal was to wait a few seceonds for thnigs to get rocking
         GlobalScope.launch { // launch new coroutine in background and continue
             delay(0) // non-blocking delay for 1 second (default time unit is ms)
-            DataMaster.initWith(applicationContext, mainActivityLifecycle)
+            DataMaster.initWith(applicationContext)
         }
 
 
@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        DataMaster.cleanup()
         super.onStop()
     }
 }

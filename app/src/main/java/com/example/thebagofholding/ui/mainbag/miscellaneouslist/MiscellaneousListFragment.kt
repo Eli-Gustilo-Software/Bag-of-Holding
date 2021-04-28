@@ -41,6 +41,7 @@ class MiscellaneousListFragment : Fragment(){
         //ViewModel and RecyclerViewAdapter
         miscListViewModel = ViewModelProvider(this).get(MiscellaneousListViewModel::class.java)
         miscListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+            currentCharacter = it
             miscListRecyclerView = root.findViewById(R.id.misc_list_recyclerView)
             if (miscListRecyclerAdapter == null){ //create it
                 miscListRecyclerAdapter = MiscellaneousListRecyclerAdapter(currentCharacter)

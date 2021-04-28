@@ -3,7 +3,7 @@ package com.example.thebagofholding
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
+import com.eligustilo.Hermez.Hermez
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -17,7 +17,6 @@ data class ArmorItemData(
 
 data class CharacterInformation(
         val characterName: String,
-        //TODO do i want these to be nullable? I could give the rando things that need it empty arrays? which is better?
         val characterArmorItemsList: ArrayList<ArmorItemData>,
         val characterWeaponItemsList: ArrayList<WeaponItemData>,
         val characterConsumablesItemsList: ArrayList<ConsumablesItemData>,
@@ -47,7 +46,7 @@ data class MiscellaneousItemData(
 )
 
 data class CharacterPurseData(
-        var bronze: String, //TODO should this be a string or int?
+        var bronze: String,
         var silver: String,
         var gold: String,
         var truesilver: String
@@ -60,14 +59,14 @@ data class WeaponItemData(
         val weaponUUID: UUID
 )
 
-//todo good place to make bargin/transaction class
+//todo good place to make bargain/transaction class
 
 object DataMaster: Hermez.HermezDataInterface {
     private val tag = "DataMaster"
-    private val DATA_MASTER_KEY = "data_master_key"
-    private val CHARACTER_HASHTABLE_KEY = "character_hashtable_key"
-    private val CURRENT_CHARACTER_INFORMATION_KEY = "current_character_information_key"
-    private var characterArray = ArrayList<CharacterInformation>() //TODO can this be moved down?
+    private const val DATA_MASTER_KEY = "data_master_key"
+    private const val CHARACTER_HASHTABLE_KEY = "character_hashtable_key"
+    private const val CURRENT_CHARACTER_INFORMATION_KEY = "current_character_information_key"
+    private var characterArray = ArrayList<CharacterInformation>()
     private var characterHashtable = Hashtable<String, String>()
     private var otherPlayersArray = ArrayList<OtherPlayerCharacterInformation>()
     private var hermezDevicesConnected = ArrayList<Hermez.HermezDevice>()
@@ -78,181 +77,18 @@ object DataMaster: Hermez.HermezDataInterface {
 
 
     interface DataMasterInterface {
-        //TODO do i want two functions to giveAllCharacters vs giveCurrentCharacter?
         fun giveCharacterInfo(characterInfo: CharacterInformation)
         fun giveAllCharactersInfo(characterInfoArray: ArrayList<CharacterInformation>)
         fun giveFriendsList(friendsList : ArrayList<OtherPlayerCharacterInformation>)
     }
 
-    fun cleanup(){
-        hermez.cleanup()
-    }
-
-    fun initWith (applicationContext: Context, lifecycleOwner: LifecycleOwner){
+    fun initWith (applicationContext: Context){
         this.applicationContext = applicationContext
-        //TODO I would like to initilizae heremz here but memory leak
+        //TODO I would like to initialize heremz here but memory leak
         hermez = Hermez(applicationContext, "_bag_of_holding._tcp")
-        hermez.setDeviceName(phoneName)//TODO this needs to be a specific device id.
+        hermez.setDeviceName(phoneName)
         hermez.findAvailableDevices()
         hermez.initWithDelegate(this)
-
-        //another way to basically have an interface and pass data. LIVE DATA
-
-        //FIND DEVICE
-//        hermez.hermezLiveDevices.observe(lifecycleOwner, androidx.lifecycle.Observer  {
-//            val arrayListOfOtherUsers = it
-//            Log.d(tag, "devicesFound called. List = $arrayListOfOtherUsers") //todo this is a bug and isn't being cleared properly devicesFound called. List = [HermezDevice(name=Pixel 3a (2)), HermezDevice(name=moto g play (2021)), HermezDevice(name=Pixel 3a)]
-//            for (item in arrayListOfOtherUsers){ //todo this can throw a java.util.ConcurrentModificationException on loadUp
-//                if (item.name == phoneName){
-//                    //it is me do not get character data
-//                    //todo what if they have the same phoneName/type? UUID?
-//                }else{//not my device so get their character data.
-//                    val arrayForSingleDevice = ArrayList<Hermez.HermezDevice>()
-//                    arrayForSingleDevice.add(Hermez.HermezDevice(item.name))
-//                    val currentCharacter = retrieveCharacterInformation()
-//                    if (currentCharacter != null){//our character exists
-//                        val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
-//                        val mpCharacterAsJson = Gson().toJson(mpCharacter)
-//                        hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", arrayForSingleDevice) //our own device is listed here?
-//                    }else{//does not exist so send our device name instead
-//
-//                    }
-//                }
-//            }
-//        })
-
-        //WATCH FOR MESSAGES todo this is getting clogged. need a que
-//        hermez.hermezLiveMessage.observe(lifecycleOwner, androidx.lifecycle.Observer {
-//            val message = it
-//            Log.d("messageReceived", "messageReceived called: = $message")
-//            when (message.message) {
-//                "Give me character details" -> {//todo get a better name for this string/key ENUM?? //also what do i do if I don't have a character? Do i need to reset? or only register my own service once I have a character?
-//                    //todo is this breaking things? this is the only place otherPlayersArray is set
-//                    if (message.sendingDevice.name == phoneName){
-//                        //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
-//                    }else{//it is someone else's phone
-//                        val otherPlayerCharacterInformation = Gson().fromJson(message.json, OtherPlayerCharacterInformation::class.java) //get their character
-//                        if (otherPlayersArray.contains(otherPlayerCharacterInformation)){
-//                            //otherPlayer array already has it. aka do nothing? Or toast?
-//                            objectToNotify?.giveFriendsList(otherPlayersArray)
-//                        }else{
-//                            otherPlayersArray.add(otherPlayerCharacterInformation)
-//                            objectToNotify?.giveFriendsList(otherPlayersArray)
-//                            val currentCharacter = retrieveCharacterInformation()
-//                            if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
-//                                val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
-//                                val mpCharacterAsJson = Gson().toJson(mpCharacter)
-//                                val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it.
-//                                senderArrayList.add(message.sendingDevice)
-//                                hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
-//                                Log.d(tag, "characterAsJson = $mpCharacterAsJson")
-//                                Log.d(tag, "arrayList who sent me message = $senderArrayList")
-//                            }
-//                        }
-//                    }
-//                }
-//                "TRANSFER" ->{//todo need to send call back to remove item from old player inventory
-//                    if (message.sendingDevice.name == phoneName){ //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
-//                    }else{//it is someone else's phone
-//                        if (message.messageID.contains("W_T")){//make this prettier and change when statement syntax
-//                            Log.d(tag, "W_T called")
-//                            val receivedItemWeaponData = Gson().fromJson(message.json, WeaponItemData::class.java)
-//                            val newItemOwner = retrieveCharacterInformation()
-//                            if (newItemOwner != null) {
-//                                saveItemWeapon(newItemOwner, receivedItemWeaponData)
-//                                val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
-//                                arrayListToReturnMessageTo.add(message.sendingDevice)
-//                                hermez.sendMessageToDevices("TRANSFER_SUCCESS", message.json, message.messageID, arrayListToReturnMessageTo)
-//                            }
-//                        }
-//                        if (message.messageID.contains("A_T")){//make this prettier and change when statement syntax
-//                            Log.d(tag, "A_T called")
-//                            val receivedItemArmorData = Gson().fromJson(message.json, ArmorItemData::class.java)
-//                            val newItemOwner = retrieveCharacterInformation()
-//                            if (newItemOwner != null) {
-//                                saveItemArmor(newItemOwner, receivedItemArmorData)
-//                                val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
-//                                arrayListToReturnMessageTo.add(message.sendingDevice)
-//                                hermez.sendMessageToDevices("TRANSFER_SUCCESS", message.json, message.messageID, arrayListToReturnMessageTo)
-//                            }
-//                        }
-//                        if (message.messageID.contains("C_T")){//make this prettier and change when statement syntax
-//                            Log.d(tag, "C_T called")
-//                            val receivedItemConsumableData = Gson().fromJson(message.json, ConsumablesItemData::class.java)
-//                            val newItemOwner = retrieveCharacterInformation()
-//                            if (newItemOwner != null) {
-//                                saveItemConsumable(newItemOwner, receivedItemConsumableData)
-//                                val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
-//                                arrayListToReturnMessageTo.add(message.sendingDevice)
-//                                hermez.sendMessageToDevices("TRANSFER_SUCCESS", message.json, message.messageID, arrayListToReturnMessageTo)
-//                            }
-//                        }
-//                        if (message.messageID.contains("M_T")){//make this prettier and change when statement syntax
-//                            Log.d(tag, "M_T called")
-//                            val receivedItemMiscData = Gson().fromJson(message.json, MiscellaneousItemData::class.java)
-//                            val newItemOwner = retrieveCharacterInformation()
-//                            if (newItemOwner != null) {
-//                                saveItemMiscellaneous(newItemOwner, receivedItemMiscData)
-//                                val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
-//                                arrayListToReturnMessageTo.add(message.sendingDevice)
-//                                hermez.sendMessageToDevices("TRANSFER_SUCCESS", message.json, message.messageID, arrayListToReturnMessageTo)
-//                            }
-//                        }
-//                    }
-//                }
-//                "TRANSFER_SUCCESS" ->{//TODO find out why this isn't updated the ui immediately. Notifiy object is called in save/delete funciton
-//                    if (message.messageID.contains("W_T")){//make this prettier and change when statement syntax
-//                        Log.d(tag, "W_T success called")
-//                        val receivedItemWeaponData = Gson().fromJson(message.json, WeaponItemData::class.java)
-//                        val characterToRemoveItem = retrieveCharacterInformation()
-//                        if (characterToRemoveItem != null) {
-//                            deleteItemWeapon(characterToRemoveItem, receivedItemWeaponData)
-//                            Log.d(tag, "Item deleted = $receivedItemWeaponData and character removed from = $characterToRemoveItem")
-//                        }
-//                    }
-//                    if (message.messageID.contains("A_T")){//make this prettier and change when statement syntax
-//                        Log.d(tag, "A_T success called")
-//                        val receivedItemArmorData = Gson().fromJson(message.json, ArmorItemData::class.java)
-//                        val characterToRemoveItem = retrieveCharacterInformation()
-//                        if (characterToRemoveItem != null) {
-//                            deleteItemArmor(characterToRemoveItem, receivedItemArmorData)
-//                            Log.d(tag, "Item deleted = $receivedItemArmorData and character removed from = $characterToRemoveItem")
-//
-//                        }
-//                    }
-//                    if (message.messageID.contains("C_T")){//make this prettier and change when statement syntax
-//                        Log.d(tag, "C_T success called")
-//                        val receivedItemConsumableData = Gson().fromJson(message.json, ConsumablesItemData::class.java)
-//                        val characterToRemoveItem = retrieveCharacterInformation()
-//                        if (characterToRemoveItem != null) {
-//                            deleteItemConsumable(characterToRemoveItem, receivedItemConsumableData)
-//                            Log.d(tag, "Item deleted = $receivedItemConsumableData and character removed from = $characterToRemoveItem")
-//
-//                        }
-//                    }
-//                    if (message.messageID.contains("M_T")){//make this prettier and change when statement syntax
-//                        Log.d(tag, "M_T success called")
-//                        val receivedItemMiscData = Gson().fromJson(message.json, MiscellaneousItemData::class.java)
-//                        val characterToRemoveItem = retrieveCharacterInformation()
-//                        if (characterToRemoveItem != null) {
-//                            deleteItemMiscellaneous(characterToRemoveItem, receivedItemMiscData)
-//                            Log.d(tag, "Item deleted = $receivedItemMiscData and character removed from = $characterToRemoveItem")
-//
-//                        }
-//                    }
-//                }
-//                "TRANSFER_FAILURE" ->{
-//                    print("x == 2")
-//                }
-//                "COIN??" ->{
-//                    print("x == 2")
-//                }
-//            }
-//        })
-    }
-
-    private fun syncMessage (){
-
     }
 
     //CHARACTERS
@@ -268,13 +104,12 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Character to be saved is: $character")
         val characterInformationAsJSON = Gson().toJson(character)
         val characterName = character.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Is this always the last character created? How do I make this the last selected character???
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        val characterArray = ArrayList<CharacterInformation>()
         characterArray.add(character)
         objectToNotify?.giveAllCharactersInfo(characterArray)
     }
@@ -282,14 +117,14 @@ object DataMaster: Hermez.HermezDataInterface {
     fun changeCharacter(characterName: String){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Is this always the last character created? How do I make this the last selected character???
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         Log.d(tag, "Current character has been changed to $characterName")
     }
 
     fun retrieveAllCharactersInformation() : ArrayList<CharacterInformation>{
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
-            if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinent has a file called characters
+            if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinet has a file called characters
                 val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
                 if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
                     characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
@@ -301,10 +136,8 @@ object DataMaster: Hermez.HermezDataInterface {
                         Log.d(tag, "Characters to be returned is $characterAsCharacterObject")
                         objectToNotify?.giveAllCharactersInfo(characterArray)
                     }
-                    return characterArray//TODO this isn't gonna work. is it? Can this array have characters not added that arent supposed to? If i call this 20 times does it add chars 20 times?
+                    return characterArray
                 }
-            }else{//there is no file characters in the cabinet TODO that means never been saved??
-                //what do I return
             }
         return characterArray
     }
@@ -324,34 +157,29 @@ object DataMaster: Hermez.HermezDataInterface {
                         objectToNotify?.giveCharacterInfo(character)
                         return character
                     }
-                }else{//we don't have a current character
-                    //what now?
                 }
             }
-        }else{//there is no file characters in the cabinet TODO that means never been saved??
-            //what do I return
         }
         return null
     }
 
 
     //ITEMS
-    //TODO Should I make this a inner class known as Saver?
 
     //SAVE
     fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be saved is: $armorItem character to save to is $characterOwner")
-        characterOwner.characterArmorItemsList?.add(armorItem)
+        characterOwner.characterArmorItemsList.add(armorItem)
         Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -360,15 +188,15 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
-        characterOwner.characterWeaponItemsList?.add(weaponItem)
+        characterOwner.characterWeaponItemsList.add(weaponItem)
         Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -377,15 +205,15 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be saved is: $consumableItem character to save to is $characterOwner")
-        characterOwner.characterConsumablesItemsList?.add(consumableItem)
+        characterOwner.characterConsumablesItemsList.add(consumableItem)
         Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -394,34 +222,32 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
-        characterOwner.characterMiscellaneousItemList?.add(miscellaneousItem)
+        characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
         Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    //TODO NEED TO DEAL WITH CURRENCY. How best to get type from the user.
-
-    //DELETE TODO I need to deal with long touches and a contextual menu.
+    //DELETE
     fun deleteItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $armorItem character to remove from is $characterOwner")
-        characterOwner.characterArmorItemsList.remove(armorItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        characterOwner.characterArmorItemsList.remove(armorItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -430,14 +256,14 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $weaponItem character to remove from is $characterOwner")
-        characterOwner.characterWeaponItemsList.remove(weaponItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        characterOwner.characterWeaponItemsList.remove(weaponItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -446,14 +272,14 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $consumableItem character to remove from is $characterOwner")
-        characterOwner.characterConsumablesItemsList.remove(consumableItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        characterOwner.characterConsumablesItemsList.remove(consumableItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
@@ -462,19 +288,19 @@ object DataMaster: Hermez.HermezDataInterface {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $miscellaneousItem character to remove from is $characterOwner")
-        characterOwner.characterMiscellaneousItemList.remove(miscellaneousItem)//TODO I passed an object with a UUID here. Do i need to call the UUID specifically? will this work???????
+        characterOwner.characterMiscellaneousItemList.remove(miscellaneousItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    //PURSE //TODO make more advanced at some point.
+    //PURSE
     fun saveMoney (characterOwner: CharacterInformation, newCharacterPurse: CharacterPurseData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
@@ -484,17 +310,17 @@ object DataMaster: Hermez.HermezDataInterface {
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         val characterName = characterOwner.characterName
-        characterHashtable.put(characterName, characterInformationAsJSON)
+        characterHashtable[characterName] = characterInformationAsJSON
         val characterHashtableJSON = Gson().toJson(characterHashtable)
         editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)//TODO this is always one? Can be overwritten? Do we need todo this here. I need to understand how exactly this key is used better
+        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
 
 //    TRANSFER via Hermez
-    fun transferItemArmor(characterOwner: CharacterInformation, newCharacterOwner: OtherPlayerCharacterInformation, armorItem: ArmorItemData){
+    fun transferItemArmor(newCharacterOwner: OtherPlayerCharacterInformation, armorItem: ArmorItemData){
         val armorToTransfer = Gson().toJson(armorItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
@@ -502,7 +328,7 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Hermez was called to send item: $armorItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
     }
 
-    fun transferItemWeapon(characterOwner: CharacterInformation, newCharacterOwner: OtherPlayerCharacterInformation, weaponItem: WeaponItemData){
+    fun transferItemWeapon(newCharacterOwner: OtherPlayerCharacterInformation, weaponItem: WeaponItemData){
         val weaponToTransfer = Gson().toJson(weaponItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
@@ -510,7 +336,7 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Hermez was called to send item: $weaponItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
     }
 
-    fun transferItemConsumable(characterOwner: CharacterInformation, newCharacterOwner: OtherPlayerCharacterInformation, consumableItem: ConsumablesItemData){
+    fun transferItemConsumable(newCharacterOwner: OtherPlayerCharacterInformation, consumableItem: ConsumablesItemData){
         val consumableToTransfer = Gson().toJson(consumableItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
@@ -518,7 +344,7 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Hermez was called to send item: $consumableItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
     }
 
-    fun transferItemMiscellaneous(characterOwner: CharacterInformation, newCharacterOwner: OtherPlayerCharacterInformation, miscellaneousItem: MiscellaneousItemData){
+    fun transferItemMiscellaneous(newCharacterOwner: OtherPlayerCharacterInformation, miscellaneousItem: MiscellaneousItemData){
         val miscToTransfer = Gson().toJson(miscellaneousItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
@@ -532,16 +358,12 @@ object DataMaster: Hermez.HermezDataInterface {
         return otherPlayersArray
     }
 
-    fun resetHermez(){
+    fun resetHermez(){//todo I may want to add a distinction between these two. Reset Registration and Reset Discovery. Hermez may want to make same distinction.
         otherPlayersArray.clear()
         hermez.resetService()
     }
 
     fun sendWhisperToPlayer(){
-        //todo i need a unique id for each device beyond name. UUID? or something like that.
-    }
-
-    fun resetFriendsDiscovery(){
 
     }
 
@@ -562,13 +384,13 @@ object DataMaster: Hermez.HermezDataInterface {
             //we have already connected to the other person at least once. We need to try and send them a message and confirm we are still connected. Else we need to remove them and then rediscover
         }else{
             //someone sees me but I don't see them. I need to discover them.
-            hermezDevicesConnected.add(hermezMessage.sendingDevice) //todo when do i remove things from this?
+            hermezDevicesConnected.add(hermezMessage.sendingDevice)
             Log.d("messageReceived", "the hermezDevicesConnected is $hermezDevicesConnected")
             val currentCharacter = retrieveCharacterInformation()
             if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
                 val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
                 val mpCharacterAsJson = Gson().toJson(mpCharacter)
-                val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it.
+                val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it?
                 senderArrayList.add(hermezMessage.sendingDevice)
                 hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
                 Log.d(tag, "characterAsJson = $mpCharacterAsJson")
@@ -578,7 +400,6 @@ object DataMaster: Hermez.HermezDataInterface {
 
         when (hermezMessage.message) {
             "Give me character details" -> {//todo get a better name for this string/key ENUM?? //also what do i do if I don't have a character? Do i need to reset? or only register my own service once I have a character?
-                //todo is this breaking things? this is the only place otherPlayersArray is set
                 if (hermezMessage.sendingDevice.name == phoneName){
                     //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
                 }else{//it is someone else's phone
@@ -593,7 +414,7 @@ object DataMaster: Hermez.HermezDataInterface {
                         if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
                             val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
                             val mpCharacterAsJson = Gson().toJson(mpCharacter)
-                            val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it.
+                            val senderArrayList = ArrayList<Hermez.HermezDevice>()
                             senderArrayList.add(hermezMessage.sendingDevice)
                             hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
                             Log.d(tag, "characterAsJson = $mpCharacterAsJson")
@@ -602,8 +423,9 @@ object DataMaster: Hermez.HermezDataInterface {
                     }
                 }
             }
-            "TRANSFER" ->{//todo need to send call back to remove item from old player inventory
-                if (hermezMessage.sendingDevice.name == phoneName){ //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
+
+            "TRANSFER" ->{
+                if (hermezMessage.sendingDevice.name == phoneName){ //it is our phone so ignore.
                 }else{//it is someone else's phone
                     if (hermezMessage.messageID.contains("W_T")){//make this prettier and change when statement syntax
                         Log.d(tag, "W_T called")
@@ -651,13 +473,15 @@ object DataMaster: Hermez.HermezDataInterface {
                     }
                 }
             }
-            "TRANSFER_SUCCESS" ->{//TODO find out why this isn't updated the ui immediately. Notifiy object is called in save/delete funciton
+
+            "TRANSFER_SUCCESS" ->{
                 if (hermezMessage.messageID.contains("W_T")){//make this prettier and change when statement syntax
                     Log.d(tag, "W_T success called")
                     val receivedItemWeaponData = Gson().fromJson(hermezMessage.json, WeaponItemData::class.java)
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemWeapon(characterToRemoveItem, receivedItemWeaponData)
+                        objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
                         Log.d(tag, "Item deleted = $receivedItemWeaponData and character removed from = $characterToRemoveItem")
                     }
                 }
@@ -667,8 +491,8 @@ object DataMaster: Hermez.HermezDataInterface {
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemArmor(characterToRemoveItem, receivedItemArmorData)
+                        objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
                         Log.d(tag, "Item deleted = $receivedItemArmorData and character removed from = $characterToRemoveItem")
-
                     }
                 }
                 if (hermezMessage.messageID.contains("C_T")){//make this prettier and change when statement syntax
@@ -677,8 +501,8 @@ object DataMaster: Hermez.HermezDataInterface {
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemConsumable(characterToRemoveItem, receivedItemConsumableData)
+                        objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
                         Log.d(tag, "Item deleted = $receivedItemConsumableData and character removed from = $characterToRemoveItem")
-
                     }
                 }
                 if (hermezMessage.messageID.contains("M_T")){//make this prettier and change when statement syntax
@@ -687,8 +511,8 @@ object DataMaster: Hermez.HermezDataInterface {
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemMiscellaneous(characterToRemoveItem, receivedItemMiscData)
+                        objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
                         Log.d(tag, "Item deleted = $receivedItemMiscData and character removed from = $characterToRemoveItem")
-
                     }
                 }
             }
@@ -703,7 +527,8 @@ object DataMaster: Hermez.HermezDataInterface {
 
     override fun serviceFailed(serviceType: String, serviceName: String?, error: Hermez.HermezError) {
         Log.d(tag, "serviceFailed called")
-        //todo add deletion of missing players
+        val hermezDeviceLost = serviceName?.let { Hermez.HermezDevice(it) }
+        hermezDevicesConnected.remove(hermezDeviceLost)
     }
 
     override fun messageCannotBeSentToDevices(hermezMessage: Hermez.HermezMessage, error: Hermez.HermezError) {
@@ -732,7 +557,6 @@ object DataMaster: Hermez.HermezDataInterface {
             }
         }
 //
-//        //todo how do i go from a list of string names to a list of character objects?
 //        /*
 //        * steps
 //        * 1) get names of devices on networks
@@ -744,7 +568,7 @@ object DataMaster: Hermez.HermezDataInterface {
 
     override fun resolveFailed(serviceType: String, serviceName: String, error: Hermez.HermezError) {
         Log.d(tag, "resolveFailed called $serviceType $serviceName $error")
-//        if (otherPlayersArray.contains(serviceName))
-        //todo add deletion of missing players
+        val hermezDeviceLost = serviceName.let { Hermez.HermezDevice(it) }
+        hermezDevicesConnected.remove(hermezDeviceLost)//todo is this right? i could be removing things that don't exist in the array?
     }
 }

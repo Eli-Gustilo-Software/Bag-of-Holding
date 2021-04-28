@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
 class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val tag = "WeaponListRecyclerAdapater"
+
     class WeaponsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "WeaponsViewHolder"
         lateinit var itemWeaponData: WeaponItemData
@@ -44,7 +46,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${weaponNameTextView.text}")
-                                        DataMaster.transferItemWeapon(itemCharacterOwner, player, itemWeaponData)
+                                        DataMaster.transferItemWeapon(player, itemWeaponData)
                                         true
                                     }
                                 }
@@ -84,6 +86,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
     }
 
     fun updateData(characterInformation: CharacterInformation){
+        Log.d(tag, "updateData characterInformation = $characterInformation")
         currentCharacter = characterInformation
         notifyDataSetChanged()
     }

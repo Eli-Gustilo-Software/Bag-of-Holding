@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Character Name?"
-        android:text="TextView"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/character_creation_explanation_textview"

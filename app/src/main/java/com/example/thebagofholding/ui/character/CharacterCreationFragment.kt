@@ -41,7 +41,6 @@ class CharacterCreationFragment : Fragment() {
                 characterCreationRecyclerAdapter!!.notifyDataSetChanged()
             }else{//it is created and we need to sync data.
                 characterCreationRecyclerAdapter!!.updateData(characterCreationRecyclerCharacterArray)
-                characterCreationRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
         return root

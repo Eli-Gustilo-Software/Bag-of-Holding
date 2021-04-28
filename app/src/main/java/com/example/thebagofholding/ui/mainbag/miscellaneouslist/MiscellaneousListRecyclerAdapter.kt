@@ -48,7 +48,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${itemMiscellaneousData.miscName}")
-                                        DataMaster.transferItemMiscellaneous(itemCharacterOwner, player, itemMiscellaneousData)
+                                        DataMaster.transferItemMiscellaneous(player, itemMiscellaneousData)
                                         true
                                     }
                                 }

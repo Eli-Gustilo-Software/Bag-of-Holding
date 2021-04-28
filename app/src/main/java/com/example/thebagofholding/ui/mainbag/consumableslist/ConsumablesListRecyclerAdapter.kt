@@ -47,7 +47,7 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${consumablesNameTextView.text}")
-                                        DataMaster.transferItemConsumable(itemCharacterOwner, player, itemConsumablesData)
+                                        DataMaster.transferItemConsumable(player, itemConsumablesData)
                                         true
                                     }
                                 }
