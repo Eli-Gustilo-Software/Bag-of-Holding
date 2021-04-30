@@ -1,11 +1,16 @@
 package com.example.thebagofholding.ui.mainbag.weaponlist
 
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
@@ -16,6 +21,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         private val tag = "WeaponsViewHolder"
         lateinit var itemWeaponData: WeaponItemData
         lateinit var itemCharacterOwner : CharacterInformation
+        private val context = super.itemView.context
         val weaponNameTextView: TextView = view.findViewById(R.id.weapon_cell_name_textview)
         val weaponImageImageView: ImageView = view.findViewById(R.id.weapon_cell_imageview)
         val weaponEffectOneTextView: TextView = view.findViewById(R.id.weapon_cell_effect1_textview)
@@ -46,6 +52,13 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${weaponNameTextView.text}")
+                                        val v = ContextCompat.getSystemService(context, Vibrator::class.java)
+                                        if (Build.VERSION.SDK_INT >= 26) {
+                                            v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                                        } else {
+                                            v?.vibrate(200)
+                                        }
+                                        Toast.makeText(context, "Transferring ${itemWeaponData.name} to ${player.otherPlayerCharacterName}" , Toast.LENGTH_SHORT).show()
                                         DataMaster.transferItemWeapon(player, itemWeaponData)
                                         true
                                     }

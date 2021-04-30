@@ -2,7 +2,10 @@ package com.example.thebagofholding
 
 import android.content.Context
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import com.eligustilo.Hermez.Hermez
 import com.google.gson.Gson
 import java.util.*
@@ -120,6 +123,18 @@ object DataMaster: Hermez.HermezDataInterface {
         editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         Log.d(tag, "Current character has been changed to $characterName")
+    }
+
+    fun deleteCharacter(character : CharacterInformation){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        Log.d(tag, "Character to be deleted is: $character")
+        characterHashtable.remove(character.characterName)
+        val characterHashtableJSON = Gson().toJson(characterHashtable)
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON) //todo this might make it so there is no currentCharacter and no message alerting the user of that fact.
+        editor?.apply()
+        characterArray.remove(character)
+        objectToNotify?.giveAllCharactersInfo(characterArray)
     }
 
     fun retrieveAllCharactersInformation() : ArrayList<CharacterInformation>{
@@ -360,11 +375,14 @@ object DataMaster: Hermez.HermezDataInterface {
 
     fun resetHermez(){//todo I may want to add a distinction between these two. Reset Registration and Reset Discovery. Hermez may want to make same distinction.
         otherPlayersArray.clear()
-        hermez.resetService()
+        hermez.resetDiscovery()
     }
 
-    fun sendWhisperToPlayer(){
-
+    fun sendWhisperToPlayer(sendingPlayer: CharacterInformation, playerToSendWhisperTo : OtherPlayerCharacterInformation, whisper : String){
+        val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
+        hermezDeviceArray.add(Hermez.HermezDevice(playerToSendWhisperTo.otherPlayerDeviceName))
+        hermez.sendMessageToDevices("WHISPER", whisper, sendingPlayer.characterName, hermezDeviceArray)
+        Log.d(tag, "Whisper $whisper was sent to ${playerToSendWhisperTo.otherPlayerCharacterName} by ${sendingPlayer.characterName}")
     }
 
 
@@ -519,8 +537,13 @@ object DataMaster: Hermez.HermezDataInterface {
             "TRANSFER_FAILURE" ->{
                 print("x == 2")
             }
-            "COIN??" ->{
-                print("x == 2")
+            "WHISPER" ->{
+                Log.d(tag, "Whisper recieved called")
+                val messageSender = hermezMessage.messageID
+                val whisperSent = hermezMessage.json
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(applicationContext, "$messageSender just whispered: $whisperSent", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

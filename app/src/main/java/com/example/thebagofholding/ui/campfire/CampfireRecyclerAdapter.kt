@@ -1,17 +1,20 @@
 package com.example.thebagofholding.ui.campfire
 
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thebagofholding.DataMaster
-import com.example.thebagofholding.OtherPlayerCharacterInformation
-import com.example.thebagofholding.R
+import com.example.thebagofholding.*
+import java.util.*
 import kotlin.collections.ArrayList
 
 class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -19,6 +22,12 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
         private val tag = "CampfireOtherPlayersViewHolder"
         private val context = super.itemView.context
         private val otherPlayerCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.character_creation_mother_constraintlayout)
+        private lateinit var whisperInputEditText : EditText
+        private lateinit var backButton : Button
+        private lateinit var sendButton : Button
+        private var newWhisper = ""
+        lateinit var otherPlayerCharacterInformation : OtherPlayerCharacterInformation
+
         val otherPlayerNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         init {
             otherPlayerCellConstraintLayout.setOnLongClickListener(){
@@ -29,6 +38,71 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
                     {
                         R.id.campfire_whisper_button->{
                             Log.d(tag, "campfire whisper was called to ${otherPlayerNameTextView.text}")
+                            val dialog: AlertDialog?
+                            val builder = AlertDialog.Builder(context)
+                            // set the custom layout
+                            val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+                            val view = layoutInflater?.inflate(R.layout.campfire_whisper_dialog, null)
+                            builder.setView(view)
+                            // create and show the alert dialog
+                            dialog = builder.create()
+                            dialog.show()
+
+                            //Set views
+                            if (view != null){
+                                whisperInputEditText = view.findViewById(R.id.your_whisper_edittext)
+                                backButton = view.findViewById(R.id.deletion_back)
+                                sendButton = view.findViewById(R.id.deletion_confirm)
+                            }
+
+                            //EditText
+                            whisperInputEditText.setOnKeyListener { v, keyCode, event ->
+                                Log.d(tag, "Keycode = $keyCode")
+                                Log.d(tag, "event = $event")
+                                Log.d(tag, "v = $v")
+
+                                when {
+                                    //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
+                                    ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) -> {
+                                        whisperInputEditText.clearFocus()
+                                        val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        if (view != null) {
+                                            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                                        }
+                                        newWhisper = whisperInputEditText.text.toString()
+                                        //return true
+                                        return@setOnKeyListener true
+                                    }
+                                    keyCode == KeyEvent.KEYCODE_NAVIGATE_OUT-> {
+                                        whisperInputEditText.clearFocus()
+                                        val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        if (view != null) {
+                                            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                                        }
+                                        newWhisper = whisperInputEditText.text.toString()
+                                        //return true
+                                        return@setOnKeyListener true
+                                    }
+                                    else -> false
+                                }
+                            }
+                            //Buttons
+                            backButton.setOnClickListener(){
+                                dialog.dismiss()
+                            }
+                            sendButton.setOnClickListener(){
+                                //Ensure the name is a valid, goodish name.
+                                if (newWhisper == ""){
+                                    Toast.makeText(context, "Please hit enter.", Toast.LENGTH_LONG).show()
+                                }else{
+                                    Log.d(tag, "newWhisper is $newWhisper")
+                                    if (DataMaster.retrieveCharacterInformation() != null){
+                                        val currentCharacter = DataMaster.retrieveCharacterInformation()
+                                        DataMaster.sendWhisperToPlayer(currentCharacter!!, otherPlayerCharacterInformation, newWhisper)
+                                    }
+                                    dialog.dismiss()
+                                }
+                            }
                         }
                     }
                     true
@@ -48,6 +122,7 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
         val nameHolder = holder as CampfireOtherPlayersViewHolder
         for (item in otherPlayersList){
             nameHolder.otherPlayerNameTextView.text = item.otherPlayerCharacterName
+            nameHolder.otherPlayerCharacterInformation = OtherPlayerCharacterInformation(item.otherPlayerCharacterName, item.otherPlayerCharacterUUID, item.otherPlayerDeviceName)
         }
     }
 

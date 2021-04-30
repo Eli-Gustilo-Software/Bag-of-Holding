@@ -28,6 +28,8 @@ class CampfireFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+
+        //inflate and handle view model setup
         val root = inflater.inflate(R.layout.fragment_campfire, container, false)
         campfireViewModel = ViewModelProvider(this).get(CampfireViewModel::class.java)
         campfireViewModel.characterData.observe(viewLifecycleOwner, Observer {
@@ -42,6 +44,9 @@ class CampfireFragment : Fragment() {
                 campfireRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+
+
         return root
     }
 

@@ -1,5 +1,8 @@
 package com.example.thebagofholding.ui.mainbag.consumableslist
 
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
@@ -17,6 +22,7 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         private val tag = "ConsumablesViewHolder"
         lateinit var itemConsumablesData: ConsumablesItemData
         lateinit var itemCharacterOwner : CharacterInformation
+        private val context = super.itemView.context
         val consumablesNameTextView: TextView = view.findViewById(R.id.consumables_cell_name_textview)
         val consumablesImageImageView : ImageView = view.findViewById(R.id.consumables_cell_imageview)
         val consumablesEffectsOneTextView : TextView = view.findViewById(R.id.consumables_cell_effect1_textview)
@@ -47,6 +53,13 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${consumablesNameTextView.text}")
+                                        val v = ContextCompat.getSystemService(context, Vibrator::class.java)
+                                        if (Build.VERSION.SDK_INT >= 26) {
+                                            v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                                        } else {
+                                            v?.vibrate(200)
+                                        }
+                                        Toast.makeText(context, "Transferring ${itemConsumablesData.consumablesName} to ${player.otherPlayerCharacterName}" , Toast.LENGTH_SHORT).show()
                                         DataMaster.transferItemConsumable(player, itemConsumablesData)
                                         true
                                     }

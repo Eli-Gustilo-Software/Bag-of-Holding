@@ -1,6 +1,9 @@
 package com.example.thebagofholding.ui.mainbag.armorlist
 
 
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
@@ -18,6 +23,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
         private val tag = "ArmorViewHolder"
         lateinit var itemArmorData: ArmorItemData
         lateinit var itemCharacterOwner : CharacterInformation
+        private val context = super.itemView.context
         val armorNameTextView: TextView = view.findViewById(R.id.armor_cell_name_textview)
         val armorImageImageView: ImageView = view.findViewById(R.id.armor_cell_imageview)
         val armorEffectsOneTextView: TextView = view.findViewById(R.id.armor_cell_effect1_textview)
@@ -48,6 +54,13 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${armorNameTextView.text}")
+                                        val v = ContextCompat.getSystemService(context, Vibrator::class.java)
+                                        if (Build.VERSION.SDK_INT >= 26) {
+                                            v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                                        } else {
+                                            v?.vibrate(200)
+                                        }
+                                        Toast.makeText(context, "Transferring ${itemArmorData.armorName} to ${player.otherPlayerCharacterName}" , Toast.LENGTH_SHORT).show()
                                         DataMaster.transferItemArmor(player, itemArmorData)
                                         true
                                     }

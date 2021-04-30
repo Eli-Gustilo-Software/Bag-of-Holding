@@ -1,5 +1,8 @@
 package com.example.thebagofholding.ui.mainbag.miscellaneouslist
 
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 
@@ -18,6 +23,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         private val tag = "MiscellaneousItemViewHolder"
         lateinit var itemMiscellaneousData: MiscellaneousItemData
         lateinit var itemCharacterOwner : CharacterInformation
+        private val context = super.itemView.context
         val miscNameTextView: TextView = view.findViewById(R.id.misc_cell_name_textview)
         val miscImageImageView : ImageView = view.findViewById(R.id.misc_cell_imageview)
         val miscEffectsOneTextView : TextView = view.findViewById(R.id.misc_cell_effect1_textview)
@@ -48,6 +54,13 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                                     popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
                                         //player name clicked
                                         Log.d(tag, "player to transfer item = ${player.otherPlayerCharacterName} and item = ${itemMiscellaneousData.miscName}")
+                                        val v = ContextCompat.getSystemService(context, Vibrator::class.java)
+                                        if (Build.VERSION.SDK_INT >= 26) {
+                                            v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                                        } else {
+                                            v?.vibrate(200)
+                                        }
+                                        Toast.makeText(context, "Transferring ${itemMiscellaneousData.miscName} to ${player.otherPlayerCharacterName}" , Toast.LENGTH_SHORT).show()
                                         DataMaster.transferItemMiscellaneous(player, itemMiscellaneousData)
                                         true
                                     }

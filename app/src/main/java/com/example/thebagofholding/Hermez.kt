@@ -129,9 +129,16 @@ class Hermez(context: Context, serviceType: String) {
     }
 
     fun resetService(){
+        //HARD reset
         //While hopefully unnecessary it may be desirable to be able to throw the whole process away and begin again.
         hermezService?.resetRegistration()
         Thread.sleep(500) //maybe we want to wait a second for registration to go
+        hermezBrowser?.resetDiscovery()
+    }
+
+    fun resetDiscovery(){
+        //SOFT reset
+        //While hopefully unnecessary it may be desirable to be able to throw just the most unstable part. Discovery.
         hermezBrowser?.resetDiscovery()
     }
 

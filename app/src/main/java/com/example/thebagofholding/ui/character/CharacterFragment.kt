@@ -55,7 +55,7 @@ class CharacterFragment : Fragment() {
             currentCharacterNameTextView.text = "${currentCharacter.characterName}'s Bag of Holding"
         }else{
             findNavController().navigate(R.id.navigation_character_creation_screen)
-            Toast.makeText(this.context, "Please create a character first.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this.context, "Please create or select a character first.", Toast.LENGTH_LONG).show()
         }
 
         //Buttons
