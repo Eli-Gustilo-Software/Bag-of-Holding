@@ -171,6 +171,18 @@ class Hermez(context: Context, serviceType: String) {
         }.start()
     }
 
+    private fun connectionHealthCheck(){
+        Thread{//async
+            while (true){//while(true) will always run
+                if (messageQueue.isNotEmpty()){
+                    //send a message asking it if its alive similar to the sendMessage
+                }
+                Thread.sleep(3000)
+                //todo what if its empty???
+            }
+        }.start()
+    }
+
     //SERVER CODE (Registration)
     private inner class HermezService {
         private var localPortServer = 101

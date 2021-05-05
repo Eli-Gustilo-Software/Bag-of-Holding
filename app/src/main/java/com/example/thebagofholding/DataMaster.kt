@@ -15,6 +15,7 @@ data class ArmorItemData(
         val armorImage: Int,
         val armorName: String,
         val armorEffectsOne: String,
+        val armorDescription: String,
         val armorUUID: UUID
 )
 
@@ -38,6 +39,7 @@ data class ConsumablesItemData(
         val consumablesImage: Int,
         val consumablesName: String,
         val consumablesEffectsOne: String,
+        val consumablesDescription: String,
         val consumablesUUID: UUID
 )
 
@@ -45,6 +47,7 @@ data class MiscellaneousItemData(
         val miscImage: Int,
         val miscName: String,
         val miscEffectsOne: String,
+        val miscDescription: String,
         val miscUUID: UUID
 )
 
@@ -59,7 +62,17 @@ data class WeaponItemData(
         val image: Int,
         val name: String,
         val weaponEffectOne: String,
+        val weaponDescription: String,
         val weaponUUID: UUID
+)
+
+data class GenericItemData(
+        val image: Int,
+        val name: String,
+        val effectOne: String,
+        val itemType: String,
+        val itemDescription: String,
+        val UUID: UUID
 )
 
 //todo good place to make bargain/transaction class
@@ -182,21 +195,53 @@ object DataMaster: Hermez.HermezDataInterface {
     //ITEMS
 
     //SAVE
-    fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
+    fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData) {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
+        var itemToAddArray = arrayListOf<ArmorItemData>()
+        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $armorItem character to save to is $characterOwner")
-        characterOwner.characterArmorItemsList.add(armorItem)
-        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
-        val characterInformationAsJSON = Gson().toJson(characterOwner)
-        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        val characterName = characterOwner.characterName
-        characterHashtable[characterName] = characterInformationAsJSON
-        val characterHashtableJSON = Gson().toJson(characterHashtable)
-        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
-        editor?.apply()
-        objectToNotify?.giveCharacterInfo(characterOwner)
+        for (item in characterOwner.characterArmorItemsList) {
+            if (item.armorUUID != armorItem.armorUUID) {//we do not have this specific item already.
+                itemToAddArray.add(armorItem)
+//                characterOwner.characterArmorItemsList.add(armorItem)
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+                objectToNotify?.giveCharacterInfo(characterOwner)
+            } else {//we are changing an item that already exists
+//                characterOwner.characterArmorItemsList.remove(item)
+//                characterOwner.characterArmorItemsList.add(armorItem)
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+                objectToNotify?.giveCharacterInfo(characterOwner)
+            }
+        }
+        characterOwner.characterArmorItemsList.addAll(itemToAddArray)
+//        characterOwner.characterArmorItemsList.add(armorItem)
+//        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+//        val characterInformationAsJSON = Gson().toJson(characterOwner)
+//        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+//        val characterName = characterOwner.characterName
+//        characterHashtable[characterName] = characterInformationAsJSON
+//        val characterHashtableJSON = Gson().toJson(characterHashtable)
+//        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+//        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+//        editor?.apply()
+//        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){

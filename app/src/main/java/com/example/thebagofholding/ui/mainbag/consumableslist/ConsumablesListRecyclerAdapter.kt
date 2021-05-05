@@ -67,6 +67,8 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                             }
                             popupMenuTransfer.show()
                         }
+
+
                     }
                     true
                 }
