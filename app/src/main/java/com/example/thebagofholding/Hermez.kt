@@ -142,6 +142,11 @@ class Hermez(context: Context, serviceType: String) {
         hermezBrowser?.resetDiscovery()
     }
 
+    fun cleanup(){
+        //NEEDS to be called on Pause and On Destroy
+        HermezService().cleanup()
+        HermezBrowser().cleanup()
+    }
 
     fun initWithDelegate(delegate: HermezDataInterface? = null) {
         //this sets the object/activity/fragment to receive data from Hermez. This is required.
@@ -170,6 +175,8 @@ class Hermez(context: Context, serviceType: String) {
             }
         }.start()
     }
+
+
 
     private fun connectionHealthCheck(){
         Thread{//async
@@ -239,6 +246,10 @@ class Hermez(context: Context, serviceType: String) {
                 delay(3000) // non-blocking delay for 1 second (default time unit is ms)
                 registerService()
             }
+        }
+
+        fun cleanup(){
+            nsdManagerServer?.unregisterService(registrationListener)
         }
 
         private val registrationListener = object : NsdManager.RegistrationListener {
@@ -379,6 +390,10 @@ class Hermez(context: Context, serviceType: String) {
                 delay(3000) // non-blocking delay for 1 second (default time unit is ms)
                 discoverService()
             }
+        }
+
+        fun cleanup(){
+            nsdManagerClient?.stopServiceDiscovery(discoveryListener)
         }
 
         private val discoveryListener = object : DiscoveryListener {

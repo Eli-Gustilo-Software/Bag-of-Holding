@@ -85,7 +85,7 @@ object DataMaster: Hermez.HermezDataInterface {
     private var characterArray = ArrayList<CharacterInformation>()
     private var characterHashtable = Hashtable<String, String>()
     private var otherPlayersArray = ArrayList<OtherPlayerCharacterInformation>()
-    private var hermezDevicesConnected = ArrayList<Hermez.HermezDevice>()
+    private var bagofholdingDevicesConnected = ArrayList<Hermez.HermezDevice>()
     private lateinit var hermez : Hermez //TODO how do i fisx
     private val phoneName = Build.MODEL
     var objectToNotify : DataMasterInterface? = null
@@ -423,6 +423,10 @@ object DataMaster: Hermez.HermezDataInterface {
         hermez.resetDiscovery()
     }
 
+    fun cleanupHermez(){
+        hermez.cleanup()
+    }
+
     fun sendWhisperToPlayer(sendingPlayer: CharacterInformation, playerToSendWhisperTo : OtherPlayerCharacterInformation, whisper : String){
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(playerToSendWhisperTo.otherPlayerDeviceName))
@@ -442,13 +446,13 @@ object DataMaster: Hermez.HermezDataInterface {
 
     override fun messageReceived(hermezMessage: Hermez.HermezMessage) {
         Log.d("messageReceived", "messageReceived called: = $hermezMessage")
-        if (hermezDevicesConnected.contains(hermezMessage.sendingDevice)){
-            Log.d("messageReceived", "the hermezDevicesConnected is $hermezDevicesConnected")
-            //we have already connected to the other person at least once. We need to try and send them a message and confirm we are still connected. Else we need to remove them and then rediscover
+        if (bagofholdingDevicesConnected.contains(hermezMessage.sendingDevice)){
+            Log.d("messageReceived", "the hermezDevicesConnected is $bagofholdingDevicesConnected")
+            //we have already connected to the other person at least once. We need to try and send them a message and confirm we are still connected. Else we need to remove them and then rediscover//todo
         }else{
             //someone sees me but I don't see them. I need to discover them.
-            hermezDevicesConnected.add(hermezMessage.sendingDevice)
-            Log.d("messageReceived", "the hermezDevicesConnected is $hermezDevicesConnected")
+            bagofholdingDevicesConnected.add(hermezMessage.sendingDevice)
+            Log.d("messageReceived", "the hermezDevicesConnected is $bagofholdingDevicesConnected")
             val currentCharacter = retrieveCharacterInformation()
             if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
                 val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
@@ -596,7 +600,8 @@ object DataMaster: Hermez.HermezDataInterface {
     override fun serviceFailed(serviceType: String, serviceName: String?, error: Hermez.HermezError) {
         Log.d(tag, "serviceFailed called")
         val hermezDeviceLost = serviceName?.let { Hermez.HermezDevice(it) }
-        hermezDevicesConnected.remove(hermezDeviceLost)
+        bagofholdingDevicesConnected.remove(hermezDeviceLost)
+        //todo handle campfire losing connection and not losing the cell.
     }
 
     override fun messageCannotBeSentToDevices(hermezMessage: Hermez.HermezMessage, error: Hermez.HermezError) {
@@ -637,6 +642,6 @@ object DataMaster: Hermez.HermezDataInterface {
     override fun resolveFailed(serviceType: String, serviceName: String, error: Hermez.HermezError) {
         Log.d(tag, "resolveFailed called $serviceType $serviceName $error")
         val hermezDeviceLost = serviceName.let { Hermez.HermezDevice(it) }
-        hermezDevicesConnected.remove(hermezDeviceLost)//todo is this right? i could be removing things that don't exist in the array?
+        bagofholdingDevicesConnected.remove(hermezDeviceLost)//todo is this right? i could be removing things that don't exist in the array?
     }
 }

@@ -55,6 +55,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
+        DataMaster.cleanupHermez()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        DataMaster.cleanupHermez()
+        super.onDestroy()
     }
 }

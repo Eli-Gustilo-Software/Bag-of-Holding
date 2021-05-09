@@ -44,9 +44,6 @@ class CampfireFragment : Fragment() {
                 campfireRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
-
-
-
         return root
     }
 
