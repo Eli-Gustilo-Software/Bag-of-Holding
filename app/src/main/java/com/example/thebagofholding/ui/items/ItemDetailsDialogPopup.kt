@@ -159,28 +159,28 @@ class ItemDetailsDialogPopup() {
                 if (itemName != null && itemEffect != null && itemType != null) {//item exists
                     when (itemType) {//TODO should these be enums? what is the point of ENUMS?
                         "weapon" -> { //Weapon
-                            val newWeapon = WeaponItemData((R.drawable.ic_weapon_sword), itemName, itemEffect, itemDescription, itemUUID)
+                            val newWeapon = WeaponItemData((R.drawable.item_sword_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                                 DataMaster.saveItemWeapon(character, newWeapon)//todo can this copy items that are updated with details?
                             }
                         }
                         "armor" -> { //Armor/Apparel
-                            val newArmor = ArmorItemData((R.drawable.ic_helmet), itemName, itemEffect, itemDescription, itemUUID)
+                            val newArmor = ArmorItemData((R.drawable.item_helmet_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemArmor(character, newArmor)
                             }
                         }
                         "consumable" -> { //Consumable
-                            val newConsumable = ConsumablesItemData((R.drawable.ic_potion), itemName, itemEffect, itemDescription, itemUUID)
+                            val newConsumable = ConsumablesItemData((R.drawable.item_potion_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemConsumable(character, newConsumable)
                             }
                         }
                         "misc" -> { //Miscellaneous
-                            val newMisc = MiscellaneousItemData((R.drawable.ic_misc_item_1), itemName, itemEffect, itemDescription, itemUUID)
+                            val newMisc = MiscellaneousItemData((R.drawable.item_misc_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemMiscellaneous(character, newMisc)
@@ -201,22 +201,22 @@ class ItemDetailsDialogPopup() {
                     when (position) {//TODO should these be enums? what is the point of ENUMS?
                         0 -> { //Weapon
                             itemType = "weapon"
-                            itemImageView.setBackgroundResource(R.drawable.ic_weapon_sword) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_sword_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                             Log.d(tag, "newItem type = $itemType")
                         }
                         1 -> { //Armor/Apparel
                             itemType = "armor"
-                            itemImageView.setBackgroundResource(R.drawable.ic_helmet) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_helmet_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                             Log.d(tag, "newItem type = $itemType")
                         }
                         2 -> { //Consumable
                             itemType = "consumable"
-                            itemImageView.setBackgroundResource(R.drawable.ic_potion) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_potion_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                             Log.d(tag, "newItem type = $itemType")
                         }
                         3 -> { //Miscellaneous
                             itemType = "misc"
-                            itemImageView.setBackgroundResource(R.drawable.ic_misc_item_1) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_misc_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
                             Log.d(tag, "newItem type = $itemType")
                         }
                     }

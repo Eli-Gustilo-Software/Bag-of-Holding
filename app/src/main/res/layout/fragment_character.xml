@@ -5,39 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.character.CharacterFragment"
-    android:background="@color/cardview_dark_background"
+    android:background="@drawable/background_2"
     >
-
-    <TextView
-        android:id="@+id/character_name_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vincint Valentine"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        android:textStyle="italic|bold"
-        app:layout_constraintBottom_toTopOf="@+id/character_main_bag_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55"
+        app:layout_constraintGuide_percent="0.5"
         />
 
     <ImageButton
         android:id="@+id/character_main_bag_button"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/ic_purse"
-        app:layout_constraintBottom_toTopOf="@+id/character_mainbag_textview"
-        app:layout_constraintEnd_toEndOf="@+id/character_name_textview"
-        app:layout_constraintStart_toStartOf="@+id/character_name_textview" />
+        android:layout_marginTop="64dp"
+        android:background="@drawable/mainbag_bag_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/character_coin_purse_button"
@@ -45,7 +32,7 @@
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="64dp"
-        android:background="@drawable/ic_purse"
+        android:background="@drawable/mainbag_purse_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
@@ -55,7 +42,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/ic_new_item_scroll"
+        android:background="@drawable/item_newitem_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
@@ -65,9 +52,11 @@
         android:layout_height="wrap_content"
         android:text="Bag of Holding"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        android:fontFamily="@font/cinzel_decorative"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/character_main_bag_button" />
 
     <TextView
         android:id="@+id/character_purse_textview"
@@ -76,6 +65,8 @@
         android:layout_marginTop="4dp"
         android:text="Coin Purse"
         android:textStyle="bold"
+        android:fontFamily="@font/cinzel_decorative"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/character_coin_purse_button"
         app:layout_constraintStart_toStartOf="@+id/character_coin_purse_button"
         app:layout_constraintTop_toBottomOf="@+id/character_coin_purse_button" />
@@ -87,6 +78,8 @@
         android:layout_marginTop="4dp"
         android:text="New Item"
         android:textStyle="bold"
+        android:fontFamily="@font/cinzel_decorative"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/charcater_new_item_button"
         app:layout_constraintStart_toStartOf="@+id/charcater_new_item_button"
         app:layout_constraintTop_toBottomOf="@+id/charcater_new_item_button" />

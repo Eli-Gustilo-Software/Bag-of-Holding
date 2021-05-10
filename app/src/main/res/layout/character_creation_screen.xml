@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/generic_scroll_medium_wide"
+    >
 
     <TextView
         android:id="@+id/character_creation_explanation_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="64dp"
         android:text="What is your new character's name?"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,10 +22,9 @@
         android:id="@+id/character_creation_name_entry_edittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:hint="Character Name?"
         android:singleLine="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/character_creation_explanation_textview"
         app:layout_constraintStart_toStartOf="@+id/character_creation_explanation_textview"
         app:layout_constraintTop_toBottomOf="@+id/character_creation_explanation_textview" />
@@ -32,6 +33,8 @@
         android:id="@+id/character_creation_screen_create_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:text="Create"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,6 +46,8 @@
         android:id="@+id/character_creation_screen_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
         android:text="Back"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

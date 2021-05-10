@@ -3,23 +3,43 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background_2"
+    >
 
     <TextView
         android:id="@+id/consumables_list_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="$CharacterName's Consumables"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/itemtype_screen_title_image_holder"
+        android:fontFamily="@font/cinzel_decorative"
+        android:text=""
+        android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/consumables_list_recyclerView"
+        app:layout_constraintStart_toStartOf="@+id/consumables_list_recyclerView"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:layout_constraintBottom_toBottomOf="@+id/consumables_list_title"
+        app:layout_constraintEnd_toEndOf="@+id/consumables_list_title"
+        app:layout_constraintStart_toStartOf="@+id/consumables_list_title"
+        app:layout_constraintTop_toTopOf="@+id/consumables_list_title"
+        app:srcCompat="@drawable/itemtype_potion_image" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/consumables_list_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fontFamily="@font/cinzel_decorative"
+        android:background="#30100D"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

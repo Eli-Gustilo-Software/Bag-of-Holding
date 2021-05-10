@@ -6,28 +6,33 @@
     android:id="@+id/misc_cell_constraintlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardview_dark_background"
+    android:background="#E49F5C"
     android:layout_marginBottom="10dp"
     >
-
 
     <ImageView
         android:id="@+id/misc_cell_imageview"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/item_misc_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ic_misc_item_1"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/misc_cell_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="The Sword of Power"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/cinzel_decorative"
+        android:text="Ensenric"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/misc_cell_imageview"
         app:layout_constraintStart_toEndOf="@+id/misc_cell_imageview"
         app:layout_constraintTop_toTopOf="@+id/misc_cell_imageview" />
 
@@ -35,10 +40,28 @@
         android:id="@+id/misc_cell_effect1_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/cinzel_decorative"
         android:text="Damage: D+5"
-        app:layout_constraintBottom_toBottomOf="@+id/misc_cell_imageview"
-        app:layout_constraintStart_toEndOf="@+id/misc_cell_imageview" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/misc_cell_name_textview"
+        app:layout_constraintStart_toEndOf="@+id/misc_cell_imageview"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/armor_cell_description_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="This armor is cool"
+        android:textStyle="bold"
+        android:fontFamily="@font/cinzel_decorative"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/misc_cell_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/misc_cell_name_textview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

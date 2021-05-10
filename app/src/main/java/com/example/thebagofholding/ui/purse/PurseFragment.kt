@@ -58,9 +58,7 @@ class PurseFragment : Fragment() {
 
         //Views and Listeners and Edit Texts //TODO I could  make it so the initial zero is deleted on new characters on click.
         //BRONZE
-        val bronzeTextView = view.findViewById<TextView>(R.id.purse_money_1_4_textview) //TODO should these be class variables or stay here? what is good convention?
         val bronzeAmountEditText = view.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
-        val characterPurseTextView = view.findViewById<TextView>(R.id.purse_top_textview)
 
         //Filter to only allow digits: Phone popup is in XML
         val filterBronze = InputFilter { source, start, end, dest, dstart, dend ->
@@ -109,7 +107,6 @@ class PurseFragment : Fragment() {
         }
 
         //SILVER
-        val silverTextView = view.findViewById<TextView>(R.id.purse_money_2_4_textview)
         val silverAmountEditText = view.findViewById<TextView>(R.id.purse_money_2_4_amount_edittext)
 
         //Filter to only allow digits: Phone popup is in XML
@@ -160,7 +157,6 @@ class PurseFragment : Fragment() {
 
 
         //GOLD
-        val goldTextView = view.findViewById<TextView>(R.id.purse_money_3_4_textview)
         val goldAmountEditText = view.findViewById<TextView>(R.id.purse_money_3_4_amount_edittext)
 
         //Filter to only allow digits: Phone popup is in XML
@@ -210,7 +206,6 @@ class PurseFragment : Fragment() {
         }
 
         //TRUE SILVER
-        val truesilverTextView = view.findViewById<TextView>(R.id.purse_money_4_4_textview)
         val truesilverEditText = view.findViewById<TextView>(R.id.purse_money_4_4_amount_edittext) //TODO if i turn this into a EditText it causes trouble. WHY??
 
         //Filter to only allow digits: Phone popup is in XML
@@ -258,13 +253,6 @@ class PurseFragment : Fragment() {
                 else -> false
             }
         }
-
-        //Initializing text and other misc //TODO this needs to go in ViewModel. Do the click listeners???
-        bronzeTextView?.text = "Bronze Coins"
-        silverTextView?.text = "Silver Coins"
-        goldTextView?.text = "Gold Coins"
-        truesilverTextView?.text = "True Silver Coins"
-        characterPurseTextView.text = "${currentCharacter.characterName}'s Coin Purse"
 
         //TODO can this ever be null and break???
         bronzeAmountEditText?.text = currentCharacter.characterPurseData.bronze

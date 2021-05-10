@@ -49,10 +49,8 @@ class CharacterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //CharacterName TextView
-        currentCharacterNameTextView = view.findViewById(R.id.character_name_textview)
         if (DataMaster.retrieveCharacterInformation() != null){
             currentCharacter = DataMaster.retrieveCharacterInformation()!!
-            currentCharacterNameTextView.text = "${currentCharacter.characterName}'s Bag of Holding"
         }else{
             findNavController().navigate(R.id.navigation_character_creation_screen)
             Toast.makeText(this.context, "Please create or select a character first.", Toast.LENGTH_LONG).show()
