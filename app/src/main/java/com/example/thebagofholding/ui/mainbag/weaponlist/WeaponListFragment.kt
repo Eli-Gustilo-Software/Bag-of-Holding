@@ -15,7 +15,6 @@ import com.example.thebagofholding.*
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
     private lateinit var weaponListViewModel: WeaponListViewModel
-    private lateinit var weaponListOwnerTextView : TextView
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
     private var weaponsListArray = ArrayList<WeaponItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -48,9 +47,6 @@ class WeaponListFragment : Fragment(){
             }
         })
 
-        //Character Name TextView
-        weaponListOwnerTextView = root.findViewById(R.id.weapons_list_title)
-        weaponListOwnerTextView.text = "${currentCharacter.characterName}'s Weapons"
 
         return root
     }

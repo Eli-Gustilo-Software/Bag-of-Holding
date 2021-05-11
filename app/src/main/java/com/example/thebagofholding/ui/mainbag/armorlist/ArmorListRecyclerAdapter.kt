@@ -1,20 +1,15 @@
 package com.example.thebagofholding.ui.mainbag.armorlist
 
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.constraintlayout.solver.widgets.ConstraintAnchor
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +26,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
         val armorNameTextView: TextView = view.findViewById(R.id.armor_cell_name_textview)
         val armorImageImageView: ImageView = view.findViewById(R.id.armor_cell_imageview)
         val armorEffectsOneTextView: TextView = view.findViewById(R.id.armor_cell_effect1_textview)
+        val armorDescriptionTextView : TextView = view.findViewById(R.id.armor_cell_description_textview)
         private val armorCellConstraintLayout: ConstraintLayout = view.findViewById(R.id.armor_cell_constraint_layout)
 
         init {
@@ -94,12 +90,13 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val armorNameHolder = holder as ArmorViewHolder
+        val armorItemHolder = holder as ArmorViewHolder
 
 
-        armorNameHolder.armorNameTextView.text = currentCharacter.characterArmorItemsList[position].armorName
-        armorNameHolder.armorImageImageView.setBackgroundResource(currentCharacter.characterArmorItemsList[position].armorImage)
-        armorNameHolder.armorEffectsOneTextView.text = currentCharacter.characterArmorItemsList[position].armorEffectsOne
+        armorItemHolder.armorNameTextView.text = currentCharacter.characterArmorItemsList[position].armorName
+        armorItemHolder.armorImageImageView.setBackgroundResource(currentCharacter.characterArmorItemsList[position].armorImage)
+        armorItemHolder.armorEffectsOneTextView.text = currentCharacter.characterArmorItemsList[position].armorEffectsOne
+        armorItemHolder.armorDescriptionTextView.text = currentCharacter.characterArmorItemsList[position].armorDescription
 
         holder.itemArmorData = currentCharacter.characterArmorItemsList[position]
         holder.itemCharacterOwner = currentCharacter

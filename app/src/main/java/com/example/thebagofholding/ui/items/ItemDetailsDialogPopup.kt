@@ -37,7 +37,6 @@ class ItemDetailsDialogPopup() {
 
         if (view != null) {
             //Set views
-            val titleTextView: TextView = view.findViewById(R.id.item_details_title_textview)
             val itemImageView: ImageView = view.findViewById(R.id.item_details_imageview)
             val itemTypeSpinner: Spinner = view.findViewById(R.id.item_details_type_spinner)
             val itemNameEditText: EditText = view.findViewById(R.id.item_details_name_edittext)
@@ -47,25 +46,11 @@ class ItemDetailsDialogPopup() {
             val itemDetailsConfirmButton: Button = view.findViewById(R.id.item_details_confirm_button)
 
             //init
-            titleTextView.text = "${genericItemData.name}'s details"
             itemNameEditText.setText(genericItemData.name)
             itemEffectEditText.setText(genericItemData.effectOne)
             itemDescriptionEditText.setText(genericItemData.itemDescription)
             itemImageView.setBackgroundResource(genericItemData.image)
-            when (genericItemData.itemType) {
-                "weapon" -> {
-                    itemTypeSpinner.setSelection(0)
-                }
-                "armor" -> {
-                    itemTypeSpinner.setSelection(1)
-                }
-                "consumable" -> {
-                    itemTypeSpinner.setSelection(2)
-                }
-                "misc" -> {
-                    itemTypeSpinner.setSelection(3)
-                }
-            }
+
 
             //EditTexts
             itemNameEditText.setOnKeyListener { v, keyCode, event ->
@@ -162,7 +147,8 @@ class ItemDetailsDialogPopup() {
                             val newWeapon = WeaponItemData((R.drawable.item_sword_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
-                                DataMaster.saveItemWeapon(character, newWeapon)//todo can this copy items that are updated with details?
+                                DataMaster.saveItemWeapon(character, newWeapon)
+                                dialog.dismiss()
                             }
                         }
                         "armor" -> { //Armor/Apparel
@@ -170,6 +156,7 @@ class ItemDetailsDialogPopup() {
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemArmor(character, newArmor)
+                                dialog.dismiss()
                             }
                         }
                         "consumable" -> { //Consumable
@@ -177,6 +164,7 @@ class ItemDetailsDialogPopup() {
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemConsumable(character, newConsumable)
+                                dialog.dismiss()
                             }
                         }
                         "misc" -> { //Miscellaneous
@@ -184,6 +172,7 @@ class ItemDetailsDialogPopup() {
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemMiscellaneous(character, newMisc)
+                                dialog.dismiss()
                             }
                         }
                     }
@@ -191,6 +180,29 @@ class ItemDetailsDialogPopup() {
             }
 
             //SPINNER
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter.createFromResource(context, R.array.item_types, android.R.layout.simple_spinner_item).also { adapter ->
+                // Specify the layout to use when the list of choices appears
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Apply the adapter to the spinner
+                itemTypeSpinner.adapter = adapter
+            }
+
+            when (genericItemData.itemType) {
+                "weapon" -> {
+                    itemTypeSpinner.setSelection(0)
+                }
+                "armor" -> {
+                    itemTypeSpinner.setSelection(1)
+                }
+                "consumable" -> {
+                    itemTypeSpinner.setSelection(2)
+                }
+                "misc" -> {
+                    itemTypeSpinner.setSelection(3)
+                }
+            }
+
             itemTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                         parent: AdapterView<*>?,

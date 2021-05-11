@@ -198,13 +198,39 @@ object DataMaster: Hermez.HermezDataInterface {
     fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData) {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        var itemToAddArray = arrayListOf<ArmorItemData>()
+        val itemToAddArray = ArrayList<ArmorItemData>() //todo these get thrown away each time this function is called right?
+        val itemToRemoveArray = ArrayList<ArmorItemData>()
         //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $armorItem character to save to is $characterOwner")
-        for (item in characterOwner.characterArmorItemsList) {
-            if (item.armorUUID != armorItem.armorUUID) {//we do not have this specific item already.
+        if (characterOwner.characterArmorItemsList.isEmpty()){//treat as normal and save item (first item)
+            characterOwner.characterArmorItemsList.add(armorItem)
+            Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+            val characterInformationAsJSON = Gson().toJson(characterOwner)
+            Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+            val characterName = characterOwner.characterName
+            characterHashtable[characterName] = characterInformationAsJSON
+            val characterHashtableJSON = Gson().toJson(characterHashtable)
+            editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+            editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+            editor?.apply()
+        }else{//we need to check to see if the item is being modified or saved.
+            var itemExists = false
+            for (item in characterOwner.characterArmorItemsList) {
+                if (item.armorUUID == armorItem.armorUUID) {//we are modifying an item
+                    itemToRemoveArray.add(item)
+                    itemToAddArray.add(armorItem)
+                    itemExists = true
+                    break
+                }
+            }
+
+            if (!itemExists){//we do not have this specific item already.
                 itemToAddArray.add(armorItem)
-//                characterOwner.characterArmorItemsList.add(armorItem)
+            }
+
+            if (itemToRemoveArray.isNotEmpty()){//we are changing an item and we need to remove it to avoid duplicates.
+                characterOwner.characterArmorItemsList.removeAll(itemToRemoveArray)
+                itemToRemoveArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
                 Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
@@ -214,10 +240,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
                 editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
                 editor?.apply()
-                objectToNotify?.giveCharacterInfo(characterOwner)
-            } else {//we are changing an item that already exists
-//                characterOwner.characterArmorItemsList.remove(item)
-//                characterOwner.characterArmorItemsList.add(armorItem)
+            }
+            if (itemToAddArray.isNotEmpty()){ //there is an item to add
+                characterOwner.characterArmorItemsList.addAll(itemToAddArray)
+                itemToAddArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
                 Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
@@ -227,11 +253,204 @@ object DataMaster: Hermez.HermezDataInterface {
                 editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
                 editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
                 editor?.apply()
-                objectToNotify?.giveCharacterInfo(characterOwner)
             }
         }
-        characterOwner.characterArmorItemsList.addAll(itemToAddArray)
-//        characterOwner.characterArmorItemsList.add(armorItem)
+        objectToNotify?.giveCharacterInfo(characterOwner)
+    }
+
+    fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        val itemToAddArray = ArrayList<WeaponItemData>() //todo these get thrown away each time this function is called right?
+        val itemToRemoveArray = ArrayList<WeaponItemData>()
+        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
+        Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
+        if (characterOwner.characterWeaponItemsList.isEmpty()){//treat as normal and save item (first item)
+            characterOwner.characterWeaponItemsList.add(weaponItem)
+            Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+            val characterInformationAsJSON = Gson().toJson(characterOwner)
+            Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+            val characterName = characterOwner.characterName
+            characterHashtable[characterName] = characterInformationAsJSON
+            val characterHashtableJSON = Gson().toJson(characterHashtable)
+            editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+            editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+            editor?.apply()
+        }else{//we need to check to see if the item is being modified or saved.
+            var itemExists = false
+            for (item in characterOwner.characterWeaponItemsList) {
+                if (item.weaponUUID == weaponItem.weaponUUID) {//we are modifying an item
+                    itemToRemoveArray.add(item)
+                    itemToAddArray.add(weaponItem)
+                    itemExists = true
+                    break
+                }
+            }
+
+            if (!itemExists){//we do not have this specific item already.
+                itemToAddArray.add(weaponItem)
+            }
+
+            if (itemToRemoveArray.isNotEmpty()){//we are changing an item and we need to remove it to avoid duplicates.
+                characterOwner.characterWeaponItemsList.removeAll(itemToRemoveArray)
+                itemToRemoveArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+            if (itemToAddArray.isNotEmpty()){ //there is an item to add
+                characterOwner.characterWeaponItemsList.addAll(itemToAddArray)
+                itemToAddArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+        }
+        objectToNotify?.giveCharacterInfo(characterOwner)
+    }
+
+    fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        val itemToAddArray = ArrayList<ConsumablesItemData>() //todo these get thrown away each time this function is called right?
+        val itemToRemoveArray = ArrayList<ConsumablesItemData>()
+        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
+        Log.d(tag, "Item to be saved is: $consumableItem character to save to is $characterOwner")
+        if (characterOwner.characterConsumablesItemsList.isEmpty()){//treat as normal and save item (first item)
+            characterOwner.characterConsumablesItemsList.add(consumableItem)
+            Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+            val characterInformationAsJSON = Gson().toJson(characterOwner)
+            Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+            val characterName = characterOwner.characterName
+            characterHashtable[characterName] = characterInformationAsJSON
+            val characterHashtableJSON = Gson().toJson(characterHashtable)
+            editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+            editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+            editor?.apply()
+        }else{//we need to check to see if the item is being modified or saved.
+            var itemExists = false
+            for (item in characterOwner.characterConsumablesItemsList) {
+                if (item.consumablesUUID == consumableItem.consumablesUUID) {//we are modifying an item
+                    itemToRemoveArray.add(item)
+                    itemToAddArray.add(consumableItem)
+                    itemExists = true
+                    break
+                }
+            }
+
+            if (!itemExists){//we do not have this specific item already.
+                itemToAddArray.add(consumableItem)
+            }
+
+            if (itemToRemoveArray.isNotEmpty()){//we are changing an item and we need to remove it to avoid duplicates.
+                characterOwner.characterConsumablesItemsList.removeAll(itemToRemoveArray)
+                itemToRemoveArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+            if (itemToAddArray.isNotEmpty()){ //there is an item to add
+                characterOwner.characterConsumablesItemsList.addAll(itemToAddArray)
+                itemToAddArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+        }
+        objectToNotify?.giveCharacterInfo(characterOwner)
+    }
+
+    fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val editor = sharedPrefs?.edit()
+        val itemToAddArray = ArrayList<MiscellaneousItemData>() //todo these get thrown away each time this function is called right?
+        val itemToRemoveArray = ArrayList<MiscellaneousItemData>()
+        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
+        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
+        if (characterOwner.characterMiscellaneousItemList.isEmpty()){//treat as normal and save item (first item)
+            characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
+            Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+            val characterInformationAsJSON = Gson().toJson(characterOwner)
+            Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+            val characterName = characterOwner.characterName
+            characterHashtable[characterName] = characterInformationAsJSON
+            val characterHashtableJSON = Gson().toJson(characterHashtable)
+            editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+            editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+            editor?.apply()
+        }else{//we need to check to see if the item is being modified or saved.
+            var itemExists = false
+            for (item in characterOwner.characterMiscellaneousItemList) {
+                if (item.miscUUID == miscellaneousItem.miscUUID) {//we are modifying an item
+                    itemToRemoveArray.add(item)
+                    itemToAddArray.add(miscellaneousItem)
+                    itemExists = true
+                    break
+                }
+            }
+
+            if (!itemExists){//we do not have this specific item already.
+                itemToAddArray.add(miscellaneousItem)
+            }
+
+            if (itemToRemoveArray.isNotEmpty()){//we are changing an item and we need to remove it to avoid duplicates.
+                characterOwner.characterMiscellaneousItemList.removeAll(itemToRemoveArray)
+                itemToRemoveArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+            if (itemToAddArray.isNotEmpty()){ //there is an item to add
+                characterOwner.characterMiscellaneousItemList.addAll(itemToAddArray)
+                itemToAddArray.clear()
+                Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
+                val characterInformationAsJSON = Gson().toJson(characterOwner)
+                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                val characterName = characterOwner.characterName
+                characterHashtable[characterName] = characterInformationAsJSON
+                val characterHashtableJSON = Gson().toJson(characterHashtable)
+                editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
+                editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
+                editor?.apply()
+            }
+        }
+        objectToNotify?.giveCharacterInfo(characterOwner)
+
+        //todo legacy from 5-11-2021
+//        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+//        val editor = sharedPrefs?.edit()
+//        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
+//        characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
 //        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
 //        val characterInformationAsJSON = Gson().toJson(characterOwner)
 //        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
@@ -242,57 +461,6 @@ object DataMaster: Hermez.HermezDataInterface {
 //        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
 //        editor?.apply()
 //        objectToNotify?.giveCharacterInfo(characterOwner)
-    }
-
-    fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
-        val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
-        characterOwner.characterWeaponItemsList.add(weaponItem)
-        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
-        val characterInformationAsJSON = Gson().toJson(characterOwner)
-        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        val characterName = characterOwner.characterName
-        characterHashtable[characterName] = characterInformationAsJSON
-        val characterHashtableJSON = Gson().toJson(characterHashtable)
-        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
-        editor?.apply()
-        objectToNotify?.giveCharacterInfo(characterOwner)
-    }
-
-    fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
-        val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be saved is: $consumableItem character to save to is $characterOwner")
-        characterOwner.characterConsumablesItemsList.add(consumableItem)
-        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
-        val characterInformationAsJSON = Gson().toJson(characterOwner)
-        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        val characterName = characterOwner.characterName
-        characterHashtable[characterName] = characterInformationAsJSON
-        val characterHashtableJSON = Gson().toJson(characterHashtable)
-        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
-        editor?.apply()
-        objectToNotify?.giveCharacterInfo(characterOwner)
-    }
-
-    fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
-        val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
-        characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
-        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
-        val characterInformationAsJSON = Gson().toJson(characterOwner)
-        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-        val characterName = characterOwner.characterName
-        characterHashtable[characterName] = characterInformationAsJSON
-        val characterHashtableJSON = Gson().toJson(characterHashtable)
-        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
-        editor?.apply()
-        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     //DELETE

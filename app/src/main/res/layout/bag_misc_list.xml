@@ -11,7 +11,7 @@
         android:id="@+id/misc_list_title"
         android:layout_width="0dp"
         android:layout_height="150dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/itemtype_screen_title_image_holder"
         android:fontFamily="@font/cinzel_decorative"
         android:text=""

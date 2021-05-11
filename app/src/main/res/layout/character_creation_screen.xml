@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/generic_scroll_medium_wide"
-    >
+    android:background="#00000000">
 
-    <TextView
-        android:id="@+id/character_creation_explanation_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="What is your new character's name?"
-        android:textStyle="bold"
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/generic_scroll_medium_wide"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,37 +21,47 @@
         android:id="@+id/character_creation_name_entry_edittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Character Name?"
-        android:singleLine="true"
-        app:layout_constraintEnd_toEndOf="@+id/character_creation_explanation_textview"
-        app:layout_constraintStart_toStartOf="@+id/character_creation_explanation_textview"
-        app:layout_constraintTop_toBottomOf="@+id/character_creation_explanation_textview" />
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/cinzel_decorative"
+        android:hint="New Character Name"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/character_creation_screen_create_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="32dp"
         android:text="Create"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/character_creation_name_entry_edittext"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/character_creation_name_entry_edittext" />
 
     <Button
         android:id="@+id/character_creation_screen_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="32dp"
         android:text="Back"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/character_creation_name_entry_edittext"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/character_creation_name_entry_edittext" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

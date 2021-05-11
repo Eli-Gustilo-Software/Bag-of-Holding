@@ -4,23 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.items.NewItemFragment"
     android:background="@drawable/background_2"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="#30100D"
         android:fontFamily="@font/cinzel_decorative"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/constraintTitle"
         tools:context=".ui.items.NewItemFragment">
 
         <ImageView
@@ -42,11 +40,12 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="16dp"
             android:autofillHints="New Item Name"
-            android:hint="New Item Name"
             android:fontFamily="@font/cinzel_decorative"
+            android:hint="New Item Name"
+            android:textAlignment="center"
+            android:inputType="textPersonName"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@+id/item_details_effect_edittext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +60,7 @@
             android:autofillHints="New Item Effect"
             android:fontFamily="@font/cinzel_decorative"
             android:hint="Your Item Effects ex: (D+4 (+2 Fire DMG)"
+            android:textAlignment="center"
             android:inputType="textCapWords"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
@@ -78,6 +78,7 @@
             android:autofillHints="New Item Description"
             android:fontFamily="@font/cinzel_decorative"
             android:hint="Item Description (Optional)"
+            android:textAlignment="center"
             android:inputType="textAutoCorrect"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
@@ -101,13 +102,13 @@
             app:layout_constraintTop_toBottomOf="@+id/item_details_description_editext" />
 
         <Button
-            android:id="@+id/item_details_create_button"
+            android:id="@+id/item_details_confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
-            android:text="Create"
+            android:text="Confirm"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -126,6 +127,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/item_details_imageview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -146,11 +149,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Item Type:"
+                android:layout_marginEnd="4dp"
                 android:fontFamily="@font/cinzel_decorative"
+                android:text="Item Type:"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/spinner_constraint_layout"
-                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintEnd_toStartOf="@+id/item_details_type_spinner"
                 app:layout_constraintStart_toStartOf="@+id/spinner_constraint_layout"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -159,17 +163,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_end="9dp" />
+                app:layout_constraintGuide_percent="0.5" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/newitem_title_image"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#30100D"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/newitem_title_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintTitle"
+            app:layout_constraintStart_toStartOf="@+id/constraintTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,8 @@ package com.example.thebagofholding.ui.character
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -50,6 +52,7 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                 builder.setView(view)
                 // create and show the alert dialog
                 dialog = builder.create()
+                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.show()
 
                 //Set views
@@ -151,6 +154,7 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                             builder.setView(view)
                             // create and show the alert dialog
                             dialog = builder.create()
+                            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                             dialog.show()
 
                             //Set views

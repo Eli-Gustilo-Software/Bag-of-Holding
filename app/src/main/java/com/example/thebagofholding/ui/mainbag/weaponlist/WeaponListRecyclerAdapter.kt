@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
+import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
 
 class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val tag = "WeaponListRecyclerAdapater"
@@ -25,6 +26,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         val weaponNameTextView: TextView = view.findViewById(R.id.weapon_cell_name_textview)
         val weaponImageImageView: ImageView = view.findViewById(R.id.weapon_cell_imageview)
         val weaponEffectOneTextView: TextView = view.findViewById(R.id.weapon_cell_effect1_textview)
+        val weaponDescriptionTextView : TextView = view.findViewById(R.id.weapon_cell_description_textview)
         private val weaponCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.weapon_cell_constraint_layout)
 
         init {
@@ -66,6 +68,18 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
                             }
                             popupMenuTransfer.show()
                         }
+
+                        R.id.item_popup_menu_details -> {
+                            val itemDetailsDialogPopup = ItemDetailsDialogPopup()
+                            val itemData = GenericItemData(
+                                itemWeaponData.image,
+                                itemWeaponData.name,
+                                itemWeaponData.weaponEffectOne,
+                                "weapon",
+                                itemWeaponData.weaponDescription,
+                                itemWeaponData.weaponUUID)
+                            itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
+                        }
                     }
                     true
                 }
@@ -93,6 +107,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         weaponObjectViewHolder.weaponNameTextView.text = weaponName
         weaponObjectViewHolder.weaponImageImageView.setBackgroundResource(weaponImage)
         weaponObjectViewHolder.weaponEffectOneTextView.text = weaponEffectOne
+        weaponObjectViewHolder.weaponDescriptionTextView.text = currentCharacter.characterWeaponItemsList[position].weaponDescription
 
         holder.itemWeaponData = currentCharacter.characterWeaponItemsList[position]
         holder.itemCharacterOwner = currentCharacter

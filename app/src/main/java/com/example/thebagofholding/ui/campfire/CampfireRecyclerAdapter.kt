@@ -4,6 +4,8 @@ package com.example.thebagofholding.ui.campfire
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -14,15 +16,17 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
+import org.w3c.dom.Text
 import java.util.*
-import kotlin.collections.ArrayList
 
-class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class CampfireRecyclerAdapter(var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class CampfireOtherPlayersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "CampfireOtherPlayersViewHolder"
         private val context = super.itemView.context
         private val otherPlayerCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.character_creation_mother_constraintlayout)
         private lateinit var whisperInputEditText : EditText
+        private lateinit var whisperTitleTextview : TextView
         private lateinit var backButton : Button
         private lateinit var sendButton : Button
         private var newWhisper = ""
@@ -31,12 +35,12 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
         val otherPlayerNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         init {
             otherPlayerCellConstraintLayout.setOnLongClickListener(){
-                val popupMenu= PopupMenu(view.context,it) //TODO need to move this to the right of the screen.
+                val popupMenu= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
                 popupMenu.inflate(R.menu.campfire_interactions_popup_menu)
-                popupMenu.setOnMenuItemClickListener {item->
+                popupMenu.setOnMenuItemClickListener { item->
                     when(item.itemId)
                     {
-                        R.id.campfire_whisper_button->{
+                        R.id.campfire_whisper_button -> {
                             Log.d(tag, "campfire whisper was called to ${otherPlayerNameTextView.text}")
                             val dialog: AlertDialog?
                             val builder = AlertDialog.Builder(context)
@@ -46,14 +50,19 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
                             builder.setView(view)
                             // create and show the alert dialog
                             dialog = builder.create()
+                            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                             dialog.show()
 
                             //Set views
-                            if (view != null){
+                            if (view != null) {
                                 whisperInputEditText = view.findViewById(R.id.your_whisper_edittext)
+                                whisperTitleTextview = view.findViewById(R.id.other_character_whispering_to_name)
                                 backButton = view.findViewById(R.id.deletion_back)
                                 sendButton = view.findViewById(R.id.deletion_confirm)
                             }
+
+                            //TEXTVIEW Title
+                            whisperTitleTextview.text = "What do you want to whisper to ${otherPlayerCharacterInformation.otherPlayerCharacterName}?"
 
                             //EditText
                             whisperInputEditText.setOnKeyListener { v, keyCode, event ->
@@ -73,7 +82,7 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
                                         //return true
                                         return@setOnKeyListener true
                                     }
-                                    keyCode == KeyEvent.KEYCODE_NAVIGATE_OUT-> {
+                                    keyCode == KeyEvent.KEYCODE_NAVIGATE_OUT -> {
                                         whisperInputEditText.clearFocus()
                                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                                         if (view != null) {
@@ -87,16 +96,16 @@ class CampfireRecyclerAdapter (var otherPlayersList: ArrayList<OtherPlayerCharac
                                 }
                             }
                             //Buttons
-                            backButton.setOnClickListener(){
+                            backButton.setOnClickListener() {
                                 dialog.dismiss()
                             }
-                            sendButton.setOnClickListener(){
+                            sendButton.setOnClickListener() {
                                 //Ensure the name is a valid, goodish name.
-                                if (newWhisper == ""){
+                                if (newWhisper == "") {
                                     Toast.makeText(context, "Please hit enter.", Toast.LENGTH_LONG).show()
-                                }else{
+                                } else {
                                     Log.d(tag, "newWhisper is $newWhisper")
-                                    if (DataMaster.retrieveCharacterInformation() != null){
+                                    if (DataMaster.retrieveCharacterInformation() != null) {
                                         val currentCharacter = DataMaster.retrieveCharacterInformation()
                                         DataMaster.sendWhisperToPlayer(currentCharacter!!, otherPlayerCharacterInformation, newWhisper)
                                     }

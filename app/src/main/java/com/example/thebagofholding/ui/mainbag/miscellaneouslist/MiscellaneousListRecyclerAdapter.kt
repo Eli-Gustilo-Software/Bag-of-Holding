@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
+import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
 
 
 class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -27,6 +28,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         val miscNameTextView: TextView = view.findViewById(R.id.misc_cell_name_textview)
         val miscImageImageView : ImageView = view.findViewById(R.id.misc_cell_imageview)
         val miscEffectsOneTextView : TextView = view.findViewById(R.id.misc_cell_effect1_textview)
+        val miscDescriptionTextView : TextView = view.findViewById(R.id.misc_cell_description_textview)
         private val miscCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.misc_cell_constraintlayout)
 
         init {
@@ -68,6 +70,18 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                             }
                             popupMenuTransfer.show()
                         }
+
+                        R.id.item_popup_menu_details -> {
+                            val itemDetailsDialogPopup = ItemDetailsDialogPopup()
+                            val itemData = GenericItemData(
+                                itemMiscellaneousData.miscImage,
+                                itemMiscellaneousData.miscName,
+                                itemMiscellaneousData.miscEffectsOne,
+                                "misc",
+                                itemMiscellaneousData.miscDescription,
+                                itemMiscellaneousData.miscUUID)
+                            itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
+                        }
                     }
                     true
                 }
@@ -84,11 +98,12 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //TODO figure out how to access a data class properties from here
-        val miscNameHolder = holder as MiscellaneousItemViewHolder
+        val miscItemHolder = holder as MiscellaneousItemViewHolder
 
-        miscNameHolder.miscNameTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscName
-        miscNameHolder.miscImageImageView.setBackgroundResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
-        miscNameHolder.miscEffectsOneTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscEffectsOne
+        miscItemHolder.miscNameTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscName
+        miscItemHolder.miscImageImageView.setBackgroundResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
+        miscItemHolder.miscEffectsOneTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscEffectsOne
+        miscItemHolder.miscDescriptionTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscDescription
 
         holder.itemMiscellaneousData = currentCharacter.characterMiscellaneousItemList[position]
         holder.itemCharacterOwner = currentCharacter

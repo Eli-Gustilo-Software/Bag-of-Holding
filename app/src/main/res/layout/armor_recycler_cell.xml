@@ -5,6 +5,7 @@
     android:id="@+id/armor_cell_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:background="#E49F5C"
     >
 
@@ -31,9 +32,11 @@
         android:fontFamily="@font/cinzel_decorative"
         android:text="Ensenric"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/armor_cell_imageview"
+        app:layout_constraintBottom_toTopOf="@+id/armor_cell_effect1_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview"
-        app:layout_constraintTop_toTopOf="@+id/armor_cell_imageview" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/armor_cell_effect1_textview"
@@ -45,9 +48,11 @@
         android:fontFamily="@font/cinzel_decorative"
         android:text="Damage: D+5"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/armor_cell_name_textview"
+        app:layout_constraintBottom_toBottomOf="@+id/armor_cell_imageview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/armor_cell_imageview" />
 
     <TextView
         android:id="@+id/armor_cell_description_textview"
@@ -56,11 +61,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/cinzel_decorative"
         android:text="This armor is cool"
         android:textStyle="bold"
-        android:fontFamily="@font/cinzel_decorative"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/armor_cell_imageview"
-        app:layout_constraintTop_toBottomOf="@+id/armor_cell_name_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/armor_cell_effect1_textview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

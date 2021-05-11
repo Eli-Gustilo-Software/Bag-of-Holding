@@ -17,7 +17,6 @@ import com.example.thebagofholding.ui.mainbag.consumableslist.ConsumablesListVie
 class MiscellaneousListFragment : Fragment(){
     private lateinit var miscListRecyclerView: RecyclerView
     private lateinit var miscListViewModel : MiscellaneousListViewModel
-    private lateinit var miscListOwnerTextView : TextView
     private var miscListRecyclerAdapter: MiscellaneousListRecyclerAdapter? = null
     private var miscListArray = ArrayList<MiscellaneousItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -54,9 +53,6 @@ class MiscellaneousListFragment : Fragment(){
             }
         })
 
-        //Character Name TextView
-        miscListOwnerTextView = root.findViewById(R.id.misc_list_title)
-        miscListOwnerTextView.text = "${currentCharacter.characterName}'s Miscellaneous Items"
 
         return root
     }

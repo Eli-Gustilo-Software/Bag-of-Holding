@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
+import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
 
 class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,6 +27,7 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         val consumablesNameTextView: TextView = view.findViewById(R.id.consumables_cell_name_textview)
         val consumablesImageImageView : ImageView = view.findViewById(R.id.consumables_cell_imageview)
         val consumablesEffectsOneTextView : TextView = view.findViewById(R.id.consumables_cell_effect1_textview)
+        val consumablesDescriptionTextView : TextView = view.findViewById(R.id.consumables_cell_description_textview)
         private val consumablesCellConstraintLayout : ConstraintLayout = view.findViewById(R.id.consumables_cell_constraintlayout)
 
         init {
@@ -68,7 +70,17 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                             popupMenuTransfer.show()
                         }
 
-
+                        R.id.item_popup_menu_details -> {
+                            val itemDetailsDialogPopup = ItemDetailsDialogPopup()
+                            val itemData = GenericItemData(
+                                itemConsumablesData.consumablesImage,
+                                itemConsumablesData.consumablesName,
+                                itemConsumablesData.consumablesEffectsOne,
+                                "consumable",
+                                itemConsumablesData.consumablesDescription,
+                                itemConsumablesData.consumablesUUID)
+                            itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
+                        }
                     }
                     true
                 }
@@ -88,11 +100,12 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val consumableNameHolder = holder as ConsumablesViewHolder
+        val consumableItemHolder = holder as ConsumablesViewHolder
 
-        consumableNameHolder.consumablesNameTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesName
-        consumableNameHolder.consumablesImageImageView.setBackgroundResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
-        consumableNameHolder.consumablesEffectsOneTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesEffectsOne
+        consumableItemHolder.consumablesNameTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesName
+        consumableItemHolder.consumablesImageImageView.setBackgroundResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
+        consumableItemHolder.consumablesEffectsOneTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesEffectsOne
+        consumableItemHolder.consumablesDescriptionTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesDescription
 
         holder.itemConsumablesData = currentCharacter.characterConsumablesItemsList[position]
         holder.itemCharacterOwner = currentCharacter

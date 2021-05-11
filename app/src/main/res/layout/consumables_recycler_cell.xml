@@ -6,6 +6,7 @@
     android:id="@+id/consumables_cell_constraintlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:background="#E49F5C"
     >
 
@@ -32,6 +33,8 @@
         android:text="Potion of Health"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/consumables_cell_effect1_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/consumables_cell_imageview"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,20 +47,24 @@
         android:text="Heals: D+5"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/consumables_cell_imageview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/consumables_cell_imageview"
         app:layout_constraintTop_toTopOf="@+id/consumables_cell_imageview" />
 
     <TextView
-        android:id="@+id/armor_cell_description_textview"
+        android:id="@+id/consumables_cell_description_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/cinzel_decorative"
         android:text="Over 9000!"
         android:textStyle="bold"
-        android:fontFamily="@font/cinzel_decorative"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/consumables_cell_imageview"
         app:layout_constraintTop_toBottomOf="@+id/consumables_cell_effect1_textview" />
 

@@ -20,14 +20,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/constraintTitle"
         tools:context=".ui.items.NewItemFragment">
 
         <ImageView
             android:id="@+id/new_item_imageview"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/new_item_name_edittext"
             app:layout_constraintEnd_toEndOf="@+id/spinner_constraint_layout"
             app:layout_constraintStart_toStartOf="@+id/spinner_constraint_layout"
@@ -39,14 +40,15 @@
             android:id="@+id/new_item_name_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:autofillHints="New Item Name"
-            android:hint="New Item Name"
             android:fontFamily="@font/cinzel_decorative"
+            android:hint="New Item Name"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@+id/new_item_effect_edittext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,11 +58,12 @@
             android:id="@+id/new_item_effect_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:autofillHints="New Item Effect"
             android:fontFamily="@font/cinzel_decorative"
             android:hint="Your Item Effects ex: (D+4 (+2 Fire DMG)"
+            android:textAlignment="center"
             android:inputType="textCapWords"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
@@ -74,11 +77,12 @@
             android:id="@+id/new_item_description_editext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:autofillHints="New Item Description"
             android:fontFamily="@font/cinzel_decorative"
             android:hint="Item Description (Optional)"
             android:inputType="textAutoCorrect"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/new_item_back_button"
@@ -91,7 +95,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="Back"
             android:textStyle="bold"
@@ -104,7 +107,6 @@
             android:id="@+id/new_item_create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
             android:text="Create"
@@ -125,7 +127,9 @@
             android:id="@+id/spinner_constraint_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/new_item_imageview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -146,11 +150,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Item Type:"
+                android:layout_marginEnd="4dp"
                 android:fontFamily="@font/cinzel_decorative"
+                android:text="Item Type:"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/spinner_constraint_layout"
-                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintEnd_toStartOf="@+id/new_item_type_spinner"
                 app:layout_constraintStart_toStartOf="@+id/spinner_constraint_layout"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -159,17 +164,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_end="9dp" />
+                app:layout_constraintGuide_percent="0.5" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/newitem_title_image"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#30100D"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/newitem_title_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

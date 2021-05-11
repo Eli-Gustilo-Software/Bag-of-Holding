@@ -17,7 +17,6 @@ import com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListViewModel
 class ArmorListFragment : Fragment(){
     private lateinit var armorListRecyclerView: RecyclerView
     private lateinit var armorListViewModel: ArmorListViewModel
-    private lateinit var armorListOwnerNameTextView : TextView
     private var armorListRecyclerAdapter: ArmorListRecyclerAdapter? = null
     private var armorListArray = ArrayList<ArmorItemData>()
     private lateinit var currentCharacter : CharacterInformation
@@ -53,10 +52,6 @@ class ArmorListFragment : Fragment(){
                 armorListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
-
-        //Character Name TextView
-        armorListOwnerNameTextView = root.findViewById(R.id.armor_list_title)
-        armorListOwnerNameTextView.text = "${currentCharacter.characterName}'s Apparel"
 
         return root
     }

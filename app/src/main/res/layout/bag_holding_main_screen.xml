@@ -7,6 +7,7 @@
     android:background="@drawable/background_2"
     >
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
@@ -18,12 +19,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_bag_title_image">
+        app:layout_constraintTop_toBottomOf="@+id/constraintTitle">
 
         <ImageButton
             android:id="@+id/bag_weapons_button"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:layout_marginBottom="64dp"
             android:background="@drawable/itemtype_weapons_image"
             app:layout_constraintBottom_toTopOf="   @+id/guideline4"
@@ -46,8 +47,8 @@
 
         <ImageButton
             android:id="@+id/bag_armor_button"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:layout_marginBottom="64dp"
             android:background="@drawable/itemtype_armor_image"
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
@@ -84,8 +85,8 @@
 
         <ImageButton
             android:id="@+id/bag_consumables_button"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:layout_marginBottom="64dp"
             android:background="@drawable/itemtype_potion_image"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -95,8 +96,8 @@
 
         <ImageButton
             android:id="@+id/bag_misc_button"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:layout_marginBottom="64dp"
             android:background="@drawable/itemtype_misc_image"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -131,13 +132,38 @@
             app:layout_constraintTop_toBottomOf="@+id/bag_misc_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/main_bag_title_image"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mainbag_title_image" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#30100D"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/main_bag_title_image"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mainbag_title_image" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
