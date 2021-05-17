@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thebagofholding.*
-import com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListRecyclerAdapter
-import com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListViewModel
+import com.example.thebagofholding.ArmorItemData
+import com.example.thebagofholding.CharacterInformation
+import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.R
 
 class ArmorListFragment : Fragment(){
     private lateinit var armorListRecyclerView: RecyclerView
@@ -23,8 +25,8 @@ class ArmorListFragment : Fragment(){
 
     init {
         if (DataMaster.retrieveCharacterInformation() != null){
-            currentCharacter = DataMaster.retrieveCharacterInformation()!!//TODO is this current character infromation?? Rename?
-            for (item in currentCharacter.characterArmorItemsList!!){
+            currentCharacter = DataMaster.retrieveCharacterInformation()!!
+            for (item in currentCharacter.characterArmorItemsList){
                 armorListArray.add(item)
             }
         }
@@ -37,9 +39,13 @@ class ArmorListFragment : Fragment(){
     ): View? {
         val root = inflater.inflate(R.layout.bag_armor_apparal_list, container, false)
 
+        //toolbar
+        (activity as AppCompatActivity?)!!.supportActionBar?.customView?.findViewById<TextView>(R.id.toolbar_title_textview)?.text = getString(
+                    R.string.toolbar_title_armor)
+
         //ViewModel and RecyclerViewAdapter
         armorListViewModel = ViewModelProvider(this).get(ArmorListViewModel::class.java)
-        armorListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+        armorListViewModel.characterData.observe(viewLifecycleOwner, {
             currentCharacter = it
             armorListRecyclerView = root.findViewById(R.id.armor_list_recyclerView)
             if (armorListRecyclerAdapter == null){ //create it
@@ -54,9 +60,5 @@ class ArmorListFragment : Fragment(){
         })
 
         return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 }

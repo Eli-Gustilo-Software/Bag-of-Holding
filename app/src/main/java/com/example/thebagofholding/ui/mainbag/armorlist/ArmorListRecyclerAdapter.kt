@@ -31,8 +31,8 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
 
         init {
             // Define click listener for the ViewHolder's View.
-            armorCellConstraintLayout.setOnLongClickListener() {
-                val popupMenu = PopupMenu(view.context, view) //TODO need to move this to the right of the screen.
+            armorCellConstraintLayout.setOnLongClickListener {
+                val popupMenu = PopupMenu(view.context, view)
                 popupMenu.inflate(R.menu.item_popup_menu)
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
@@ -43,7 +43,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
 
                         R.id.item_popup_menu_transfer -> {
                             Log.d(tag, "transfer menu called")
-                            val popupMenuTransfer = PopupMenu(view.context, view) //TODO need to move this to the right of the screen.
+                            val popupMenuTransfer = PopupMenu(view.context, view)
                             if (DataMaster.findOtherPlayers().size == 0) {
                                 //no other players found
                                 popupMenuTransfer.menu.add("No Nearby Players Found")
@@ -78,6 +78,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
             if (Build.VERSION.SDK_INT >= 26) {
                 v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
             } else {
+                @Suppress("DEPRECATION")
                 v?.vibrate(200)
             }
             Toast.makeText(context, "Transferring ${armorItemData.armorName} to ${characterInformation.otherPlayerCharacterName}", Toast.LENGTH_SHORT).show()

@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.thebagofholding.DataMaster
+import com.example.thebagofholding.MainActivity
 import com.example.thebagofholding.R
+
 
 class MainBagSelectionFragment : Fragment() {
     private lateinit var weaponsListButton : ImageButton
@@ -17,16 +21,23 @@ class MainBagSelectionFragment : Fragment() {
     private lateinit var miscListButton : ImageButton
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
+
+        //toolbar
+        (activity as AppCompatActivity?)!!.supportActionBar?.customView?.findViewById<TextView>(R.id.toolbar_title_textview)?.text = "Bag of Holding"
 
         val root = inflater.inflate(R.layout.bag_holding_main_screen, container, false)
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+//        (activity as AppCompatActivity?)!!.supportActionBar!!.title = "${DataMaster.retrieveCharacterInformation()?.characterName}'s Bag of Holding"
+//        (requireActivity() as MainActivity).title = "${DataMaster.retrieveCharacterInformation()?.characterName}'s Bag of Holding"
+
 
         //Setup Buttons
         weaponsListButton = view.findViewById(R.id.bag_weapons_button)
@@ -52,7 +63,7 @@ class MainBagSelectionFragment : Fragment() {
         }
 
         miscListButton.setOnClickListener(){
-            findNavController().navigate(R.id. navigation_bag_holding_misc_list)
+            findNavController().navigate(R.id.navigation_bag_holding_misc_list)
         }
     }
 }

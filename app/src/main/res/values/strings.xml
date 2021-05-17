@@ -3,6 +3,17 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="toolbar_yourcampfire_title">Your Campfire</string>
+    <string name="whisper_dialog_text_1">\"What do you want to whisper to \"</string>
+    <string name="toolbar_title_character_selection">Character Selection</string>
+    <string name="character_deletion_confirm_1">\"Please confirm that you wish to delete \"</string>
+    <string name="character_deletion_confirm_2">Note this is irreversible and the character will be gone forever.</string>
+    <string name="toolbar_title_item_creation">Item Creation</string>
+    <string name="toolbar_title_armor">Armor/Apparel</string>
+    <string name="toolbar_title_consumables">Consumables</string>
+    <string name="toolbar_title_misc">Miscellaneous</string>
+    <string name="toolbar_title_weapons">Weapons</string>
+    <string name="toolbar_title_coin_pruse">Coin Purse</string>
 
     <string-array name="item_types">
         <item>Weapon</item>

@@ -1,4 +1,4 @@
-package com.eligustilo.Hermez
+package com.example.thebagofholding
 
 import android.content.Context
 import android.net.nsd.NsdManager
@@ -20,7 +20,6 @@ import java.net.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
-
 
 /*
 * This Library is setup to transfer data from a 'Discoverer' to a 'Broadcaster'/'Registerer'
@@ -50,11 +49,11 @@ class Hermez(context: Context, serviceType: String) {
     private var hermezBrowser: HermezBrowser? = null
     private val unknownZeroConfigDevice: HermezDevice = HermezDevice("Unknown Device")
     private var myDeviceName : HermezDevice = HermezDevice(Build.MODEL)
+    private val PING: String = "PING"
 
     init {
         hermezService = HermezService()
         hermezBrowser = HermezBrowser()
-
     }
 
     enum class HermezError {
@@ -66,11 +65,12 @@ class Hermez(context: Context, serviceType: String) {
     )
 
     data class HermezMessage(
-            val message: String,
-            val json: String,
-            val messageID: String,
-            val receivingDevice: HermezDevice,
-            val sendingDevice: HermezDevice)
+        val message: String,
+        val json: String,
+        val messageID: String,
+        val receivingDevice: HermezDevice,
+        val sendingDevice: HermezDevice
+    )
 
 
     // All devices on the network will create there own zero config service with (1) a common service type and (2) unique service names (for each device)
@@ -84,11 +84,10 @@ class Hermez(context: Context, serviceType: String) {
         fun resolveFailed(serviceType: String, serviceName: String, error: HermezError)
     }
 
-    fun setServiceName(serviceName: String) {
+    fun setServiceName(serviceType: String) {
         // will be used to set service type, for example, "_<serviceName>._tcp" can be used to change it in case user wants multiple serviceTypes.
-        mServiceType = serviceName
-        //TODO how can I enforce a good convention for writing it? Requires Formatter and work
-        if (mServiceName != null && mServiceType != null) {
+        mServiceType = serviceType
+        if (mServiceName != null) {
             HermezService().registerService()
         } else {
             Log.e(tag, "This ZeroConfig Library requires a correct serviceType and a deviceName")
@@ -99,7 +98,7 @@ class Hermez(context: Context, serviceType: String) {
         // will be used to set unique name of device
         mServiceName = deviceName
         myDeviceName = HermezDevice(deviceName)
-        if (mServiceName != null && mServiceType != null) {
+        if (mServiceName != null) {
             HermezService().registerService()
         } else {
             Log.e(tag, "This ZeroConfig Library requires a correct serviceType and a deviceName")
@@ -111,7 +110,7 @@ class Hermez(context: Context, serviceType: String) {
         GlobalScope.launch { // launch new coroutine in background and continue
             delay(50) // non-blocking delay for 1 second (default time unit is ms)
             hermezBrowser?.discoverService()
-            clearMessageQueue()
+            runMessageQueue()
         }
     }
 
@@ -143,19 +142,20 @@ class Hermez(context: Context, serviceType: String) {
     }
 
     fun cleanup(){
-        //NEEDS to be called on Pause and On Destroy
+        //Needs to be called OnPause and OnDestroy
         HermezService().cleanup()
         HermezBrowser().cleanup()
     }
+
 
     fun initWithDelegate(delegate: HermezDataInterface? = null) {
         //this sets the object/activity/fragment to receive data from Hermez. This is required.
         this.objectToNotify = delegate
     }
 
-    private fun clearMessageQueue(){
+    private fun runMessageQueue(){
         Thread{//async
-            while (true){//while(true) will always run
+            while (true) {//while(true) will always run
                 if (messageQueue.isNotEmpty()){
                     //send the message if possible
                     val instanceOfMessageQueue = ArrayList(messageQueue)
@@ -170,22 +170,7 @@ class Hermez(context: Context, serviceType: String) {
                         }
                     }
                 }
-                Thread.sleep(3000)
-                //todo what if its empty???
-            }
-        }.start()
-    }
-
-
-
-    private fun connectionHealthCheck(){
-        Thread{//async
-            while (true){//while(true) will always run
-                if (messageQueue.isNotEmpty()){
-                    //send a message asking it if its alive similar to the sendMessage
-                }
-                Thread.sleep(3000)
-                //todo what if its empty???
+                Thread.sleep(2000)
             }
         }.start()
     }
@@ -224,6 +209,10 @@ class Hermez(context: Context, serviceType: String) {
             }.start()
         }
 
+        fun unregisterService() {
+            nsdManagerServer?.unregisterService(registrationListener)
+            nsdManagerServer = null
+        }
 
         fun registerService() {
             initializeServerSocket()
@@ -240,8 +229,7 @@ class Hermez(context: Context, serviceType: String) {
         }
 
         fun resetRegistration(){
-            nsdManagerServer?.unregisterService(registrationListener)
-            nsdManagerServer = null
+            unregisterService()
             GlobalScope.launch { // launch new coroutine in background and continue
                 delay(3000) // non-blocking delay for 1 second (default time unit is ms)
                 registerService()
@@ -317,10 +305,10 @@ class Hermez(context: Context, serviceType: String) {
 
                                 //PING is also meant to ensure device is valid on network. Fix Google's flakiness
                                 //we send a ping to anyone who sends us a message. They will validate that you exist. ClientWriter will validate.
-                                val pingMessage = HermezMessage("PING", "", message.messageID, message.sendingDevice, message.receivingDevice)
+                                val pingMessage = HermezMessage(PING, "", message.messageID, message.sendingDevice, message.receivingDevice)
                                 Log.d(tag, "message received from device: ${message.sendingDevice.name}, mHashtable: $mHashtable")
 
-                                if(!mHashtable.containsKey(message.sendingDevice.name)) { //if we don't have the message senders name then we need to restart discovery. todo can this be moved?
+                                if(!mHashtable.containsKey(message.sendingDevice.name)) { //if we don't have the message senders name then we need to restart discovery.
                                     hermezBrowser?.resetDiscovery(false)
                                 }
                                 val writer: PrintWriter
@@ -330,12 +318,12 @@ class Hermez(context: Context, serviceType: String) {
                                     Log.d(tag, "jsonString is $jsonString")
                                     writer.print(jsonString + MESSAGE_TERMINATOR)
                                     writer.flush()
-                                    //writer.close()
                                 } catch (e: IOException) {
                                     // If the writer fails to initialize there was an io problem, close your connection
                                     client.close()
-                                    objectToNotify?.messageCannotBeSentToDevices(pingMessage, HermezError.MESSAGE_NOT_SENT)
-                                    //todo we should add this to a message queue???
+                                    objectToNotify?.messageCannotBeSentToDevices(pingMessage,
+                                        HermezError.MESSAGE_NOT_SENT
+                                    )
                                 }
 
 
@@ -378,14 +366,17 @@ class Hermez(context: Context, serviceType: String) {
             }
         }
 
-        fun resetDiscovery(clearHashtable: Boolean = true){ //this is a Kotlin feature that allows me to be passed in a boolean check when called. true == default
+        fun stopDiscovery(clearHashtable: Boolean = true) {
             nsdManagerClient?.stopServiceDiscovery(discoveryListener)
             nsdManagerClient = null
             discoverListenerInUse = false
             if(clearHashtable) {//default is true
                 mHashtable.clear()
             }
+        }
 
+        fun resetDiscovery(clearHashtable: Boolean = true){ //this is a Kotlin feature that allows me to be passed in a boolean check when called. true == default
+            stopDiscovery(clearHashtable)
             GlobalScope.launch { // launch new coroutine in background and continue
                 delay(3000) // non-blocking delay for 1 second (default time unit is ms)
                 discoverService()
@@ -418,8 +409,9 @@ class Hermez(context: Context, serviceType: String) {
                 Log.e(tag, "service lost: ${service.serviceName}")
                 multicastLock?.release()
                 multicastLock = null
-                objectToNotify?.serviceFailed(mServiceType, (service.serviceName), HermezError.SERVICE_FAILED)
-                //resetDiscovery()
+                objectToNotify?.serviceFailed(mServiceType, (service.serviceName),
+                    HermezError.SERVICE_FAILED
+                )
             }
 
             override fun onDiscoveryStopped(serviceType: String) {
@@ -433,34 +425,40 @@ class Hermez(context: Context, serviceType: String) {
                 Log.e(tag, "Discovery failed: Error code:$errorCode")
                 multicastLock?.release()
                 multicastLock = null
-                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
+                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name),
+                    HermezError.SERVICE_FAILED
+                )
             }
 
             override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
                 Log.e(tag, "Discovery failed: Error code:$errorCode")
                 multicastLock?.release()
                 multicastLock = null
-                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name), HermezError.SERVICE_FAILED)
+                objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name),
+                    HermezError.SERVICE_FAILED
+                )
             }
         }
 
         private inner class MyResolveListener : NsdManager.ResolveListener {
-            private val TAG = "resolveListener"
+            private val tag = "resolveListener"
 
             override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
                 // Called when the resolve fails. Use the error code to debug.
-                Log.e(TAG, "Resolve failed: $errorCode")
-                objectToNotify?.resolveFailed(mServiceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+                Log.e(tag, "Resolve failed: $errorCode")
+                objectToNotify?.resolveFailed(mServiceType, serviceInfo.serviceName,
+                    HermezError.SERVICE_RESOLVE_FAILED
+                )
             }
 
             override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                Log.d(TAG, "Resolve Succeeded. $serviceInfo")
+                Log.d(tag, "Resolve Succeeded. $serviceInfo")
                 try {
                     // Connect to the host
-                    var localPortClient = Socket(serviceInfo.host, serviceInfo.port)
+                    val localPortClient = Socket(serviceInfo.host, serviceInfo.port)
 
-                    mHashtable.put(serviceInfo.serviceName, localPortClient)
-                    Log.d(TAG, "mHashtable: ${mHashtable}")
+                    mHashtable[serviceInfo.serviceName] = localPortClient
+                    Log.d(tag, "mHashtable: $mHashtable")
                     mArrayOfDevicesFound?.clear()
                     for (item in mHashtable){
                         mArrayOfDevicesFound?.add(HermezDevice(item.key))
@@ -475,11 +473,15 @@ class Hermez(context: Context, serviceType: String) {
                     val writerThread = Thread(runnable)
                     writerThread.start()
                 } catch (e: UnknownHostException) {
-                    Log.e(TAG, "Unknown host. ${e.localizedMessage}")
-                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+                    Log.e(tag, "Unknown host. ${e.localizedMessage}")
+                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName,
+                        HermezError.SERVICE_RESOLVE_FAILED
+                    )
                 } catch (e: ConnectException) {
-                    Log.e(TAG, e.localizedMessage)
-                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName, HermezError.SERVICE_RESOLVE_FAILED)
+                    Log.e(tag, e.localizedMessage)
+                    objectToNotify?.resolveFailed(serviceInfo.serviceType, serviceInfo.serviceName,
+                        HermezError.SERVICE_RESOLVE_FAILED
+                    )
 
                 }
             }
@@ -520,14 +522,12 @@ class Hermez(context: Context, serviceType: String) {
                         //THIRD we most likely got a PING but lets check.
 
                     }else{//we are not timeOut and we got a message
-                        var line: String?
+                        val line: String?
                         val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                         line = reader.readLine() //read the message
                         if (line == null) { //device is available but no data is given. This should never be called.
-                            //todo ensure this is never called.
                             Log.d(tag, "This should never be called. If it is......good luck.")
                             //there was no ping and we need to reacquire
-                            //todo resetDiscovery?
                         } else {
                             //we almost certainly got a ping and we are good. Nothing else should ever be sent to this other than a PING
                             val message = Gson().fromJson(line, HermezMessage::class.java)
@@ -539,17 +539,17 @@ class Hermez(context: Context, serviceType: String) {
                                 }else{//we got a message but not a ping. We should never call this.
                                     Log.d(tag, "parsed message is $message....This should never be called.")
                                 }
-                            }else{ //gson message is null. and should never happen.
-                                //todo handle this
+                            } else {
+                                Log.e(tag, "ERROR: Message is null and should not be!")
                             }
                         }
                     }
-
-                    //writer.close()
                 } catch (e: IOException) {
                     // If the writer fails to initialize there was an io problem, close your connection
                     socket.close()
-                    objectToNotify?.messageCannotBeSentToDevices(hermezMessage, HermezError.MESSAGE_NOT_SENT)
+                    objectToNotify?.messageCannotBeSentToDevices(hermezMessage,
+                        HermezError.MESSAGE_NOT_SENT
+                    )
                 } catch (e: Exception) {
                     Log.d(tag, "error = ${e.localizedMessage}")
                 }

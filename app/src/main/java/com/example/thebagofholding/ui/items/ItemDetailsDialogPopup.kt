@@ -3,20 +3,18 @@ package com.example.thebagofholding.ui.items
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.text.Editable
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.navigation.NavHost
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.thebagofholding.*
 import java.util.*
 
-class ItemDetailsDialogPopup() {
+class ItemDetailsDialogPopup {
     private val tag = "ItemDetailsDialogPopup"
     fun itemDetailsDialogPopup(genericItemData: GenericItemData, context: Context) {
         val dialog: AlertDialog?
@@ -33,6 +31,7 @@ class ItemDetailsDialogPopup() {
         builder.setView(view)
         // create and show the alert dialog
         dialog = builder.create()
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
 
         if (view != null) {
@@ -136,13 +135,13 @@ class ItemDetailsDialogPopup() {
 
 
             //Buttons
-            itemDetailsBackButton.setOnClickListener() {
+            itemDetailsBackButton.setOnClickListener {
                 dialog.dismiss()
             }
 
-            itemDetailsConfirmButton.setOnClickListener() {
+            itemDetailsConfirmButton.setOnClickListener {
                 if (itemName != null && itemEffect != null && itemType != null) {//item exists
-                    when (itemType) {//TODO should these be enums? what is the point of ENUMS?
+                    when (itemType) {//TODO should these be enums
                         "weapon" -> { //Weapon
                             val newWeapon = WeaponItemData((R.drawable.item_sword_icon), itemName, itemEffect, itemDescription, itemUUID)
                             val character = DataMaster.retrieveCharacterInformation()
@@ -210,25 +209,25 @@ class ItemDetailsDialogPopup() {
                         position: Int,
                         id: Long
                 ) {
-                    when (position) {//TODO should these be enums? what is the point of ENUMS?
+                    when (position) {//TODO should these be enums
                         0 -> { //Weapon
                             itemType = "weapon"
-                            itemImageView.setBackgroundResource(R.drawable.item_sword_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_sword_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         1 -> { //Armor/Apparel
                             itemType = "armor"
-                            itemImageView.setBackgroundResource(R.drawable.item_helmet_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_helmet_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         2 -> { //Consumable
                             itemType = "consumable"
-                            itemImageView.setBackgroundResource(R.drawable.item_potion_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_potion_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         3 -> { //Miscellaneous
                             itemType = "misc"
-                            itemImageView.setBackgroundResource(R.drawable.item_misc_icon) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
+                            itemImageView.setBackgroundResource(R.drawable.item_misc_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                     }

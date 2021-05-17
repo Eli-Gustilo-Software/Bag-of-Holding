@@ -33,8 +33,8 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
 
         init {
             // Define click listener for the ViewHolder's View.
-            miscCellConstraintLayout.setOnLongClickListener(){
-                val popupMenu= PopupMenu(view.context,it) //TODO need to move this to the right of the screen.
+            miscCellConstraintLayout.setOnLongClickListener {
+                val popupMenu= PopupMenu(view.context,it)
                 popupMenu.inflate(R.menu.item_popup_menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
@@ -46,7 +46,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
 
                         R.id.item_popup_menu_transfer->{
                             Log.d(tag, "transfer menu called")
-                            val popupMenuTransfer= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
+                            val popupMenuTransfer= PopupMenu(view.context, it)
                             //get list of all other characters found
                             if (DataMaster.findOtherPlayers().size == 0){
                                 //no other players found
@@ -60,6 +60,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                                         if (Build.VERSION.SDK_INT >= 26) {
                                             v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
                                         } else {
+                                            @Suppress("DEPRECATION")
                                             v?.vibrate(200)
                                         }
                                         Toast.makeText(context, "Transferring ${itemMiscellaneousData.miscName} to ${player.otherPlayerCharacterName}" , Toast.LENGTH_SHORT).show()
@@ -97,7 +98,6 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        //TODO figure out how to access a data class properties from here
         val miscItemHolder = holder as MiscellaneousItemViewHolder
 
         miscItemHolder.miscNameTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscName

@@ -1,6 +1,7 @@
 package com.example.thebagofholding.ui.campfire
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -16,11 +17,11 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
-import org.w3c.dom.Text
 import java.util.*
 
 
-class CampfireRecyclerAdapter(var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CampfireRecyclerAdapter(private var otherPlayersList: ArrayList<OtherPlayerCharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    @SuppressLint("SetTextI18n")
     class CampfireOtherPlayersViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "CampfireOtherPlayersViewHolder"
         private val context = super.itemView.context
@@ -34,8 +35,8 @@ class CampfireRecyclerAdapter(var otherPlayersList: ArrayList<OtherPlayerCharact
 
         val otherPlayerNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         init {
-            otherPlayerCellConstraintLayout.setOnLongClickListener(){
-                val popupMenu= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
+            otherPlayerCellConstraintLayout.setOnLongClickListener {
+                val popupMenu= PopupMenu(view.context, it)
                 popupMenu.inflate(R.menu.campfire_interactions_popup_menu)
                 popupMenu.setOnMenuItemClickListener { item->
                     when(item.itemId)
@@ -62,7 +63,7 @@ class CampfireRecyclerAdapter(var otherPlayersList: ArrayList<OtherPlayerCharact
                             }
 
                             //TEXTVIEW Title
-                            whisperTitleTextview.text = "What do you want to whisper to ${otherPlayerCharacterInformation.otherPlayerCharacterName}?"
+                            whisperTitleTextview.text = "${context.getString(R.string.whisper_dialog_text_1)}${otherPlayerCharacterInformation.otherPlayerCharacterName}?"
 
                             //EditText
                             whisperInputEditText.setOnKeyListener { v, keyCode, event ->
@@ -96,10 +97,10 @@ class CampfireRecyclerAdapter(var otherPlayersList: ArrayList<OtherPlayerCharact
                                 }
                             }
                             //Buttons
-                            backButton.setOnClickListener() {
+                            backButton.setOnClickListener {
                                 dialog.dismiss()
                             }
-                            sendButton.setOnClickListener() {
+                            sendButton.setOnClickListener {
                                 //Ensure the name is a valid, goodish name.
                                 if (newWhisper == "") {
                                     Toast.makeText(context, "Please hit enter.", Toast.LENGTH_LONG).show()

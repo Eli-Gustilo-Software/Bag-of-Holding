@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-<!--    <item-->
-<!--        android:id="@+id/navigation_purse"-->
-<!--        android:icon="@drawable/ic_home_black_24dp"-->
-<!--        android:title="Purse" />-->
-    <item
-        android:id="@+id/navigation_fragment_campfire"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Campfire" />
-
-    <item
-        android:id="@+id/navigation_character"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="Character" />
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_character_creation_screen"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="CC" />
+        android:icon="@drawable/bottommenu_characters_icon"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navigation_character"
+        android:icon="@drawable/bottommenu_mycharacter_icon"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navigation_fragment_campfire"
+        android:icon="@drawable/bottommenu_campfire_icon"
+        tools:ignore="MenuTitle" />
+
 
 </menu>

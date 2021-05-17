@@ -2,6 +2,8 @@ package com.example.thebagofholding.ui.items
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,18 +12,17 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.thebagofholding.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class NewItemFragment : Fragment() {
-    private val TAG = "NewItemFragment"
-
+    private val tagNewItemFrag = "NewItemFragment"
     //View/Class Variables
     private lateinit var newItemViewModel: NewItemViewModel
     private lateinit var backButton: Button
@@ -38,20 +39,21 @@ class NewItemFragment : Fragment() {
     private var newItemEffect : String? = null
     private var newItemDescription : String? = null
 
-    init {
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //toolbar
+        (activity as AppCompatActivity?)!!.supportActionBar?.customView?.findViewById<TextView>(R.id.toolbar_title_textview)?.text = getString(
+                    R.string.toolbar_title_item_creation)
+
         newItemViewModel =
             ViewModelProvider(this).get(NewItemViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_new_item, container, false)
 
-        newItemViewModel.text.observe(viewLifecycleOwner, Observer {
+        newItemViewModel.text.observe(viewLifecycleOwner, {
         })
         return root
     }
@@ -70,14 +72,40 @@ class NewItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //EDIT TEXTS
-        newItemNameEditText.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+        newItemNameEditText.onFocusChangeListener = OnFocusChangeListener { view, hasFocus: Boolean ->
             newItemName = newItemNameEditText.text.toString()
-            Log.d(TAG, "NewItem Name = $newItemName")
+            Log.d(tagNewItemFrag, "NewItem Name = $newItemName")
         }
+        newItemNameEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                newItemName = newItemNameEditText.text.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newItemName = newItemNameEditText.text.toString()
+            }
+        })
+
         newItemEffectEditText.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             newItemEffect = newItemEffectEditText.text.toString()
-            Log.d(TAG, "NewItem Effect = $newItemEffect")
+            Log.d(tagNewItemFrag, "NewItem Effect = $newItemEffect")
         }
+        newItemEffectEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                newItemEffect = newItemEffectEditText.text.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newItemEffect = newItemEffectEditText.text.toString()
+            }
+        })
+
         newItemDescriptionEditText.setOnKeyListener { v, keyCode, event ->
             Log.d(tag, "Keycode = $keyCode")
             Log.d(tag, "event = $event")
@@ -88,37 +116,45 @@ class NewItemFragment : Fragment() {
                 ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) -> {
                     newItemDescriptionEditText.clearFocus()
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    if (view != null) {
-                        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                    }
+                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     newItemDescription = newItemDescriptionEditText.text.toString()
-                    Log.d(TAG, "newItem Description = $newItemDescription")
+                    Log.d(tagNewItemFrag, "newItem Description = $newItemDescription")
                     //return true
                     return@setOnKeyListener true
                 }
                 keyCode == KeyEvent.KEYCODE_NAVIGATE_OUT-> {
                     newItemDescriptionEditText.clearFocus()
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    if (view != null) {
-                        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                    }
+                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     newItemDescription = newItemDescriptionEditText.text.toString()
-                    Log.d(TAG, "newItem Description = $newItemDescription")
+                    Log.d(tagNewItemFrag, "newItem Description = $newItemDescription")
                     //return true
                     return@setOnKeyListener true
                 }
                 else -> false
             }
         }
+        newItemDescriptionEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                newItemDescription = newItemDescriptionEditText.text.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newItemDescription = newItemDescriptionEditText.text.toString()
+            }
+        })
 
         //BUTTONS
-        backButton.setOnClickListener(){
+        backButton.setOnClickListener {
             findNavController().navigate(R.id.navigation_character)
         }
 
-        createButton.setOnClickListener(){
+        createButton.setOnClickListener {
             if (newItemName != null && newItemEffect != null && newItemType != null){//item exists
-                when (newItemType) {//TODO should these be enums? what is the point of ENUMS?
+                when (newItemType) {//TODO should these be enums
                     "weapon" -> { //Weapon
                         val newWeapon = WeaponItemData((R.drawable.item_sword_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
                         val character = DataMaster.retrieveCharacterInformation()
@@ -159,6 +195,7 @@ class NewItemFragment : Fragment() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -166,26 +203,26 @@ class NewItemFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                when (position) {//TODO should these be enums? what is the point of ENUMS?
+                when (position) {//TODO should these be enums
                     0 -> { //Weapon
                         newItemType = "weapon"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_weapons_image) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
-                        Log.d(TAG, "newItem type = $newItemType")
+                        newItemImageView.setBackgroundResource(R.drawable.itemtype_weapons_image)
+                        Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     1 -> { //Armor/Apparel
                         newItemType = "armor"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_armor_image) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
-                        Log.d(TAG, "newItem type = $newItemType")
+                        newItemImageView.setBackgroundResource(R.drawable.itemtype_armor_image)
+                        Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     2 -> { //Consumable
                         newItemType = "consumable"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_potion_image) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
-                        Log.d(TAG, "newItem type = $newItemType")
+                        newItemImageView.setBackgroundResource(R.drawable.itemtype_potion_image)
+                        Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     3 -> { //Miscellaneous
                         newItemType = "misc"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_misc_image) //TODO need to make it so you can click and hold on image and then get a selection screen? Dialog popup with recycler?
-                        Log.d(TAG, "newItem type = $newItemType")
+                        newItemImageView.setBackgroundResource(R.drawable.itemtype_misc_image)
+                        Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                 }
             }

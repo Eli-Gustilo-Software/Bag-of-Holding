@@ -1,5 +1,6 @@
 package com.example.thebagofholding.ui.character
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -8,6 +9,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -17,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import java.util.*
@@ -28,8 +32,8 @@ enum class CharacterViewHolderTypes(val typeKey: Int){
     REGULAR_CHARACTER_BUTTON(2)
 }
 
-class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInformation>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    inner class CharacterCreationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class CharacterCreationRecyclerAdapter(private var characterList: ArrayList<CharacterInformation>, private val parentFragment: CharacterCreationFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class CharacterCreationViewHolder(view: View, private val parentFragment: CharacterCreationFragment) : RecyclerView.ViewHolder(view) {
         private val tag = "CCViewHolder"
         private val characterCreationButton: ConstraintLayout = view.findViewById(R.id.character_creation_cell_constraint_layout)
         private val context = super.itemView.context
@@ -40,9 +44,8 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
 
         init {
             // Define click listener for the ViewHolder's View.
-            characterCreationButton.setOnClickListener(){
+            characterCreationButton.setOnClickListener {
                 //NEW Character button popup
-
                 Log.d(tag, "newCharacter button clicked")
                 val dialog: AlertDialog?
                 val builder = AlertDialog.Builder(context)
@@ -52,7 +55,7 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                 builder.setView(view)
                 // create and show the alert dialog
                 dialog = builder.create()
-                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.show()
 
                 //Set views
@@ -63,6 +66,19 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                 }
 
                 //EditText
+                characterNameInputEditText.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        newCharacterName = characterNameInputEditText.text.toString()
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        newCharacterName = characterNameInputEditText.text.toString()
+                    }
+                })
+
                 characterNameInputEditText.setOnKeyListener { v, keyCode, event ->
                     Log.d(tag, "Keycode = $keyCode")
                     Log.d(tag, "event = $event")
@@ -95,10 +111,10 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                 }
 
                 //Buttons
-                backButton.setOnClickListener(){
+                backButton.setOnClickListener{
                     dialog.dismiss()
                 }
-                createButton.setOnClickListener(){
+                createButton.setOnClickListener{
                     //Ensure the name is a valid, goodish name.
                     if (newCharacterName == ""){
                         Toast.makeText(context, "Please hit enter.", Toast.LENGTH_LONG).show()
@@ -107,13 +123,15 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                         DataMaster.saveCharacterInformation(CharacterInformation(newCharacterName, ArrayList(), ArrayList(), ArrayList(), ArrayList(), CharacterPurseData("0", "0", "0", "0"), UUID.randomUUID()))
                         notifyDataSetChanged()
                         dialog.dismiss()
+                        Toast.makeText(this.context, "Your new character is $newCharacterName", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
-    class CharacterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    @SuppressLint("SetTextI18n")
+    class CharacterViewHolder(view: View, private val parentFragment: CharacterCreationFragment) : RecyclerView.ViewHolder(view) {
         private val tag = "CharacterViewHolder"
         val characterNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         private val characterNameCell : ConstraintLayout = view.findViewById(R.id.character_creation_mother_constraintlayout)
@@ -126,23 +144,36 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
         init {
             // Define click listener for the ViewHolder's View.
 
-            characterNameCell.setOnLongClickListener(){
-                val popupMenu= PopupMenu(view.context, it) //TODO need to move this to the right of the screen.
+            characterNameCell.setOnClickListener{
+                val v = getSystemService(context, Vibrator::class.java)
+                if (Build.VERSION.SDK_INT >= 26) {
+                    v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    @Suppress("DEPRECATION")
+                    v?.vibrate(200)
+                }
+                Toast.makeText(context, "Character changed to ${characterNameTextView.text}", Toast.LENGTH_SHORT).show()
+                DataMaster.changeCharacter(characterNameTextView.text.toString())
+                parentFragment.findNavController().navigate(R.id.navigation_character)
+            }
+
+            characterNameCell.setOnLongClickListener {
+                val popupMenu= PopupMenu(view.context, it)
                 popupMenu.inflate(R.menu.character_confirmation_window)
                 popupMenu.setOnMenuItemClickListener { item->
                     when(item.itemId)
                     {
-                        R.id.change_character_confirmation_window_confirm -> {
-                            Log.d(tag, "characterNameCell clicked ${characterNameTextView.text}")
-                            val v = getSystemService(context, Vibrator::class.java)
-                            if (Build.VERSION.SDK_INT >= 26) {
-                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                            } else {
-                                v?.vibrate(200)
-                            }
-                            Toast.makeText(context, "Character changed to ${characterNameTextView.text}", Toast.LENGTH_SHORT).show()
-                            DataMaster.changeCharacter(characterNameTextView.text.toString())
-                        }
+//                        R.id.change_character_confirmation_window_confirm -> {
+//                            Log.d(tag, "characterNameCell clicked ${characterNameTextView.text}")
+//                            val v = getSystemService(context, Vibrator::class.java)
+//                            if (Build.VERSION.SDK_INT >= 26) {
+//                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+//                            } else {
+//                                v?.vibrate(200)
+//                            }
+//                            Toast.makeText(context, "Character changed to ${characterNameTextView.text}", Toast.LENGTH_SHORT).show()
+//                            DataMaster.changeCharacter(characterNameTextView.text.toString())
+//                        }
 
                         R.id.delete_character -> {
                             Log.d(tag, "deleted_character clicked on ${characterNameTextView.text}")
@@ -160,16 +191,16 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
                             //Set views
                             if (view != null) {
                                 characterDeletionDoublecheckTextView = view.findViewById(R.id.deletion_doublecheck_textview)
-                                characterDeletionDoublecheckTextView.text = "Please confirm that you wish to delete ${characterNameTextView.text}. Note this is irreversible and the character will be gone forever."
+                                characterDeletionDoublecheckTextView.text = context.getString(R.string.character_deletion_confirm_1) + characterNameTextView.text + context.getString(R.string.character_deletion_confirm_2)
                                 backButton = view.findViewById(R.id.deletion_back)
                                 confirmButton = view.findViewById(R.id.deletion_confirm)
                             }
 
                             //Buttons
-                            backButton.setOnClickListener() {
+                            backButton.setOnClickListener {
                                 dialog.dismiss()
                             }
-                            confirmButton.setOnClickListener() {
+                            confirmButton.setOnClickListener {
                                 DataMaster.deleteCharacter(characterInformation)
                                 dialog.dismiss()
                             }
@@ -188,10 +219,10 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
         // Create a new view, which defines the UI of the list item
         if (viewType == CharacterViewHolderTypes.REGULAR_CHARACTER_BUTTON.typeKey){
             val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.character_recycler_cell, viewGroup, false)
-            return CharacterViewHolder(view)
+            return CharacterViewHolder(view, parentFragment)
         }else{
             val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.character_creation_new_character_button_cell, viewGroup, false)
-            return CharacterCreationViewHolder(view)
+            return CharacterCreationViewHolder(view, parentFragment)
         }
     }
 
@@ -206,7 +237,7 @@ class CharacterCreationRecyclerAdapter(var characterList: ArrayList<CharacterInf
             characterNameHolder.characterInformation = characterList[position]
         }else{
             //Final position is a new character button.
-            val characterNameHolder = holder as CharacterCreationViewHolder
+            holder as CharacterCreationViewHolder
         }
     }
 

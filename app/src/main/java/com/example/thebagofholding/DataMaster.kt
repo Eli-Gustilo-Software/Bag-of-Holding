@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.eligustilo.Hermez.Hermez
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -86,7 +85,7 @@ object DataMaster: Hermez.HermezDataInterface {
     private var characterHashtable = Hashtable<String, String>()
     private var otherPlayersArray = ArrayList<OtherPlayerCharacterInformation>()
     private var bagofholdingDevicesConnected = ArrayList<Hermez.HermezDevice>()
-    private lateinit var hermez : Hermez //TODO how do i fisx
+    private lateinit var hermez : Hermez //TODO how do i fix
     private val phoneName = Build.MODEL
     var objectToNotify : DataMasterInterface? = null
     private lateinit var applicationContext : Context
@@ -144,7 +143,7 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Character to be deleted is: $character")
         characterHashtable.remove(character.characterName)
         val characterHashtableJSON = Gson().toJson(characterHashtable)
-        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON) //todo this might make it so there is no currentCharacter and no message alerting the user of that fact.
+        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
         editor?.apply()
         characterArray.remove(character)
         objectToNotify?.giveAllCharactersInfo(characterArray)
@@ -198,9 +197,8 @@ object DataMaster: Hermez.HermezDataInterface {
     fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData) {
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        val itemToAddArray = ArrayList<ArmorItemData>() //todo these get thrown away each time this function is called right?
+        val itemToAddArray = ArrayList<ArmorItemData>()
         val itemToRemoveArray = ArrayList<ArmorItemData>()
-        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $armorItem character to save to is $characterOwner")
         if (characterOwner.characterArmorItemsList.isEmpty()){//treat as normal and save item (first item)
             characterOwner.characterArmorItemsList.add(armorItem)
@@ -261,9 +259,8 @@ object DataMaster: Hermez.HermezDataInterface {
     fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        val itemToAddArray = ArrayList<WeaponItemData>() //todo these get thrown away each time this function is called right?
+        val itemToAddArray = ArrayList<WeaponItemData>()
         val itemToRemoveArray = ArrayList<WeaponItemData>()
-        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $weaponItem character to save to is $characterOwner")
         if (characterOwner.characterWeaponItemsList.isEmpty()){//treat as normal and save item (first item)
             characterOwner.characterWeaponItemsList.add(weaponItem)
@@ -324,9 +321,8 @@ object DataMaster: Hermez.HermezDataInterface {
     fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        val itemToAddArray = ArrayList<ConsumablesItemData>() //todo these get thrown away each time this function is called right?
+        val itemToAddArray = ArrayList<ConsumablesItemData>()
         val itemToRemoveArray = ArrayList<ConsumablesItemData>()
-        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $consumableItem character to save to is $characterOwner")
         if (characterOwner.characterConsumablesItemsList.isEmpty()){//treat as normal and save item (first item)
             characterOwner.characterConsumablesItemsList.add(consumableItem)
@@ -387,9 +383,8 @@ object DataMaster: Hermez.HermezDataInterface {
     fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
         val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
         val editor = sharedPrefs?.edit()
-        val itemToAddArray = ArrayList<MiscellaneousItemData>() //todo these get thrown away each time this function is called right?
+        val itemToAddArray = ArrayList<MiscellaneousItemData>()
         val itemToRemoveArray = ArrayList<MiscellaneousItemData>()
-        //todo i can make it so i boolean check to see if i delete or add. then add item to be deleted or added to an array. add things to the array inside loop. and add that array to the main array out of loop. i dont think its clean vs iterators?
         Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
         if (characterOwner.characterMiscellaneousItemList.isEmpty()){//treat as normal and save item (first item)
             characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
@@ -445,22 +440,6 @@ object DataMaster: Hermez.HermezDataInterface {
             }
         }
         objectToNotify?.giveCharacterInfo(characterOwner)
-
-        //todo legacy from 5-11-2021
-//        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
-//        val editor = sharedPrefs?.edit()
-//        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
-//        characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
-//        Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
-//        val characterInformationAsJSON = Gson().toJson(characterOwner)
-//        Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
-//        val characterName = characterOwner.characterName
-//        characterHashtable[characterName] = characterInformationAsJSON
-//        val characterHashtableJSON = Gson().toJson(characterHashtable)
-//        editor?.putString(CHARACTER_HASHTABLE_KEY, characterHashtableJSON)
-//        editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
-//        editor?.apply()
-//        objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
     //DELETE
@@ -586,7 +565,13 @@ object DataMaster: Hermez.HermezDataInterface {
         return otherPlayersArray
     }
 
-    fun resetHermez(){//todo I may want to add a distinction between these two. Reset Registration and Reset Discovery. Hermez may want to make same distinction.
+    fun resetHermez(){
+        otherPlayersArray.clear()
+        hermez.resetDiscovery()
+        hermez.resetService()
+    }
+
+    fun resetDiscovery(){
         otherPlayersArray.clear()
         hermez.resetDiscovery()
     }
@@ -625,7 +610,7 @@ object DataMaster: Hermez.HermezDataInterface {
             if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
                 val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
                 val mpCharacterAsJson = Gson().toJson(mpCharacter)
-                val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is likely a hermez problem. we should fix it?
+                val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is a hermez thing. and apparently designed feature.
                 senderArrayList.add(hermezMessage.sendingDevice)
                 hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
                 Log.d(tag, "characterAsJson = $mpCharacterAsJson")
@@ -636,7 +621,7 @@ object DataMaster: Hermez.HermezDataInterface {
         when (hermezMessage.message) {
             "Give me character details" -> {//todo get a better name for this string/key ENUM?? //also what do i do if I don't have a character? Do i need to reset? or only register my own service once I have a character?
                 if (hermezMessage.sendingDevice.name == phoneName){
-                    //it is our phone so ignore. todo maybe we should change hermez so this doesn't happen.
+                    //it is our phone so ignore.
                 }else{//it is someone else's phone
                     val otherPlayerCharacterInformation = Gson().fromJson(hermezMessage.json, OtherPlayerCharacterInformation::class.java) //get their character
                     if (otherPlayersArray.contains(otherPlayerCharacterInformation)){
@@ -769,7 +754,12 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "serviceFailed called")
         val hermezDeviceLost = serviceName?.let { Hermez.HermezDevice(it) }
         bagofholdingDevicesConnected.remove(hermezDeviceLost)
-        //todo handle campfire losing connection and not losing the cell.
+        for (player in otherPlayersArray){
+            if (player.otherPlayerDeviceName == hermezDeviceLost?.name){
+                otherPlayersArray.remove(player) //todo is this going to concurrent?
+                objectToNotify?.giveFriendsList(otherPlayersArray)
+            }
+        }
     }
 
     override fun messageCannotBeSentToDevices(hermezMessage: Hermez.HermezMessage, error: Hermez.HermezError) {
@@ -782,9 +772,8 @@ object DataMaster: Hermez.HermezDataInterface {
         for (item in deviceList){
             if (item.name == phoneName){
                 //do not get character data. Its my phone
-                //todo what if they have the same phoneName/type? UUID?
+                //todo what if they have the same phoneName/type? do we need to use a UUID?
             }else{//not my device so get their character data.
-//                otherPlayersArray.add(item.name)
                 val arrayForSingleDevice = ArrayList<Hermez.HermezDevice>()
                 arrayForSingleDevice.add(Hermez.HermezDevice(item.name))
                 val currentCharacter = retrieveCharacterInformation()
@@ -793,11 +782,10 @@ object DataMaster: Hermez.HermezDataInterface {
                     val mpCharacterAsJson = Gson().toJson(mpCharacter)
                     hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", arrayForSingleDevice) //our own device is listed here?
                 }else{//does not exist so send our device name instead
-
+                    Log.d(tag, "We should make a character")
                 }
             }
         }
-//
 //        /*
 //        * steps
 //        * 1) get names of devices on networks
@@ -810,6 +798,6 @@ object DataMaster: Hermez.HermezDataInterface {
     override fun resolveFailed(serviceType: String, serviceName: String, error: Hermez.HermezError) {
         Log.d(tag, "resolveFailed called $serviceType $serviceName $error")
         val hermezDeviceLost = serviceName.let { Hermez.HermezDevice(it) }
-        bagofholdingDevicesConnected.remove(hermezDeviceLost)//todo is this right? i could be removing things that don't exist in the array?
+        bagofholdingDevicesConnected.remove(hermezDeviceLost)
     }
 }

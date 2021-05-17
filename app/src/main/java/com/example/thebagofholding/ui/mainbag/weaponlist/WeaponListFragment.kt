@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,12 +17,11 @@ class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
     private lateinit var weaponListViewModel: WeaponListViewModel
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
-    private var weaponsListArray = ArrayList<WeaponItemData>()
     private lateinit var currentCharacter : CharacterInformation
 
     init {
         if (DataMaster.retrieveCharacterInformation() != null){
-            currentCharacter = DataMaster.retrieveCharacterInformation()!!//TODO is this current character information?? Rename?
+            currentCharacter = DataMaster.retrieveCharacterInformation()!!
         }
     }
 
@@ -32,9 +32,13 @@ class WeaponListFragment : Fragment(){
     ): View? {
         val root = inflater.inflate(R.layout.bag_weapons_list, container, false)
 
+        //toolbar
+        (activity as AppCompatActivity?)!!.supportActionBar?.customView?.findViewById<TextView>(R.id.toolbar_title_textview)?.text = getString(
+                    R.string.toolbar_title_weapons)
+
         //ViewModel and RecyclerViewAdapter
         weaponListViewModel = ViewModelProvider(this).get(WeaponListViewModel::class.java)
-        weaponListViewModel.characterData.observe(viewLifecycleOwner, Observer {
+        weaponListViewModel.characterData.observe(viewLifecycleOwner, {
             currentCharacter = it
             weaponListRecyclerView = root.findViewById(R.id.weapons_list_recyclerView)
             if (weaponListRecyclerAdapter == null){ //create it
@@ -46,12 +50,6 @@ class WeaponListFragment : Fragment(){
                 weaponListRecyclerAdapter!!.updateData(currentCharacter)
             }
         })
-
-
         return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 }

@@ -14,7 +14,6 @@
     <fragment
         android:id="@+id/navigation_character"
         android:name="com.example.thebagofholding.ui.character.CharacterFragment"
-        android:label="Character"
         tools:layout="@layout/fragment_character" >
     </fragment>
 
