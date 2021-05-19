@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    android:id="@+id/scrollView_purse"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:background="@drawable/background_2"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.purse.PurseFragment"
+    android:background="@drawable/background_2"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="#30100D"
+        android:fontFamily="@font/cinzel_decorative"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintTitle"
+        tools:context=".ui.purse.PurseFragment">
+
+        <ImageView
+            android:id="@+id/purse_money_1.4_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/purse_bronze_bit_icon"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintEnd_toStartOf="@+id/purse_money_2.4_imageview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/purse_money_2.4_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/purse_silver_coin_icon"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/purse_money_1.4_imageview"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/purse_money_3.4_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/purse_gold_crown_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_1.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_1.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_1.4_amount_edittext" />
+
+        <ImageView
+            android:id="@+id/purse_money_4.4_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/purse_mithril_sovereign_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_2.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_2.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_2.4_amount_edittext" />
+
+        <EditText
+            android:id="@+id/purse_money_1.4_amount_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cinzel_decorative"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_1.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_1.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_1.4_imageview" />
+
+        <EditText
+            android:id="@+id/purse_money_2.4_amount_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cinzel_decorative"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_2.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_2.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_2.4_imageview" />
+
+        <EditText
+            android:id="@+id/purse_money_3.4_amount_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cinzel_decorative"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_3.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_3.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_3.4_imageview" />
+
+        <EditText
+            android:id="@+id/purse_money_4.4_amount_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cinzel_decorative"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/purse_money_4.4_imageview"
+            app:layout_constraintStart_toStartOf="@+id/purse_money_4.4_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/purse_money_4.4_imageview" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.35" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#30100D"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:src="@drawable/purse_title_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
