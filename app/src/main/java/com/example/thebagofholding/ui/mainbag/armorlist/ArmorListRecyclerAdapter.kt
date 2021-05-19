@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -63,7 +64,13 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
                             val itemData = GenericItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, "armor", itemArmorData.armorDescription, itemArmorData.armorUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newArmorItem = ArmorItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, itemArmorData.armorDescription, UUID.randomUUID())
+                            DataMaster.saveItemArmor(itemCharacterOwner, newArmorItem)
+                        }
                     }
+
                     true
                 }
                 popupMenu.show()

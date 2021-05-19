@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 
 class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -82,6 +83,11 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                                 itemMiscellaneousData.miscDescription,
                                 itemMiscellaneousData.miscUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
+                        }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newMiscItem = MiscellaneousItemData(itemMiscellaneousData.miscImage, itemMiscellaneousData.miscName, itemMiscellaneousData.miscEffectsOne, itemMiscellaneousData.miscDescription, UUID.randomUUID())
+                            DataMaster.saveItemMiscellaneous(itemCharacterOwner, newMiscItem)
                         }
                     }
                     true

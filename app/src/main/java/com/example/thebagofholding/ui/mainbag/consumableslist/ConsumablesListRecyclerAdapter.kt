@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -81,6 +82,11 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                                 itemConsumablesData.consumablesDescription,
                                 itemConsumablesData.consumablesUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
+                        }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newConsumableItem = ConsumablesItemData(itemConsumablesData.consumablesImage, itemConsumablesData.consumablesName, itemConsumablesData.consumablesEffectsOne, itemConsumablesData.consumablesDescription, UUID.randomUUID())
+                            DataMaster.saveItemConsumable(itemCharacterOwner, newConsumableItem)
                         }
                     }
                     true
