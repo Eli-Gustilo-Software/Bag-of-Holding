@@ -61,5 +61,17 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
         />
 
-
+    <ImageView
+        android:id="@+id/new_item_buttonm"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/cinzel_decorative"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/item_newitem_scroll"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

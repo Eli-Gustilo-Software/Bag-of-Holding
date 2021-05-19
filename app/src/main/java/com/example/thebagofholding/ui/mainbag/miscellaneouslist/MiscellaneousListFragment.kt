@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -14,9 +15,12 @@ import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.MiscellaneousItemData
 import com.example.thebagofholding.R
+import com.example.thebagofholding.ui.items.NewConsumablesItemPopup
+import com.example.thebagofholding.ui.items.NewMiscellaneousItemPopup
 
 class MiscellaneousListFragment : Fragment(){
     private lateinit var miscListRecyclerView: RecyclerView
+    private lateinit var newItemButton : ImageView
     private lateinit var miscListViewModel : MiscellaneousListViewModel
     private var miscListRecyclerAdapter: MiscellaneousListRecyclerAdapter? = null
     private var miscListArray = ArrayList<MiscellaneousItemData>()
@@ -57,6 +61,13 @@ class MiscellaneousListFragment : Fragment(){
                 miscListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //New Item Button
+        newItemButton = root.findViewById(R.id.new_item_buttonm)
+        newItemButton.setOnClickListener {
+            val newItemPopup = NewMiscellaneousItemPopup()
+            newItemPopup.miscitemDetailsDialogPopup(this.requireContext())
+        }
         return root
     }
 }

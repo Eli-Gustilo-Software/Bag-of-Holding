@@ -7,6 +7,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -66,6 +68,18 @@ class CampfireRecyclerAdapter(private var otherPlayersList: ArrayList<OtherPlaye
                             whisperTitleTextview.text = "${context.getString(R.string.whisper_dialog_text_1)}${otherPlayerCharacterInformation.otherPlayerCharacterName}?"
 
                             //EditText
+                            whisperInputEditText.addTextChangedListener(object : TextWatcher {
+                                override fun afterTextChanged(s: Editable?) {
+                                    newWhisper = whisperInputEditText.text.toString()
+                                }
+
+                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                                }
+
+                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                    newWhisper = whisperInputEditText.text.toString()
+                                }
+                            })
                             whisperInputEditText.setOnKeyListener { v, keyCode, event ->
                                 Log.d(tag, "Keycode = $keyCode")
                                 Log.d(tag, "event = $event")
