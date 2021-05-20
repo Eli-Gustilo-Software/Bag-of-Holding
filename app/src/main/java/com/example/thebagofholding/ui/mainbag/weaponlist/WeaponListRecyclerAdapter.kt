@@ -112,7 +112,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         val weaponEffectOne = currentCharacter.characterWeaponItemsList[position].weaponEffectOne
 
         weaponObjectViewHolder.weaponNameTextView.text = weaponName
-        weaponObjectViewHolder.weaponImageImageView.setBackgroundResource(weaponImage)
+        weaponObjectViewHolder.weaponImageImageView.setImageResource(currentCharacter.characterWeaponItemsList[position].image)
         weaponObjectViewHolder.weaponEffectOneTextView.text = weaponEffectOne
         weaponObjectViewHolder.weaponDescriptionTextView.text = currentCharacter.characterWeaponItemsList[position].weaponDescription
 

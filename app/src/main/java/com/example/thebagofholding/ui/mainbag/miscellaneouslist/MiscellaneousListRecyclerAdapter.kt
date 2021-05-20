@@ -107,7 +107,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         val miscItemHolder = holder as MiscellaneousItemViewHolder
 
         miscItemHolder.miscNameTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscName
-        miscItemHolder.miscImageImageView.setBackgroundResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
+        miscItemHolder.miscImageImageView.setImageResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
         miscItemHolder.miscEffectsOneTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscEffectsOne
         miscItemHolder.miscDescriptionTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscDescription
 

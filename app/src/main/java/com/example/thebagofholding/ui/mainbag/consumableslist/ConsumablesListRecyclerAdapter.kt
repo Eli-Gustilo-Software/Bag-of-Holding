@@ -110,7 +110,7 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         val consumableItemHolder = holder as ConsumablesViewHolder
 
         consumableItemHolder.consumablesNameTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesName
-        consumableItemHolder.consumablesImageImageView.setBackgroundResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
+        consumableItemHolder.consumablesImageImageView.setImageResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
         consumableItemHolder.consumablesEffectsOneTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesEffectsOne
         consumableItemHolder.consumablesDescriptionTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesDescription
 

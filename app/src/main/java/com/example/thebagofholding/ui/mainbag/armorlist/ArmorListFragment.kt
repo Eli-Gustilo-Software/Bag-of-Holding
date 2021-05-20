@@ -55,7 +55,7 @@ class ArmorListFragment : Fragment(){
             currentCharacter = it
             armorListRecyclerView = root.findViewById(R.id.armor_list_recyclerView)
             if (armorListRecyclerAdapter == null){ //create it
-                armorListRecyclerAdapter = ArmorListRecyclerAdapter(currentCharacter)
+                armorListRecyclerAdapter = ArmorListRecyclerAdapter(currentCharacter, context)
                 armorListRecyclerView.layoutManager = LinearLayoutManager(this.activity)
                 armorListRecyclerView.adapter = armorListRecyclerAdapter
                 armorListRecyclerAdapter!!.notifyDataSetChanged()
