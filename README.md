@@ -1,3 +1,9 @@
 # Bag-of-Holding
 
-The Bag of Holding provides a quick and easy way to keep track of DnD, or other roll playing games, player character's items and gear. It utilizes my Hermez Library to allow the user to send items to their nearby friends on either Android of Apple phones. Meant to allow players to focus on the game and not inventory management while allowing for a video game-esque level of inventory management such as allowing items to be given names, effects, long winded descriptions, pictures, and much more is planned.
+The Bag of Holding provides a quick and easy way to keep track of D&D, or other roll playing games, player character's items and gear.
+
+ Utilizes my Hermez Library to allow the user to send items via NSD/Bonjour to their friends on either Android or Apple devices.
+
+ Allow players to focus on the game they are playing while allowing for an easy video game-esque level of inventory management. Your items can be given names, fancy effects, long winded descriptions, their own picture, be copied, deleted, modified, transferred,  and so much more is in the works.
+
+
