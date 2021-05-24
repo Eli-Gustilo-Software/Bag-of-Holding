@@ -1,5 +1,6 @@
 package com.example.thebagofholding.ui.items
 
+
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -16,15 +17,16 @@ import android.widget.*
 import com.example.thebagofholding.*
 import java.util.*
 
-class NewWeaponItemPopup {
+class NewInListItemPopup(val context: Context, itemType: String) {
     private val tag = "ItemDetailsDialogPopup"
     //New Item Variables
-    private var newItemType: String? = "consumable"
+    private var newItemType: String? = itemType
     private var newItemName: String? = null
     private var newItemEffect : String? = null
     private var newItemDescription : String? = null
 
-    fun weaponitemDetailsDialogPopup(context: Context) {
+    fun itemDetailsDialogPopup() {
+        val context = context
         val dialog: AlertDialog?
         val builder = AlertDialog.Builder(context)
 
@@ -61,7 +63,6 @@ class NewWeaponItemPopup {
                     newItemName = itemNameEditText.text.toString()
                 }
             })
-
             itemNameEditText.setOnKeyListener { v, keyCode, event ->
                 Log.d(tag, "Keycode = $keyCode")
                 Log.d(tag, "event = $event")
@@ -101,7 +102,6 @@ class NewWeaponItemPopup {
                     newItemEffect = itemEffectEditText.text.toString()
                 }
             })
-
             itemEffectEditText.setOnKeyListener { v, keyCode, event ->
                 Log.d(tag, "Keycode = $keyCode")
                 Log.d(tag, "event = $event")
@@ -221,34 +221,57 @@ class NewWeaponItemPopup {
                 // Apply the adapter to the spinner
                 itemTypeSpinner.adapter = adapter
             }
-            itemTypeSpinner.setSelection(0)
+
+            //sets initial value for what type of item is being created depending on the list the UI is on.
+            when (newItemType) {//TODO should these be enums
+                "weapon" -> { //Weapon
+                    itemTypeSpinner.setSelection(0)
+                    itemImageView.setImageResource(R.drawable.itemtype_weapons_image)
+                    Log.d(tag, "newItem type = $newItemType")
+                }
+                "armor" -> { //Armor/Apparel
+                    itemTypeSpinner.setSelection(1)
+                    itemImageView.setImageResource(R.drawable.itemtype_armor_image)
+                    Log.d(tag, "newItem type = $newItemType")
+                }
+                "consumable" -> { //Consumable
+                    itemTypeSpinner.setSelection(2)
+                    itemImageView.setImageResource(R.drawable.itemtype_potion_image)
+                    Log.d(tag, "newItem type = $newItemType")
+                }
+                "misc" -> { //Miscellaneous
+                    itemTypeSpinner.setSelection(3)
+                    itemImageView.setImageResource(R.drawable.itemtype_misc_image)
+                    Log.d(tag, "newItem type = $newItemType")
+                }
+            }
 
             itemTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
                 ) {
                     when (position) {//TODO should these be enums
                         0 -> { //Weapon
                             newItemType = "weapon"
-                            itemImageView.setBackgroundResource(R.drawable.item_sword_icon)
+                            itemImageView.setImageResource(R.drawable.itemtype_weapons_image)
                             Log.d(tag, "newItem type = $newItemType")
                         }
                         1 -> { //Armor/Apparel
                             newItemType = "armor"
-                            itemImageView.setBackgroundResource(R.drawable.item_helmet_icon)
+                            itemImageView.setImageResource(R.drawable.itemtype_armor_image)
                             Log.d(tag, "newItem type = $newItemType")
                         }
                         2 -> { //Consumable
                             newItemType = "consumable"
-                            itemImageView.setBackgroundResource(R.drawable.item_potion_icon)
+                            itemImageView.setImageResource(R.drawable.itemtype_potion_image)
                             Log.d(tag, "newItem type = $newItemType")
                         }
                         3 -> { //Miscellaneous
                             newItemType = "misc"
-                            itemImageView.setBackgroundResource(R.drawable.item_misc_icon)
+                            itemImageView.setImageResource(R.drawable.itemtype_misc_image)
                             Log.d(tag, "newItem type = $newItemType")
                         }
                     }
