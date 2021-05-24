@@ -14,4 +14,11 @@
         <!-- Customize your theme here. -->
 
     </style>
+
+    <style name="SpinnerTheme">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">@font/cinzel_decorative</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

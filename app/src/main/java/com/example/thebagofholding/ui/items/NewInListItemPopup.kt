@@ -215,9 +215,9 @@ class NewInListItemPopup(val context: Context, itemType: String) {
 
             //SPINNER
             // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter.createFromResource(context, R.array.item_types, android.R.layout.simple_spinner_item).also { adapter ->
+            ArrayAdapter.createFromResource(context, R.array.item_types, R.layout.new_item_spinner).also { adapter ->
                 // Specify the layout to use when the list of choices appears
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.spinner_new_item_items)
                 // Apply the adapter to the spinner
                 itemTypeSpinner.adapter = adapter
             }

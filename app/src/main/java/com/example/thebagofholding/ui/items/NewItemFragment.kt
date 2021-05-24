@@ -229,13 +229,13 @@ class NewItemFragment : Fragment() {
 
         //SPINNER
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this.requireContext(), R.array.item_types, android.R.layout.simple_spinner_item).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ArrayAdapter.createFromResource(this.requireContext(), R.array.item_types, R.layout.new_item_spinner).also { adapter ->
+
+        // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(R.layout.spinner_new_item_items)
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
