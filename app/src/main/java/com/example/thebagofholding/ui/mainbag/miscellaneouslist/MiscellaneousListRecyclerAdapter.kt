@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 
 class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -83,6 +84,11 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
                                 itemMiscellaneousData.miscUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newMiscItem = MiscellaneousItemData(itemMiscellaneousData.miscImage, itemMiscellaneousData.miscName, itemMiscellaneousData.miscEffectsOne, itemMiscellaneousData.miscDescription, UUID.randomUUID())
+                            DataMaster.saveItemMiscellaneous(itemCharacterOwner, newMiscItem)
+                        }
                     }
                     true
                 }
@@ -101,7 +107,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         val miscItemHolder = holder as MiscellaneousItemViewHolder
 
         miscItemHolder.miscNameTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscName
-        miscItemHolder.miscImageImageView.setBackgroundResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
+        miscItemHolder.miscImageImageView.setImageResource(currentCharacter.characterMiscellaneousItemList[position].miscImage)
         miscItemHolder.miscEffectsOneTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscEffectsOne
         miscItemHolder.miscDescriptionTextView.text = currentCharacter.characterMiscellaneousItemList[position].miscDescription
 

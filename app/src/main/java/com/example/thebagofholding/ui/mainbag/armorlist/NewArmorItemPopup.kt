@@ -16,20 +16,21 @@ import android.widget.*
 import com.example.thebagofholding.*
 import java.util.*
 
-class ItemDetailsDialogPopup {
+class NewArmorItemPopup {
     private val tag = "ItemDetailsDialogPopup"
-    fun itemDetailsDialogPopup(genericItemData: GenericItemData, context: Context) {
+    //New Item Variables
+    private var newItemType: String? = "armor"
+    private var newItemName: String? = null
+    private var newItemEffect : String? = null
+    private var newItemDescription : String? = null
+
+    fun armoritemDetailsDialogPopup(context: Context) {
         val dialog: AlertDialog?
         val builder = AlertDialog.Builder(context)
-        var itemType: String = genericItemData.itemType
-        var itemName: String = genericItemData.name
-        var itemEffect: String = genericItemData.effectOne
-        var itemDescription: String = genericItemData.itemDescription
-        val itemUUID : UUID = genericItemData.UUID
 
         // set the custom layout
         val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-        val view = layoutInflater?.inflate(R.layout.item_details_dialog_popup, null)
+        val view = layoutInflater?.inflate(R.layout.new_item_lists_dialog_popup, null)
         builder.setView(view)
         // create and show the alert dialog
         dialog = builder.create()
@@ -38,32 +39,26 @@ class ItemDetailsDialogPopup {
 
         if (view != null) {
             //Set views
-            val itemImageView: ImageView = view.findViewById(R.id.item_details_imageview)
-            val itemTypeSpinner: Spinner = view.findViewById(R.id.item_details_type_spinner)
-            val itemNameEditText: EditText = view.findViewById(R.id.item_details_name_edittext)
-            val itemEffectEditText: EditText = view.findViewById(R.id.item_details_effect_edittext)
-            val itemDescriptionEditText: EditText = view.findViewById(R.id.item_details_description_editext)
-            val itemDetailsBackButton: Button = view.findViewById(R.id.item_details_back_button)
-            val itemDetailsConfirmButton: Button = view.findViewById(R.id.item_details_confirm_button)
-
-            //init
-            itemNameEditText.setText(genericItemData.name)
-            itemEffectEditText.setText(genericItemData.effectOne)
-            itemDescriptionEditText.setText(genericItemData.itemDescription)
-            itemImageView.setBackgroundResource(genericItemData.image)
+            val itemImageView: ImageView = view.findViewById(R.id.new_item_imageviewPopUp)
+            val itemTypeSpinner: Spinner = view.findViewById(R.id.new_item_type_spinnerPopUp)
+            val itemNameEditText: EditText = view.findViewById(R.id.new_item_name_edittextPopUp)
+            val itemEffectEditText: EditText = view.findViewById(R.id.new_item_effect_edittextPopUp)
+            val itemDescriptionEditText: EditText = view.findViewById(R.id.new_item_description_editextPopUp)
+            val itemDetailsBackButton: Button = view.findViewById(R.id.new_item_back_buttonPopUp)
+            val itemDetailsConfirmButton: Button = view.findViewById(R.id.new_item_create_buttonPopUp)
 
 
             //EditTexts
             itemNameEditText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    itemName = itemNameEditText.text.toString()
+                    newItemName = itemNameEditText.text.toString()
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    itemName = itemNameEditText.text.toString()
+                    newItemName = itemNameEditText.text.toString()
                 }
             })
             itemNameEditText.setOnKeyListener { v, keyCode, event ->
@@ -77,7 +72,7 @@ class ItemDetailsDialogPopup {
                         itemNameEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemName = itemNameEditText.text.toString()
+                        newItemName = itemNameEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -85,7 +80,7 @@ class ItemDetailsDialogPopup {
                         itemNameEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemName = itemNameEditText.text.toString()
+                        newItemName = itemNameEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -95,14 +90,14 @@ class ItemDetailsDialogPopup {
 
             itemEffectEditText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    itemEffect = itemEffectEditText.text.toString()
+                    newItemEffect = itemEffectEditText.text.toString()
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    itemEffect = itemEffectEditText.text.toString()
+                    newItemEffect = itemEffectEditText.text.toString()
                 }
             })
             itemEffectEditText.setOnKeyListener { v, keyCode, event ->
@@ -116,7 +111,7 @@ class ItemDetailsDialogPopup {
                         itemEffectEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemEffect = itemEffectEditText.text.toString()
+                        newItemEffect = itemEffectEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -124,7 +119,7 @@ class ItemDetailsDialogPopup {
                         itemEffectEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemEffect = itemEffectEditText.text.toString()
+                        newItemEffect = itemEffectEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -134,14 +129,14 @@ class ItemDetailsDialogPopup {
 
             itemDescriptionEditText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    itemDescription = itemDescriptionEditText.text.toString()
+                    newItemDescription = itemDescriptionEditText.text.toString()
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    itemDescription = itemDescriptionEditText.text.toString()
+                    newItemDescription = itemDescriptionEditText.text.toString()
                 }
             })
             itemDescriptionEditText.setOnKeyListener { v, keyCode, event ->
@@ -155,7 +150,7 @@ class ItemDetailsDialogPopup {
                         itemDescriptionEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemDescription = itemDescriptionEditText.text.toString()
+                        newItemDescription = itemDescriptionEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -163,7 +158,7 @@ class ItemDetailsDialogPopup {
                         itemDescriptionEditText.clearFocus()
                         val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                        itemDescription = itemDescriptionEditText.text.toString()
+                        newItemDescription = itemDescriptionEditText.text.toString()
                         //return true
                         return@setOnKeyListener true
                     }
@@ -178,10 +173,10 @@ class ItemDetailsDialogPopup {
             }
 
             itemDetailsConfirmButton.setOnClickListener {
-                if (itemName != null && itemEffect != null && itemType != null) {//item exists
-                    when (itemType) {//TODO should these be enums
+                if (newItemName != null && newItemEffect != null) {//item exists
+                    when (newItemType) {//TODO should these be enums
                         "weapon" -> { //Weapon
-                            val newWeapon = WeaponItemData((R.drawable.item_sword_icon), itemName, itemEffect, itemDescription, itemUUID)
+                            val newWeapon = WeaponItemData((R.drawable.item_sword_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                                 DataMaster.saveItemWeapon(character, newWeapon)
@@ -189,7 +184,7 @@ class ItemDetailsDialogPopup {
                             }
                         }
                         "armor" -> { //Armor/Apparel
-                            val newArmor = ArmorItemData((R.drawable.item_helmet_icon), itemName, itemEffect, itemDescription, itemUUID)
+                            val newArmor = ArmorItemData((R.drawable.item_helmet_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemArmor(character, newArmor)
@@ -197,7 +192,7 @@ class ItemDetailsDialogPopup {
                             }
                         }
                         "consumable" -> { //Consumable
-                            val newConsumable = ConsumablesItemData((R.drawable.item_potion_icon), itemName, itemEffect, itemDescription, itemUUID)
+                            val newConsumable = ConsumablesItemData((R.drawable.item_potion_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemConsumable(character, newConsumable)
@@ -205,7 +200,7 @@ class ItemDetailsDialogPopup {
                             }
                         }
                         "misc" -> { //Miscellaneous
-                            val newMisc = MiscellaneousItemData((R.drawable.item_misc_icon), itemName, itemEffect, itemDescription, itemUUID)
+                            val newMisc = MiscellaneousItemData((R.drawable.item_misc_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemMiscellaneous(character, newMisc)
@@ -224,21 +219,7 @@ class ItemDetailsDialogPopup {
                 // Apply the adapter to the spinner
                 itemTypeSpinner.adapter = adapter
             }
-
-            when (genericItemData.itemType) {
-                "weapon" -> {
-                    itemTypeSpinner.setSelection(0)
-                }
-                "armor" -> {
-                    itemTypeSpinner.setSelection(1)
-                }
-                "consumable" -> {
-                    itemTypeSpinner.setSelection(2)
-                }
-                "misc" -> {
-                    itemTypeSpinner.setSelection(3)
-                }
-            }
+            itemTypeSpinner.setSelection(1)
 
             itemTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -249,24 +230,24 @@ class ItemDetailsDialogPopup {
                 ) {
                     when (position) {//TODO should these be enums
                         0 -> { //Weapon
-                            itemType = "weapon"
+                            newItemType = "weapon"
                             itemImageView.setBackgroundResource(R.drawable.item_sword_icon)
-                            Log.d(tag, "newItem type = $itemType")
+                            Log.d(tag, "newItem type = $newItemType")
                         }
                         1 -> { //Armor/Apparel
-                            itemType = "armor"
+                            newItemType = "armor"
                             itemImageView.setBackgroundResource(R.drawable.item_helmet_icon)
-                            Log.d(tag, "newItem type = $itemType")
+                            Log.d(tag, "newItem type = $newItemType")
                         }
                         2 -> { //Consumable
-                            itemType = "consumable"
+                            newItemType = "consumable"
                             itemImageView.setBackgroundResource(R.drawable.item_potion_icon)
-                            Log.d(tag, "newItem type = $itemType")
+                            Log.d(tag, "newItem type = $newItemType")
                         }
                         3 -> { //Miscellaneous
-                            itemType = "misc"
+                            newItemType = "misc"
                             itemImageView.setBackgroundResource(R.drawable.item_misc_icon)
-                            Log.d(tag, "newItem type = $itemType")
+                            Log.d(tag, "newItem type = $newItemType")
                         }
                     }
                 }

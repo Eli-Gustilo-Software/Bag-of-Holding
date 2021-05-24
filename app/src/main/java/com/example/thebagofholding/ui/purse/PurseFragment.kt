@@ -1,6 +1,7 @@
 package com.example.thebagofholding.ui.purse
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.InputFilter
 import android.util.Log
@@ -9,8 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thebagofholding.CharacterInformation
@@ -18,11 +21,12 @@ import com.example.thebagofholding.CharacterPurseData
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
 
+
 class PurseFragment : Fragment() {
     private lateinit var purseViewModel: PurseViewModel
     private var tagPurseFragment = "PurseFragment"
     private lateinit var currentCharacter : CharacterInformation
-    private var currentCharacterPurse = CharacterPurseData("0","0","0","0")
+    private var currentCharacterPurse = CharacterPurseData("0", "0", "0", "0")
 
     init {
         if (DataMaster.retrieveCharacterInformation() != null){
@@ -34,15 +38,16 @@ class PurseFragment : Fragment() {
         }
     }
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_purse, container, false)
 
         //toolbar
         (activity as AppCompatActivity?)!!.supportActionBar?.customView?.findViewById<TextView>(R.id.toolbar_title_textview)?.text = getString(
-                    R.string.toolbar_title_coin_pruse)
+            R.string.toolbar_title_coin_pruse
+        )
 
         purseViewModel = ViewModelProvider(this).get(PurseViewModel::class.java)
         purseViewModel.text.observe(viewLifecycleOwner, {
@@ -56,8 +61,9 @@ class PurseFragment : Fragment() {
 
         //Views and Listeners and Edit Texts
         //BRONZE
-        val bronzeAmountEditText = view.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
 
+
+        val bronzeAmountEditText = view.findViewById<TextView>(R.id.purse_money_1_4_amount_edittext)
         //Filter to only allow digits: Phone popup is in XML
         val filterBronze = InputFilter { source, start, end, dest, dstart, dend ->
             for (i in start until end) {
@@ -82,7 +88,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.bronze = bronzeAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.silver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.silver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -92,7 +101,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.bronze = bronzeAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.silver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.silver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -100,7 +112,12 @@ class PurseFragment : Fragment() {
                 else -> false
             }
         }
-
+        val bronzeImage = view.findViewById<ImageView>(R.id.purse_money_1_4_imageview)
+        bronzeImage.setOnClickListener {
+            bronzeAmountEditText.requestFocus()
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm!!.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        }
         //SILVER
         val silverAmountEditText = view.findViewById<TextView>(R.id.purse_money_2_4_amount_edittext)
 
@@ -127,7 +144,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.silver = silverAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.silver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.silver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -137,7 +157,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.silver = silverAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.silver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.silver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -146,7 +169,12 @@ class PurseFragment : Fragment() {
             }
         }
 
-
+        val silverImage = view.findViewById<ImageView>(R.id.purse_money_2_4_imageview)
+        silverImage.setOnClickListener {
+            silverAmountEditText.requestFocus()
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm!!.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        }
         //GOLD
         val goldAmountEditText = view.findViewById<TextView>(R.id.purse_money_3_4_amount_edittext)
 
@@ -173,7 +201,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.gold = goldAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.gold}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.gold}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -183,13 +214,22 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.gold = goldAmountEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.gold}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.gold}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
                 }
                 else -> false
             }
+        }
+        val goldImage = view.findViewById<ImageView>(R.id.purse_money_3_4_imageview)
+        goldImage.setOnClickListener {
+            goldAmountEditText.requestFocus()
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm!!.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }
 
         //TRUE SILVER
@@ -218,7 +258,10 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.truesilver = truesilverEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.truesilver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.truesilver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
@@ -228,13 +271,23 @@ class PurseFragment : Fragment() {
                     val inputMethodManager = this.requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                     currentCharacterPurse.truesilver = truesilverEditText.text.toString()
-                    Log.d(tagPurseFragment, "new bronze coin amount = ${currentCharacterPurse.truesilver}")
+                    Log.d(
+                        tagPurseFragment,
+                        "new bronze coin amount = ${currentCharacterPurse.truesilver}"
+                    )
                     DataMaster.saveMoney(currentCharacter, currentCharacterPurse)
                     //return true
                     return@setOnKeyListener true
                 }
                 else -> false
             }
+        }
+
+        val truesilverImage = view.findViewById<ImageView>(R.id.purse_money_4_4_imageview)
+        truesilverImage.setOnClickListener {
+            truesilverEditText.requestFocus()
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm!!.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }
 
         bronzeAmountEditText?.text = currentCharacter.characterPurseData.bronze

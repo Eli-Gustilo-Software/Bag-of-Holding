@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val tag = "WeaponListRecyclerAdapater"
@@ -81,6 +82,11 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
                                 itemWeaponData.weaponUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newWeaponItem = WeaponItemData(itemWeaponData.image, itemWeaponData.name, itemWeaponData.weaponEffectOne, itemWeaponData.weaponDescription, UUID.randomUUID())
+                            DataMaster.saveItemWeapon(itemCharacterOwner, newWeaponItem)
+                        }
                     }
                     true
                 }
@@ -106,7 +112,7 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         val weaponEffectOne = currentCharacter.characterWeaponItemsList[position].weaponEffectOne
 
         weaponObjectViewHolder.weaponNameTextView.text = weaponName
-        weaponObjectViewHolder.weaponImageImageView.setBackgroundResource(weaponImage)
+        weaponObjectViewHolder.weaponImageImageView.setImageResource(currentCharacter.characterWeaponItemsList[position].image)
         weaponObjectViewHolder.weaponEffectOneTextView.text = weaponEffectOne
         weaponObjectViewHolder.weaponDescriptionTextView.text = currentCharacter.characterWeaponItemsList[position].weaponDescription
 

@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
 class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -82,6 +83,11 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
                                 itemConsumablesData.consumablesUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newConsumableItem = ConsumablesItemData(itemConsumablesData.consumablesImage, itemConsumablesData.consumablesName, itemConsumablesData.consumablesEffectsOne, itemConsumablesData.consumablesDescription, UUID.randomUUID())
+                            DataMaster.saveItemConsumable(itemCharacterOwner, newConsumableItem)
+                        }
                     }
                     true
                 }
@@ -104,7 +110,7 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         val consumableItemHolder = holder as ConsumablesViewHolder
 
         consumableItemHolder.consumablesNameTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesName
-        consumableItemHolder.consumablesImageImageView.setBackgroundResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
+        consumableItemHolder.consumablesImageImageView.setImageResource(currentCharacter.characterConsumablesItemsList[position].consumablesImage)
         consumableItemHolder.consumablesEffectsOneTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesEffectsOne
         consumableItemHolder.consumablesDescriptionTextView.text = currentCharacter.characterConsumablesItemsList[position].consumablesDescription
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -15,9 +16,12 @@ import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.ConsumablesItemData
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
+import com.example.thebagofholding.ui.items.NewArmorItemPopup
+import com.example.thebagofholding.ui.items.NewConsumablesItemPopup
 
 class ConsumablesListFragment : Fragment(){
     private lateinit var consumablesListRecyclerView: RecyclerView
+    private lateinit var newItemButton : ImageView
     private lateinit var consumablesListViewModel: ConsumablesListViewModel
     private var consumablesListRecyclerAdapter: ConsumablesListRecyclerAdapter? = null
     private var consumablesListArray = ArrayList<ConsumablesItemData>()
@@ -58,6 +62,14 @@ class ConsumablesListFragment : Fragment(){
                 consumablesListRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
+
+        //New Item Button
+        newItemButton = root.findViewById(R.id.new_item_buttonc)
+        newItemButton.setOnClickListener {
+            val newItemPopup = NewConsumablesItemPopup()
+            newItemPopup.consumableitemDetailsDialogPopup(this.requireContext())
+        }
+
         return root
     }
 }

@@ -655,6 +655,9 @@ object DataMaster: Hermez.HermezDataInterface {
                             saveItemWeapon(newItemOwner, receivedItemWeaponData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemWeaponData.name}" , Toast.LENGTH_LONG).show()
+                            }, 500)
                             hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
                         }
                     }
@@ -666,6 +669,9 @@ object DataMaster: Hermez.HermezDataInterface {
                             saveItemArmor(newItemOwner, receivedItemArmorData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemArmorData.armorName}" , Toast.LENGTH_LONG).show()
+                            }, 500)
                             hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
                         }
                     }
@@ -677,6 +683,9 @@ object DataMaster: Hermez.HermezDataInterface {
                             saveItemConsumable(newItemOwner, receivedItemConsumableData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemConsumableData.consumablesName}" , Toast.LENGTH_LONG).show()
+                            }, 500)
                             hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
                         }
                     }
@@ -688,6 +697,9 @@ object DataMaster: Hermez.HermezDataInterface {
                             saveItemMiscellaneous(newItemOwner, receivedItemMiscData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemMiscData.miscName}" , Toast.LENGTH_LONG).show()
+                            }, 500)
                             hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
                         }
                     }

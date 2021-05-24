@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -12,9 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
+import com.example.thebagofholding.ui.items.NewMiscellaneousItemPopup
+import com.example.thebagofholding.ui.items.NewWeaponItemPopup
 
 class WeaponListFragment : Fragment(){
     private lateinit var weaponListRecyclerView: RecyclerView
+    private lateinit var newItemButton : ImageView
     private lateinit var weaponListViewModel: WeaponListViewModel
     private var weaponListRecyclerAdapter: WeaponListRecyclerAdapter? = null
     private lateinit var currentCharacter : CharacterInformation
@@ -50,6 +54,13 @@ class WeaponListFragment : Fragment(){
                 weaponListRecyclerAdapter!!.updateData(currentCharacter)
             }
         })
+
+        //New Item Button
+        newItemButton = root.findViewById(R.id.new_item_buttonw)
+        newItemButton.setOnClickListener {
+            val newItemPopup = NewWeaponItemPopup()
+            newItemPopup.weaponitemDetailsDialogPopup(this.requireContext())
+        }
         return root
     }
 }

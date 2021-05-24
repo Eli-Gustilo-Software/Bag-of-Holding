@@ -15,9 +15,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
 import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
+import java.util.*
 
-class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation, val context: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ArmorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "ArmorViewHolder"
         lateinit var itemArmorData: ArmorItemData
@@ -63,7 +63,13 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
                             val itemData = GenericItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, "armor", itemArmorData.armorDescription, itemArmorData.armorUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
+
+                        R.id.item_popup_menu_duplicate -> {
+                            val newArmorItem = ArmorItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, itemArmorData.armorDescription, UUID.randomUUID())
+                            DataMaster.saveItemArmor(itemCharacterOwner, newArmorItem)
+                        }
                     }
+
                     true
                 }
                 popupMenu.show()
@@ -92,10 +98,12 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation) : Re
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val armorItemHolder = holder as ArmorViewHolder
+        val drawable = context?.getDrawable(R.drawable.item_helmet_icon)
 
 
         armorItemHolder.armorNameTextView.text = currentCharacter.characterArmorItemsList[position].armorName
-        armorItemHolder.armorImageImageView.setBackgroundResource(currentCharacter.characterArmorItemsList[position].armorImage)
+
+        armorItemHolder.armorImageImageView.setImageResource(currentCharacter.characterArmorItemsList[position].armorImage)
         armorItemHolder.armorEffectsOneTextView.text = currentCharacter.characterArmorItemsList[position].armorEffectsOne
         armorItemHolder.armorDescriptionTextView.text = currentCharacter.characterArmorItemsList[position].armorDescription
 
