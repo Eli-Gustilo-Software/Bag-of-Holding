@@ -15,8 +15,7 @@ import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.MiscellaneousItemData
 import com.example.thebagofholding.R
-import com.example.thebagofholding.ui.items.NewConsumablesItemPopup
-import com.example.thebagofholding.ui.items.NewMiscellaneousItemPopup
+import com.example.thebagofholding.ui.items.NewInListItemPopup
 
 class MiscellaneousListFragment : Fragment(){
     private lateinit var miscListRecyclerView: RecyclerView
@@ -65,8 +64,8 @@ class MiscellaneousListFragment : Fragment(){
         //New Item Button
         newItemButton = root.findViewById(R.id.new_item_buttonm)
         newItemButton.setOnClickListener {
-            val newItemPopup = NewMiscellaneousItemPopup()
-            newItemPopup.miscitemDetailsDialogPopup(this.requireContext())
+            val newInListItemPopup = NewInListItemPopup(this.requireContext(), "misc")
+            newInListItemPopup.itemDetailsDialogPopup()
         }
         return root
     }

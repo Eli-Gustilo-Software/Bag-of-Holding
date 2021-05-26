@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +15,7 @@ import com.example.thebagofholding.CharacterInformation
 import com.example.thebagofholding.ConsumablesItemData
 import com.example.thebagofholding.DataMaster
 import com.example.thebagofholding.R
-import com.example.thebagofholding.ui.items.NewArmorItemPopup
-import com.example.thebagofholding.ui.items.NewConsumablesItemPopup
+import com.example.thebagofholding.ui.items.NewInListItemPopup
 
 class ConsumablesListFragment : Fragment(){
     private lateinit var consumablesListRecyclerView: RecyclerView
@@ -66,8 +64,8 @@ class ConsumablesListFragment : Fragment(){
         //New Item Button
         newItemButton = root.findViewById(R.id.new_item_buttonc)
         newItemButton.setOnClickListener {
-            val newItemPopup = NewConsumablesItemPopup()
-            newItemPopup.consumableitemDetailsDialogPopup(this.requireContext())
+            val newInListItemPopup = NewInListItemPopup(this.requireContext(), "consumable")
+            newInListItemPopup.itemDetailsDialogPopup()
         }
 
         return root

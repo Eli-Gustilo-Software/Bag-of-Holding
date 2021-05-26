@@ -1,7 +1,10 @@
 package com.example.thebagofholding.ui.items
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -13,6 +16,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -160,6 +164,15 @@ class NewItemFragment : Fragment() {
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                             DataMaster.saveItemWeapon(character, newWeapon)
+                            Toast.makeText(context, "New Item Created! You now have a new $newItemName!", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.navigation_character)
+                            val v = ContextCompat.getSystemService(this.requireContext(), Vibrator::class.java)
+                            if (Build.VERSION.SDK_INT >= 26) {
+                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            } else {
+                                @Suppress("DEPRECATION")
+                                v?.vibrate(200)
+                            }
                         }
                     }
                     "armor" -> { //Armor/Apparel
@@ -167,6 +180,15 @@ class NewItemFragment : Fragment() {
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemArmor(character, newArmor)
+                            Toast.makeText(context, "New Item Created! You now have a new $newItemName!", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.navigation_character)
+                            val v = ContextCompat.getSystemService(this.requireContext(), Vibrator::class.java)
+                            if (Build.VERSION.SDK_INT >= 26) {
+                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            } else {
+                                @Suppress("DEPRECATION")
+                                v?.vibrate(200)
+                            }
                         }
                     }
                     "consumable" -> { //Consumable
@@ -174,6 +196,15 @@ class NewItemFragment : Fragment() {
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemConsumable(character, newConsumable)
+                            Toast.makeText(context, "New Item Created! You now have a new $newItemName!", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.navigation_character)
+                            val v = ContextCompat.getSystemService(this.requireContext(), Vibrator::class.java)
+                            if (Build.VERSION.SDK_INT >= 26) {
+                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            } else {
+                                @Suppress("DEPRECATION")
+                                v?.vibrate(200)
+                            }
                         }
                     }
                     "misc" -> { //Miscellaneous
@@ -181,6 +212,15 @@ class NewItemFragment : Fragment() {
                         val character = DataMaster.retrieveCharacterInformation()
                         if (character != null) {
                             DataMaster.saveItemMiscellaneous(character, newMisc)
+                            Toast.makeText(context, "New Item Created! You now have a new $newItemName!", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.navigation_character)
+                            val v = ContextCompat.getSystemService(this.requireContext(), Vibrator::class.java)
+                            if (Build.VERSION.SDK_INT >= 26) {
+                                v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            } else {
+                                @Suppress("DEPRECATION")
+                                v?.vibrate(200)
+                            }
                         }
                     }
                 }
@@ -189,13 +229,13 @@ class NewItemFragment : Fragment() {
 
         //SPINNER
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this.requireContext(), R.array.item_types, android.R.layout.simple_spinner_item).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ArrayAdapter.createFromResource(this.requireContext(), R.array.item_types, R.layout.new_item_spinner).also { adapter ->
+
+        // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(R.layout.spinner_new_item_items)
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -206,22 +246,22 @@ class NewItemFragment : Fragment() {
                 when (position) {//TODO should these be enums
                     0 -> { //Weapon
                         newItemType = "weapon"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_weapons_image)
+                        newItemImageView.setImageResource(R.drawable.itemtype_weapons_image)
                         Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     1 -> { //Armor/Apparel
                         newItemType = "armor"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_armor_image)
+                        newItemImageView.setImageResource(R.drawable.itemtype_armor_image)
                         Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     2 -> { //Consumable
                         newItemType = "consumable"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_potion_image)
+                        newItemImageView.setImageResource(R.drawable.itemtype_potion_image)
                         Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                     3 -> { //Miscellaneous
                         newItemType = "misc"
-                        newItemImageView.setBackgroundResource(R.drawable.itemtype_misc_image)
+                        newItemImageView.setImageResource(R.drawable.itemtype_misc_image)
                         Log.d(tagNewItemFrag, "newItem type = $newItemType")
                     }
                 }

@@ -50,7 +50,7 @@ class ItemDetailsDialogPopup {
             itemNameEditText.setText(genericItemData.name)
             itemEffectEditText.setText(genericItemData.effectOne)
             itemDescriptionEditText.setText(genericItemData.itemDescription)
-            itemImageView.setBackgroundResource(genericItemData.image)
+            itemImageView.setImageResource(genericItemData.image)
 
 
             //EditTexts
@@ -218,9 +218,9 @@ class ItemDetailsDialogPopup {
 
             //SPINNER
             // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter.createFromResource(context, R.array.item_types, android.R.layout.simple_spinner_item).also { adapter ->
+            ArrayAdapter.createFromResource(context, R.array.item_types, R.layout.item_details_spinner).also { adapter ->
                 // Specify the layout to use when the list of choices appears
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.item_details_spinner_items)
                 // Apply the adapter to the spinner
                 itemTypeSpinner.adapter = adapter
             }
@@ -250,22 +250,22 @@ class ItemDetailsDialogPopup {
                     when (position) {//TODO should these be enums
                         0 -> { //Weapon
                             itemType = "weapon"
-                            itemImageView.setBackgroundResource(R.drawable.item_sword_icon)
+                            itemImageView.setImageResource(R.drawable.item_sword_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         1 -> { //Armor/Apparel
                             itemType = "armor"
-                            itemImageView.setBackgroundResource(R.drawable.item_helmet_icon)
+                            itemImageView.setImageResource(R.drawable.item_helmet_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         2 -> { //Consumable
                             itemType = "consumable"
-                            itemImageView.setBackgroundResource(R.drawable.item_potion_icon)
+                            itemImageView.setImageResource(R.drawable.item_potion_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                         3 -> { //Miscellaneous
                             itemType = "misc"
-                            itemImageView.setBackgroundResource(R.drawable.item_misc_icon)
+                            itemImageView.setImageResource(R.drawable.item_misc_icon)
                             Log.d(tag, "newItem type = $itemType")
                         }
                     }

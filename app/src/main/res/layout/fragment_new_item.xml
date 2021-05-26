@@ -168,8 +168,10 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/spinner_constraint_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/new_item_imageview"
@@ -179,16 +181,18 @@
 
                 <Spinner
                     android:id="@+id/new_item_type_spinner"
-                    style="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/generic_scroll_wide"
+                    android:fontFamily="@font/cinzel_decorative"
                     android:paddingTop="8dp"
+                    android:popupBackground="@drawable/spinner_new_item_drawable"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/spinner_constraint_layout"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/spinner_constraint_layout"
                     app:layout_constraintStart_toStartOf="@+id/guideline"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/spinner_constraint_layout" />
 
                 <TextView
                     android:id="@+id/new_item_spinner_textview"

@@ -7,17 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thebagofholding.*
-import com.example.thebagofholding.ui.items.ItemDetailsDialogPopup
-import com.example.thebagofholding.ui.items.NewArmorItemPopup
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
+import com.example.thebagofholding.ui.items.NewInListItemPopup
 import kotlin.collections.ArrayList
 
 class ArmorListFragment : Fragment(){
@@ -69,8 +64,8 @@ class ArmorListFragment : Fragment(){
         //New Item Button
         newItemButton = root.findViewById(R.id.new_item_buttona)
         newItemButton.setOnClickListener {
-            val newArmorItemPop = NewArmorItemPopup()
-            newArmorItemPop.armoritemDetailsDialogPopup(this.requireContext())
+            val newInListItemPopup = NewInListItemPopup(this.requireContext(), "armor")
+            newInListItemPopup.itemDetailsDialogPopup()
         }
 
         return root
