@@ -178,7 +178,11 @@ class NewInListItemPopup(val context: Context, itemType: String) {
                 if (newItemName != null && newItemEffect != null) {//item exists
                     when (newItemType) {//TODO should these be enums
                         "weapon" -> { //Weapon
-                            val newWeapon = WeaponItemData((R.drawable.item_sword_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
+                            val newWeapon = WeaponItemData((R.drawable.item_sword_icon),
+                                newItemName?: "<unknown name>",
+                                newItemEffect?: "<unknown effect>",
+                                newItemDescription?: "<unknown description>",
+                                UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) { //Null is necessary because characterInformation coming back from Data could be null???
                                 DataMaster.saveItemWeapon(character, newWeapon)
@@ -186,7 +190,11 @@ class NewInListItemPopup(val context: Context, itemType: String) {
                             }
                         }
                         "armor" -> { //Armor/Apparel
-                            val newArmor = ArmorItemData((R.drawable.item_helmet_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
+                            val newArmor = ArmorItemData((R.drawable.item_helmet_icon),
+                                newItemName?: "<unknown name>",
+                                newItemEffect?: "<unknown effect>",
+                                newItemDescription?: "<unknown description>",
+                                UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemArmor(character, newArmor)
@@ -194,7 +202,11 @@ class NewInListItemPopup(val context: Context, itemType: String) {
                             }
                         }
                         "consumable" -> { //Consumable
-                            val newConsumable = ConsumablesItemData((R.drawable.item_potion_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
+                            val newConsumable = ConsumablesItemData((R.drawable.item_potion_icon),
+                                newItemName?: "<unknown name>",
+                                newItemEffect?: "<unknown effect>",
+                                newItemDescription?: "<unknown description>",
+                                UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemConsumable(character, newConsumable)
@@ -202,7 +214,11 @@ class NewInListItemPopup(val context: Context, itemType: String) {
                             }
                         }
                         "misc" -> { //Miscellaneous
-                            val newMisc = MiscellaneousItemData((R.drawable.item_misc_icon), newItemName!!, newItemEffect!!, newItemDescription!!, UUID.randomUUID())
+                            val newMisc = MiscellaneousItemData((R.drawable.item_misc_icon),
+                                newItemName?: "<unknown name>",
+                                newItemEffect?: "<unknown effect>",
+                                newItemDescription?: "<unknown description>",
+                                UUID.randomUUID())
                             val character = DataMaster.retrieveCharacterInformation()
                             if (character != null) {
                                 DataMaster.saveItemMiscellaneous(character, newMisc)

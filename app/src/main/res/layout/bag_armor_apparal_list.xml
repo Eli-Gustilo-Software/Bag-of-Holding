@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/itemtype_potion_image"
+            app:srcCompat="@drawable/itemtype_armor_image"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
