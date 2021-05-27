@@ -7,62 +7,62 @@
 
     <fragment
         android:id="@+id/navigation_purse"
-        android:name="com.example.thebagofholding.ui.purse.PurseFragment"
+        android:name="com.eligustilo.thebagofholding.ui.purse.PurseFragment"
         android:label="Purse"
         tools:layout="@layout/fragment_purse" />
 
     <fragment
         android:id="@+id/navigation_character"
-        android:name="com.example.thebagofholding.ui.character.CharacterFragment"
+        android:name="com.eligustilo.thebagofholding.ui.character.CharacterFragment"
         tools:layout="@layout/fragment_character" >
     </fragment>
 
     <fragment
         android:id="@+id/navigation_new_item"
-        android:name="com.example.thebagofholding.ui.items.NewItemFragment"
+        android:name="com.eligustilo.thebagofholding.ui.items.NewItemFragment"
         android:label="New Item"
         tools:layout="@layout/fragment_new_item" />
 
     <fragment
         android:id="@+id/navigation_character_creation_screen"
-        android:name="com.example.thebagofholding.ui.character.CharacterCreationFragment"
+        android:name="com.eligustilo.thebagofholding.ui.character.CharacterCreationFragment"
         android:label="Character Creation"
         tools:layout="@layout/fragment_character_creation" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_main_screen"
-        android:name="com.example.thebagofholding.ui.mainbag.MainBagSelectionFragment"
+        android:name="com.eligustilo.thebagofholding.ui.mainbag.MainBagSelectionFragment"
         android:label="Bag of Holding Selection Screen"
         tools:layout="@layout/bag_holding_main_screen" >
     </fragment>
 
     <fragment
         android:id="@+id/navigation_bag_holding_weapons_list"
-        android:name="com.example.thebagofholding.ui.mainbag.weaponlist.WeaponListFragment"
+        android:name="com.eligustilo.thebagofholding.ui.mainbag.weaponlist.WeaponListFragment"
         android:label="Bag of Holding Weapons List"
         tools:layout="@layout/bag_weapons_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_armor_list"
-        android:name="com.example.thebagofholding.ui.mainbag.armorlist.ArmorListFragment"
+        android:name="com.eligustilo.thebagofholding.ui.mainbag.armorlist.ArmorListFragment"
         android:label="Bag of Holding Armor List"
         tools:layout="@layout/bag_armor_apparal_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_consumables_list"
-        android:name="com.example.thebagofholding.ui.mainbag.consumableslist.ConsumablesListFragment"
+        android:name="com.eligustilo.thebagofholding.ui.mainbag.consumableslist.ConsumablesListFragment"
         android:label="Bag of Holding Consumables List"
         tools:layout="@layout/bag_consumables_list" />
 
     <fragment
         android:id="@+id/navigation_bag_holding_misc_list"
-        android:name="com.example.thebagofholding.ui.mainbag.miscellaneouslist.MiscellaneousListFragment"
+        android:name="com.eligustilo.thebagofholding.ui.mainbag.miscellaneouslist.MiscellaneousListFragment"
         android:label="Bag of Holding Miscellaneous List"
         tools:layout="@layout/bag_misc_list" />
 
     <fragment
         android:id="@+id/navigation_fragment_campfire"
-        android:name="com.example.thebagofholding.ui.campfire.CampfireFragment"
+        android:name="com.eligustilo.thebagofholding.ui.campfire.CampfireFragment"
         android:label="Your Campfire"
         tools:layout="@layout/fragment_campfire" />
 
