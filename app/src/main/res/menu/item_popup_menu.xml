@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     >
-
     <item
         android:id="@+id/item_popup_menu_details"
         android:icon="@drawable/ic_notifications_black_24dp"
@@ -21,6 +20,4 @@
         android:id="@+id/item_popup_menu_transfer"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="Transfer Item" />
-
-
 </menu>

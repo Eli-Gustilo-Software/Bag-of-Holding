@@ -1,9 +1,11 @@
 package com.eligustilosoftware.thebagofholding.ui.mainbag.consumableslist
 
+import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +36,8 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         init {
             // Define click listener for the ViewHolder's View.
             consumablesCellConstraintLayout.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context,it)
+                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                val popupMenu = PopupMenu(wrapper, view)
                 popupMenu.inflate(R.menu.item_popup_menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
@@ -46,7 +49,8 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
 
                         R.id.item_popup_menu_transfer->{
                             Log.d(tag, "transfer menu called")
-                            val popupMenuTransfer= PopupMenu(view.context, it)
+                            val w: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                            val popupMenuTransfer = PopupMenu(w, view)
                             //get list of all other characters found
                             if (DataMaster.findOtherPlayers().size <= 0){
                                 //no other players found

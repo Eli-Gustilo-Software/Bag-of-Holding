@@ -12,10 +12,7 @@ import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -158,7 +155,8 @@ class CharacterCreationRecyclerAdapter(private var characterList: ArrayList<Char
             }
 
             characterNameCell.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context, it)
+                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                val popupMenu = PopupMenu(wrapper, view)
                 popupMenu.inflate(R.menu.character_confirmation_window)
                 popupMenu.setOnMenuItemClickListener { item->
                     when(item.itemId)

@@ -10,10 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +35,8 @@ class CampfireRecyclerAdapter(private var otherPlayersList: ArrayList<OtherPlaye
         val otherPlayerNameTextView: TextView = view.findViewById(R.id.character_name_cell_textview)
         init {
             otherPlayerCellConstraintLayout.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context, it)
+                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                val popupMenu = PopupMenu(wrapper, view)
                 popupMenu.inflate(R.menu.campfire_interactions_popup_menu)
                 popupMenu.setOnMenuItemClickListener { item->
                     when(item.itemId)
