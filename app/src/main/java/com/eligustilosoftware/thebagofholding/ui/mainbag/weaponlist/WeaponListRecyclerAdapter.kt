@@ -1,5 +1,6 @@
 package com.eligustilosoftware.thebagofholding.ui.mainbag.weaponlist
 
+import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -33,7 +34,8 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
         init {
             //Setup
             weaponCellConstraintLayout.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context,it)
+                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                val popupMenu = PopupMenu(wrapper, view)
                 popupMenu.inflate(R.menu.item_popup_menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
@@ -45,7 +47,8 @@ class WeaponListRecyclerAdapter (var currentCharacter: CharacterInformation) : R
 
                         R.id.item_popup_menu_transfer->{
                             Log.d(tag, "transfer menu called")
-                            val popupMenuTransfer= PopupMenu(view.context, it)
+                            val w: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
+                            val popupMenuTransfer = PopupMenu(w, view)
                             //get list of all other characters found
                             if (DataMaster.findOtherPlayers().size == 0){
                                 //no other players found

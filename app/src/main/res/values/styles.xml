@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PoppupMenu" parent="android:Widget.PopupMenu">
+        <item name="android:background">#AA6C38</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>

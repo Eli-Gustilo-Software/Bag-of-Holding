@@ -12,13 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:popupWindowStyle" tools:targetApi="l">@style/PoppupMenu</item>
 
     </style>
-
-    <style name="SpinnerTheme">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:fontFamily">@font/cinzel_decorative</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
 </resources>
