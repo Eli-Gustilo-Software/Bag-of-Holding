@@ -86,7 +86,7 @@
                 android:autofillHints="New Item Name"
                 android:fontFamily="@font/cinzel_decorative"
                 android:hint="New Item Name"
-                android:inputType="textPersonName"
+                android:inputType="textCapWords"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
