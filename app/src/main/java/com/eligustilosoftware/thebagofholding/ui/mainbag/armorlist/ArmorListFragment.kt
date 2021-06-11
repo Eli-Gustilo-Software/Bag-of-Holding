@@ -65,7 +65,7 @@ class ArmorListFragment : Fragment(){
         newItemButton = root.findViewById(R.id.new_item_buttona)
         newItemButton.setOnClickListener {
             val newInListItemPopup = NewInListItemPopup(this.requireContext(), "armor")
-            newInListItemPopup.itemDetailsDialogPopup()
+            newInListItemPopup.newItemDetailsDialogPopup()
         }
 
         return root

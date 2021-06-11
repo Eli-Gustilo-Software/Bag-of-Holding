@@ -65,7 +65,7 @@ class ConsumablesListFragment : Fragment(){
         newItemButton = root.findViewById(R.id.new_item_buttonc)
         newItemButton.setOnClickListener {
             val newInListItemPopup = NewInListItemPopup(this.requireContext(), "consumable")
-            newInListItemPopup.itemDetailsDialogPopup()
+            newInListItemPopup.newItemDetailsDialogPopup()
         }
 
         return root

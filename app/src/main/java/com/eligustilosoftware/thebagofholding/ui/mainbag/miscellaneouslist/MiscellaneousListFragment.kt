@@ -65,7 +65,7 @@ class MiscellaneousListFragment : Fragment(){
         newItemButton = root.findViewById(R.id.new_item_buttonm)
         newItemButton.setOnClickListener {
             val newInListItemPopup = NewInListItemPopup(this.requireContext(), "misc")
-            newInListItemPopup.itemDetailsDialogPopup()
+            newInListItemPopup.newItemDetailsDialogPopup()
         }
         return root
     }

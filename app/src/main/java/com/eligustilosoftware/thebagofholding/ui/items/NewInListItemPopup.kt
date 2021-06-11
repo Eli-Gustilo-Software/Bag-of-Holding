@@ -21,11 +21,11 @@ class NewInListItemPopup(val context: Context, itemType: String) {
     private val tag = "ItemDetailsDialogPopup"
     //New Item Variables
     private var newItemType: String? = itemType
-    private var newItemName: String? = null
-    private var newItemEffect : String? = null
-    private var newItemDescription : String? = null
+    private var newItemName: String? = ""
+    private var newItemEffect : String? = ""
+    private var newItemDescription : String? = ""
 
-    fun itemDetailsDialogPopup() {
+    fun newItemDetailsDialogPopup() {
         val context = context
         val dialog: AlertDialog?
         val builder = AlertDialog.Builder(context)
