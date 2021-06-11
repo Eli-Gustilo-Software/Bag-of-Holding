@@ -35,8 +35,8 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         init {
             // Define click listener for the ViewHolder's View.
             miscCellConstraintLayout.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context,it)
-                popupMenu.inflate(R.menu.item_popup_menu)
+                val popupMenu = PopupMenu(view.context, view)
+                popupMenu.menuInflater.inflate(R.menu.item_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
                     {

@@ -14,10 +14,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.eligustilosoftware.thebagofholding.*
+import com.eligustilosoftware.thebagofholding.MainActivity
 import com.eligustilosoftware.thebagofholding.ui.items.ItemDetailsDialogPopup
 import java.util.*
 
-class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation, val context: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val context: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ArmorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tag = "ArmorViewHolder"
         lateinit var itemArmorData: ArmorItemData
@@ -33,7 +35,7 @@ class ArmorListRecyclerAdapter (var currentCharacter: CharacterInformation, val 
             // Define click listener for the ViewHolder's View.
             armorCellConstraintLayout.setOnLongClickListener {
                 val popupMenu = PopupMenu(view.context, view)
-                popupMenu.inflate(R.menu.item_popup_menu)
+                popupMenu.menuInflater.inflate(R.menu.item_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.item_popup_menu_delete -> {

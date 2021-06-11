@@ -34,8 +34,8 @@ class ConsumablesListRecyclerAdapter (var currentCharacter: CharacterInformation
         init {
             // Define click listener for the ViewHolder's View.
             consumablesCellConstraintLayout.setOnLongClickListener {
-                val popupMenu= PopupMenu(view.context,it)
-                popupMenu.inflate(R.menu.item_popup_menu)
+                val popupMenu = PopupMenu(view.context, view)
+                popupMenu.menuInflater.inflate(R.menu.item_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
                     {
