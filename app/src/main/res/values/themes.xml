@@ -12,7 +12,19 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:popupWindowStyle" tools:targetApi="l">@style/PoppupMenu</item>
+
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
 
     </style>
+
+    <style name="SpinnerTheme">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">@font/cinzel_decorative</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">#AA6C38</item>
+    </style>
+
 </resources>

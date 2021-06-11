@@ -1,11 +1,9 @@
 package com.eligustilosoftware.thebagofholding.ui.mainbag.miscellaneouslist
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,9 +35,8 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
         init {
             // Define click listener for the ViewHolder's View.
             miscCellConstraintLayout.setOnLongClickListener {
-                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
-                val popupMenu = PopupMenu(wrapper, view)
-                popupMenu.inflate(R.menu.item_popup_menu)
+                val popupMenu = PopupMenu(view.context, view)
+                popupMenu.menuInflater.inflate(R.menu.item_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener {item->
                     when(item.itemId)
                     {
@@ -50,8 +47,7 @@ class MiscellaneousListRecyclerAdapter (var currentCharacter: CharacterInformati
 
                         R.id.item_popup_menu_transfer->{
                             Log.d(tag, "transfer menu called")
-                            val w: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
-                            val popupMenuTransfer = PopupMenu(w, view)
+                            val popupMenuTransfer= PopupMenu(view.context, it)
                             //get list of all other characters found
                             if (DataMaster.findOtherPlayers().size == 0){
                                 //no other players found

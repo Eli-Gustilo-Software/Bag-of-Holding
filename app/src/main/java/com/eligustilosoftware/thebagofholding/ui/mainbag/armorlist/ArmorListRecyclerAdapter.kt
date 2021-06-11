@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.eligustilosoftware.thebagofholding.*
+import com.eligustilosoftware.thebagofholding.MainActivity
 import com.eligustilosoftware.thebagofholding.ui.items.ItemDetailsDialogPopup
-import java.security.AccessController.getContext
 import java.util.*
+
 
 class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val context: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ArmorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,9 +34,8 @@ class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val c
         init {
             // Define click listener for the ViewHolder's View.
             armorCellConstraintLayout.setOnLongClickListener {
-                val wrapper: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
-                val popupMenu = PopupMenu(wrapper, view)
-                popupMenu.inflate(R.menu.item_popup_menu)
+                val popupMenu = PopupMenu(view.context, view)
+                popupMenu.menuInflater.inflate(R.menu.item_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.item_popup_menu_delete -> {
@@ -46,18 +45,16 @@ class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val c
 
                         R.id.item_popup_menu_transfer -> {
                             Log.d(tag, "transfer menu called")
-                            val w: Context = ContextThemeWrapper(view.context, R.style.PoppupMenu)
-                            val popupMenuTransfer = PopupMenu(w, view)
+                            val popupMenuTransfer = PopupMenu(view.context, view)
                             if (DataMaster.findOtherPlayers().size == 0) {
                                 //no other players found
                                 popupMenuTransfer.menu.add("No Nearby Players Found")
                             } else {
                                 for (player in DataMaster.findOtherPlayers()) {
-                                    popupMenuTransfer.menu.add(player.otherPlayerCharacterName)
-                                        .setOnMenuItemClickListener {
-                                            transferItemPopupMenu(player, itemArmorData, context)
-                                            true
-                                        }
+                                    popupMenuTransfer.menu.add(player.otherPlayerCharacterName).setOnMenuItemClickListener {
+                                        transferItemPopupMenu(player, itemArmorData, context)
+                                        true
+                                    }
                                 }
                             }
                             popupMenuTransfer.show()
@@ -65,25 +62,12 @@ class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val c
 
                         R.id.item_popup_menu_details -> {
                             val itemDetailsDialogPopup = ItemDetailsDialogPopup()
-                            val itemData = GenericItemData(
-                                itemArmorData.armorImage,
-                                itemArmorData.armorName,
-                                itemArmorData.armorEffectsOne,
-                                "armor",
-                                itemArmorData.armorDescription,
-                                itemArmorData.armorUUID
-                            )
+                            val itemData = GenericItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, "armor", itemArmorData.armorDescription, itemArmorData.armorUUID)
                             itemDetailsDialogPopup.itemDetailsDialogPopup(itemData, context)
                         }
 
                         R.id.item_popup_menu_duplicate -> {
-                            val newArmorItem = ArmorItemData(
-                                itemArmorData.armorImage,
-                                itemArmorData.armorName,
-                                itemArmorData.armorEffectsOne,
-                                itemArmorData.armorDescription,
-                                UUID.randomUUID()
-                            )
+                            val newArmorItem = ArmorItemData(itemArmorData.armorImage, itemArmorData.armorName, itemArmorData.armorEffectsOne, itemArmorData.armorDescription, UUID.randomUUID())
                             DataMaster.saveItemArmor(itemCharacterOwner, newArmorItem)
                         }
                     }
@@ -95,16 +79,9 @@ class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val c
             }
         }
 
-        private fun transferItemPopupMenu(
-            characterInformation: OtherPlayerCharacterInformation,
-            armorItemData: ArmorItemData,
-            context: Context
-        ) {
+        private fun transferItemPopupMenu(characterInformation: OtherPlayerCharacterInformation, armorItemData: ArmorItemData, context: Context) {
             val tag = "ArmorViewHolder"
-            Log.d(
-                tag,
-                "player to transfer item = ${characterInformation.otherPlayerCharacterName} and item = ${armorItemData.armorName}"
-            )
+            Log.d(tag, "player to transfer item = ${characterInformation.otherPlayerCharacterName} and item = ${armorItemData.armorName}")
             val v = ContextCompat.getSystemService(context, Vibrator::class.java)
             if (Build.VERSION.SDK_INT >= 26) {
                 v?.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -112,20 +89,12 @@ class ArmorListRecyclerAdapter(var currentCharacter: CharacterInformation, val c
                 @Suppress("DEPRECATION")
                 v?.vibrate(200)
             }
-            Toast.makeText(
-                context,
-                "Transferring ${armorItemData.armorName} to ${characterInformation.otherPlayerCharacterName}",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, "Transferring ${armorItemData.armorName} to ${characterInformation.otherPlayerCharacterName}", Toast.LENGTH_SHORT).show()
             DataMaster.transferItemArmor(characterInformation, armorItemData)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.armor_recycler_cell,
-            parent,
-            false
-        )
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.armor_recycler_cell, parent, false)
         return ArmorViewHolder(view)
     }
 
