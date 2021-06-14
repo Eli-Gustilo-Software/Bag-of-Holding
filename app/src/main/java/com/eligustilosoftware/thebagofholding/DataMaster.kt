@@ -10,68 +10,69 @@ import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 data class ArmorItemData(
-        val armorImage: Int,
-        val armorName: String,
-        val armorEffectsOne: String,
-        val armorDescription: String,
-        val armorUUID: UUID
+    val armorImage: Int,
+    val armorName: String,
+    val armorEffectsOne: String,
+    val armorDescription: String,
+    val armorUUID: UUID
 )
 
 data class CharacterInformation(
-        val characterName: String,
-        val characterArmorItemsList: ArrayList<ArmorItemData>,
-        val characterWeaponItemsList: ArrayList<WeaponItemData>,
-        val characterConsumablesItemsList: ArrayList<ConsumablesItemData>,
-        val characterMiscellaneousItemList: ArrayList<MiscellaneousItemData>,
-        var characterPurseData: CharacterPurseData,
-        val characterUUID: UUID
+    val characterName: String,
+    val characterArmorItemsList: ArrayList<ArmorItemData>,
+    val characterWeaponItemsList: ArrayList<WeaponItemData>,
+    val characterConsumablesItemsList: ArrayList<ConsumablesItemData>,
+    val characterMiscellaneousItemList: ArrayList<MiscellaneousItemData>,
+    var characterPurseData: CharacterPurseData,
+    val characterUUID: UUID
 )
 
 data class OtherPlayerCharacterInformation(
-        val otherPlayerCharacterName : String,
-        val otherPlayerCharacterUUID : UUID,
-        val otherPlayerDeviceName : String
+    val otherPlayerCharacterName: String,
+    val otherPlayerCharacterUUID: UUID,
+    val otherPlayerDeviceName: String
 )
 
 data class ConsumablesItemData(
-        val consumablesImage: Int,
-        val consumablesName: String,
-        val consumablesEffectsOne: String,
-        val consumablesDescription: String,
-        val consumablesUUID: UUID
+    val consumablesImage: Int,
+    val consumablesName: String,
+    val consumablesEffectsOne: String,
+    val consumablesDescription: String,
+    val consumablesUUID: UUID
 )
 
 data class MiscellaneousItemData(
-        val miscImage: Int,
-        val miscName: String,
-        val miscEffectsOne: String,
-        val miscDescription: String,
-        val miscUUID: UUID
+    val miscImage: Int,
+    val miscName: String,
+    val miscEffectsOne: String,
+    val miscDescription: String,
+    val miscUUID: UUID
 )
 
 data class CharacterPurseData(
-        var bronze: String,
-        var silver: String,
-        var gold: String,
-        var truesilver: String
+    var bronze: String,
+    var silver: String,
+    var gold: String,
+    var truesilver: String
 )
 
 data class WeaponItemData(
-        val image: Int,
-        val name: String,
-        val weaponEffectOne: String,
-        val weaponDescription: String,
-        val weaponUUID: UUID
+    val image: Int,
+    val name: String,
+    val weaponEffectOne: String,
+    val weaponDescription: String,
+    val weaponUUID: UUID
 )
 
 data class GenericItemData(
-        val image: Int,
-        val name: String,
-        val effectOne: String,
-        val itemType: String,
-        val itemDescription: String,
-        val UUID: UUID
+    val image: Int,
+    val name: String,
+    val effectOne: String,
+    val itemType: String,
+    val itemDescription: String,
+    val UUID: UUID
 )
 
 //todo good place to make bargain/transaction class
@@ -94,10 +95,10 @@ object DataMaster: Hermez.HermezDataInterface {
     interface DataMasterInterface {
         fun giveCharacterInfo(characterInfo: CharacterInformation)
         fun giveAllCharactersInfo(characterInfoArray: ArrayList<CharacterInformation>)
-        fun giveFriendsList(friendsList : ArrayList<OtherPlayerCharacterInformation>)
+        fun giveFriendsList(friendsList: ArrayList<OtherPlayerCharacterInformation>)
     }
 
-    fun initWith (applicationContext: Context){
+    fun initWith(applicationContext: Context){
         this.applicationContext = applicationContext
         //TODO I would like to initialize heremz here but memory leak
         hermez = Hermez(applicationContext, "_bag_of_holding._tcp")
@@ -114,7 +115,10 @@ object DataMaster: Hermez.HermezDataInterface {
         //take that hashtable turn it into JSON
         //store that JSON in a file in the DATA_MASTER_KEY cabinet with key CHARACTER_HASHTABLE_KEY
         //store characterName with CURRENT_CHARACTER_INFORMATION_KEY so we can use that name to run through the entire hashmap to grab the current character.
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Character to be saved is: $character")
         val characterInformationAsJSON = Gson().toJson(character)
@@ -127,18 +131,30 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         characterArray.add(character)
         objectToNotify?.giveAllCharactersInfo(characterArray)
+
+        //after save then start/restart Hermez Service
+        hermez.resetService()
     }
 
     fun changeCharacter(characterName: String){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         Log.d(tag, "Current character has been changed to $characterName")
+
+        //after change then start/restart Hermez Service
+        hermez.resetService()
     }
 
-    fun deleteCharacter(character : CharacterInformation){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun deleteCharacter(character: CharacterInformation){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Character to be deleted is: $character")
         characterHashtable.remove(character.characterName)
@@ -150,15 +166,27 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     fun retrieveAllCharactersInformation() : ArrayList<CharacterInformation>{
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
             if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinet has a file called characters
-                val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
+                val savedCharacterInformationHashtableJSON = sharedPrefs.getString(
+                    CHARACTER_HASHTABLE_KEY,
+                    null
+                ) //get the characters file
                 if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
-                    characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
+                    characterHashtable = Gson().fromJson(
+                        savedCharacterInformationHashtableJSON,
+                        Hashtable<String, String>()::class.java
+                    ) //turn the file from JSON into a hashtable.
                     characterArray.clear()
                     for (item in characterHashtable){//get all keys of all existing character
                         val characterAsJSON = item.value//for key get character Value
-                        val characterAsCharacterObject = Gson().fromJson(characterAsJSON, CharacterInformation::class.java)//Got character object.
+                        val characterAsCharacterObject = Gson().fromJson(
+                            characterAsJSON,
+                            CharacterInformation::class.java
+                        )//Got character object.
                         characterArray.add(characterAsCharacterObject)//this will be an array of one?
                         Log.d(tag, "Characters to be returned is $characterAsCharacterObject")
                         objectToNotify?.giveAllCharactersInfo(characterArray)
@@ -170,16 +198,31 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     fun retrieveCharacterInformation() : CharacterInformation?{
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         if(sharedPrefs.contains(CHARACTER_HASHTABLE_KEY)){//if the file cabinet has a file called characters
-            val savedCharacterInformationHashtableJSON = sharedPrefs.getString(CHARACTER_HASHTABLE_KEY, null) //get the characters file
+            val savedCharacterInformationHashtableJSON = sharedPrefs.getString(
+                CHARACTER_HASHTABLE_KEY,
+                null
+            ) //get the characters file
             if (savedCharacterInformationHashtableJSON != null){ //if that file isn't blank
-                characterHashtable = Gson().fromJson(savedCharacterInformationHashtableJSON, Hashtable<String, String>()::class.java) //turn the file from JSON into a hashtable.
+                characterHashtable = Gson().fromJson(
+                    savedCharacterInformationHashtableJSON,
+                    Hashtable<String, String>()::class.java
+                ) //turn the file from JSON into a hashtable.
                 if (sharedPrefs.contains(CURRENT_CHARACTER_INFORMATION_KEY)){ //if we have a current character
-                    val currentCharacterName = sharedPrefs.getString(CURRENT_CHARACTER_INFORMATION_KEY, null) //We save characters by name so get name
+                    val currentCharacterName = sharedPrefs.getString(
+                        CURRENT_CHARACTER_INFORMATION_KEY,
+                        null
+                    ) //We save characters by name so get name
                     val currentCharacterJSON = characterHashtable[currentCharacterName] //give the character name to the hashtable to get back the characterInformation object as a JSON blob.
                     if (currentCharacterJSON != null){ //means that the character Data Object exists as JSON
-                        val character = Gson().fromJson(currentCharacterJSON, CharacterInformation::class.java) //turn into character object
+                        val character = Gson().fromJson(
+                            currentCharacterJSON,
+                            CharacterInformation::class.java
+                        ) //turn into character object
                         Log.d(tag, "Character to be retrieved is $character")
                         objectToNotify?.giveCharacterInfo(character)
                         return character
@@ -195,7 +238,10 @@ object DataMaster: Hermez.HermezDataInterface {
 
     //SAVE
     fun saveItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData) {
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         val itemToAddArray = ArrayList<ArmorItemData>()
         val itemToRemoveArray = ArrayList<ArmorItemData>()
@@ -231,7 +277,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToRemoveArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -244,7 +293,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToAddArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -257,7 +309,10 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     fun saveItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         val itemToAddArray = ArrayList<WeaponItemData>()
         val itemToRemoveArray = ArrayList<WeaponItemData>()
@@ -293,7 +348,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToRemoveArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -306,7 +364,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToAddArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -318,8 +379,14 @@ object DataMaster: Hermez.HermezDataInterface {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    fun saveItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun saveItemConsumable(
+        characterOwner: CharacterInformation,
+        consumableItem: ConsumablesItemData
+    ){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         val itemToAddArray = ArrayList<ConsumablesItemData>()
         val itemToRemoveArray = ArrayList<ConsumablesItemData>()
@@ -355,7 +422,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToRemoveArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -368,7 +438,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToAddArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -380,12 +453,21 @@ object DataMaster: Hermez.HermezDataInterface {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    fun saveItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun saveItemMiscellaneous(
+        characterOwner: CharacterInformation,
+        miscellaneousItem: MiscellaneousItemData
+    ){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         val itemToAddArray = ArrayList<MiscellaneousItemData>()
         val itemToRemoveArray = ArrayList<MiscellaneousItemData>()
-        Log.d(tag, "Item to be saved is: $miscellaneousItem character to save to is $characterOwner")
+        Log.d(
+            tag,
+            "Item to be saved is: $miscellaneousItem character to save to is $characterOwner"
+        )
         if (characterOwner.characterMiscellaneousItemList.isEmpty()){//treat as normal and save item (first item)
             characterOwner.characterMiscellaneousItemList.add(miscellaneousItem)
             Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
@@ -417,7 +499,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToRemoveArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -430,7 +515,10 @@ object DataMaster: Hermez.HermezDataInterface {
                 itemToAddArray.clear()
                 Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
                 val characterInformationAsJSON = Gson().toJson(characterOwner)
-                Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
+                Log.d(
+                    tag,
+                    "Character information after GSON --> JSON = $characterInformationAsJSON"
+                )
                 val characterName = characterOwner.characterName
                 characterHashtable[characterName] = characterInformationAsJSON
                 val characterHashtableJSON = Gson().toJson(characterHashtable)
@@ -444,7 +532,10 @@ object DataMaster: Hermez.HermezDataInterface {
 
     //DELETE
     fun deleteItemArmor(characterOwner: CharacterInformation, armorItem: ArmorItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $armorItem character to remove from is $characterOwner")
         characterOwner.characterArmorItemsList.remove(armorItem)
@@ -460,7 +551,10 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     fun deleteItemWeapon(characterOwner: CharacterInformation, weaponItem: WeaponItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
         Log.d(tag, "Item to be removed is: $weaponItem character to remove from is $characterOwner")
         characterOwner.characterWeaponItemsList.remove(weaponItem)
@@ -475,10 +569,19 @@ object DataMaster: Hermez.HermezDataInterface {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    fun deleteItemConsumable(characterOwner: CharacterInformation, consumableItem: ConsumablesItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun deleteItemConsumable(
+        characterOwner: CharacterInformation,
+        consumableItem: ConsumablesItemData
+    ){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be removed is: $consumableItem character to remove from is $characterOwner")
+        Log.d(
+            tag,
+            "Item to be removed is: $consumableItem character to remove from is $characterOwner"
+        )
         characterOwner.characterConsumablesItemsList.remove(consumableItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
@@ -491,10 +594,19 @@ object DataMaster: Hermez.HermezDataInterface {
         objectToNotify?.giveCharacterInfo(characterOwner)
     }
 
-    fun deleteItemMiscellaneous(characterOwner: CharacterInformation, miscellaneousItem: MiscellaneousItemData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun deleteItemMiscellaneous(
+        characterOwner: CharacterInformation,
+        miscellaneousItem: MiscellaneousItemData
+    ){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
-        Log.d(tag, "Item to be removed is: $miscellaneousItem character to remove from is $characterOwner")
+        Log.d(
+            tag,
+            "Item to be removed is: $miscellaneousItem character to remove from is $characterOwner"
+        )
         characterOwner.characterMiscellaneousItemList.remove(miscellaneousItem)
         val characterInformationAsJSON = Gson().toJson(characterOwner)
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
@@ -508,10 +620,16 @@ object DataMaster: Hermez.HermezDataInterface {
     }
 
     //PURSE
-    fun saveMoney (characterOwner: CharacterInformation, newCharacterPurse: CharacterPurseData){
-        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(DATA_MASTER_KEY, 0)
+    fun saveMoney(characterOwner: CharacterInformation, newCharacterPurse: CharacterPurseData){
+        val sharedPrefs = applicationContext.applicationContext.getSharedPreferences(
+            DATA_MASTER_KEY,
+            0
+        )
         val editor = sharedPrefs?.edit()
-        Log.d(tag, "purse to be saved is: $newCharacterPurse character to save to is $characterOwner")
+        Log.d(
+            tag,
+            "purse to be saved is: $newCharacterPurse character to save to is $characterOwner"
+        )
         characterOwner.characterPurseData = newCharacterPurse
         Log.d(tag, "Character information before GSON --> JSON = $characterOwner")
         val characterInformationAsJSON = Gson().toJson(characterOwner)
@@ -527,36 +645,80 @@ object DataMaster: Hermez.HermezDataInterface {
 
 
 //    TRANSFER via Hermez
-    fun transferItemArmor(newCharacterOwner: OtherPlayerCharacterInformation, armorItem: ArmorItemData){
+    fun transferItemArmor(
+    newCharacterOwner: OtherPlayerCharacterInformation,
+    armorItem: ArmorItemData
+){
         val armorToTransfer = Gson().toJson(armorItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
-        hermez.sendMessageToDevices("TRANSFER", armorToTransfer, "A_T ${armorItem.armorUUID}", hermezDeviceArray)
-        Log.d(tag, "Hermez was called to send item: $armorItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
+        hermez.sendMessageToDevices(
+            "TRANSFER",
+            armorToTransfer,
+            "A_T ${armorItem.armorUUID}",
+            hermezDeviceArray
+        )
+        Log.d(
+            tag,
+            "Hermez was called to send item: $armorItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}"
+        )
     }
 
-    fun transferItemWeapon(newCharacterOwner: OtherPlayerCharacterInformation, weaponItem: WeaponItemData){
+    fun transferItemWeapon(
+        newCharacterOwner: OtherPlayerCharacterInformation,
+        weaponItem: WeaponItemData
+    ){
         val weaponToTransfer = Gson().toJson(weaponItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
-        hermez.sendMessageToDevices("TRANSFER", weaponToTransfer, "W_T ${weaponItem.weaponUUID}", hermezDeviceArray)
-        Log.d(tag, "Hermez was called to send item: $weaponItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
+        hermez.sendMessageToDevices(
+            "TRANSFER",
+            weaponToTransfer,
+            "W_T ${weaponItem.weaponUUID}",
+            hermezDeviceArray
+        )
+        Log.d(
+            tag,
+            "Hermez was called to send item: $weaponItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}"
+        )
     }
 
-    fun transferItemConsumable(newCharacterOwner: OtherPlayerCharacterInformation, consumableItem: ConsumablesItemData){
+    fun transferItemConsumable(
+        newCharacterOwner: OtherPlayerCharacterInformation,
+        consumableItem: ConsumablesItemData
+    ){
         val consumableToTransfer = Gson().toJson(consumableItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
-        hermez.sendMessageToDevices("TRANSFER", consumableToTransfer, "C_T ${consumableItem.consumablesUUID}", hermezDeviceArray)
-        Log.d(tag, "Hermez was called to send item: $consumableItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
+        hermez.sendMessageToDevices(
+            "TRANSFER",
+            consumableToTransfer,
+            "C_T ${consumableItem.consumablesUUID}",
+            hermezDeviceArray
+        )
+        Log.d(
+            tag,
+            "Hermez was called to send item: $consumableItem to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}"
+        )
     }
 
-    fun transferItemMiscellaneous(newCharacterOwner: OtherPlayerCharacterInformation, miscellaneousItem: MiscellaneousItemData){
+    fun transferItemMiscellaneous(
+        newCharacterOwner: OtherPlayerCharacterInformation,
+        miscellaneousItem: MiscellaneousItemData
+    ){
         val miscToTransfer = Gson().toJson(miscellaneousItem)
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(newCharacterOwner.otherPlayerDeviceName))
-        hermez.sendMessageToDevices("TRANSFER", miscToTransfer, "M_T ${miscellaneousItem.miscUUID}", hermezDeviceArray)
-        Log.d(tag, "Hermez was called to send item: $miscToTransfer to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}")
+        hermez.sendMessageToDevices(
+            "TRANSFER",
+            miscToTransfer,
+            "M_T ${miscellaneousItem.miscUUID}",
+            hermezDeviceArray
+        )
+        Log.d(
+            tag,
+            "Hermez was called to send item: $miscToTransfer to ${newCharacterOwner.otherPlayerCharacterName} at device ${newCharacterOwner.otherPlayerDeviceName}"
+        )
     }
 
     //HERMEZ SETUP
@@ -580,11 +742,23 @@ object DataMaster: Hermez.HermezDataInterface {
         hermez.cleanup()
     }
 
-    fun sendWhisperToPlayer(sendingPlayer: CharacterInformation, playerToSendWhisperTo : OtherPlayerCharacterInformation, whisper : String){
+    fun sendWhisperToPlayer(
+        sendingPlayer: CharacterInformation,
+        playerToSendWhisperTo: OtherPlayerCharacterInformation,
+        whisper: String
+    ){
         val hermezDeviceArray = ArrayList<Hermez.HermezDevice>()
         hermezDeviceArray.add(Hermez.HermezDevice(playerToSendWhisperTo.otherPlayerDeviceName))
-        hermez.sendMessageToDevices("WHISPER", whisper, sendingPlayer.characterName, hermezDeviceArray)
-        Log.d(tag, "Whisper $whisper was sent to ${playerToSendWhisperTo.otherPlayerCharacterName} by ${sendingPlayer.characterName}")
+        hermez.sendMessageToDevices(
+            "WHISPER",
+            whisper,
+            sendingPlayer.characterName,
+            hermezDeviceArray
+        )
+        Log.d(
+            tag,
+            "Whisper $whisper was sent to ${playerToSendWhisperTo.otherPlayerCharacterName} by ${sendingPlayer.characterName}"
+        )
     }
 
 
@@ -608,11 +782,20 @@ object DataMaster: Hermez.HermezDataInterface {
             Log.d("messageReceived", "the hermezDevicesConnected is $bagofholdingDevicesConnected")
             val currentCharacter = retrieveCharacterInformation()
             if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
-                val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+                val mpCharacter = OtherPlayerCharacterInformation(
+                    currentCharacter.characterName,
+                    currentCharacter.characterUUID,
+                    phoneName
+                )
                 val mpCharacterAsJson = Gson().toJson(mpCharacter)
                 val senderArrayList = ArrayList<Hermez.HermezDevice>()//todo my own phone is sending me a message. this is a hermez thing. and apparently designed feature.
                 senderArrayList.add(hermezMessage.sendingDevice)
-                hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
+                hermez.sendMessageToDevices(
+                    "Give me character details",
+                    mpCharacterAsJson,
+                    "002",
+                    senderArrayList
+                ) //our own device is listed here?
                 Log.d(tag, "characterAsJson = $mpCharacterAsJson")
                 Log.d(tag, "arrayList who sent me message = $senderArrayList")
             }
@@ -620,25 +803,37 @@ object DataMaster: Hermez.HermezDataInterface {
 
         when (hermezMessage.message) {
             "Give me character details" -> {//todo get a better name for this string/key ENUM?? //also what do i do if I don't have a character? Do i need to reset? or only register my own service once I have a character?
-                if (hermezMessage.sendingDevice.name == phoneName){
+                if (hermezMessage.sendingDevice.name == phoneName) {
                     //it is our phone so ignore.
-                }else{//it is someone else's phone
-                    val otherPlayerCharacterInformation = Gson().fromJson(hermezMessage.json, OtherPlayerCharacterInformation::class.java) //get their character
+                } else {//it is someone else's phone
+                    val otherPlayerCharacterInformation = Gson().fromJson(
+                        hermezMessage.json,
+                        OtherPlayerCharacterInformation::class.java
+                    ) //get their character
                     Log.d(tag, "hermezMessage from give me character details = $hermezMessage")
-                    if (otherPlayersArray.contains(otherPlayerCharacterInformation)){
+                    if (otherPlayersArray.contains(otherPlayerCharacterInformation)) {
                         //otherPlayer array already has it. aka do nothing? Or toast?
                         objectToNotify?.giveFriendsList(otherPlayersArray)
-                    }else{
+                    } else {
                         otherPlayersArray.add(otherPlayerCharacterInformation)
                         Log.d(tag, "giveFriendsList = $otherPlayersArray")
                         objectToNotify?.giveFriendsList(otherPlayersArray)
                         val currentCharacter = retrieveCharacterInformation()
-                        if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
-                            val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+                        if (currentCharacter != null) {//my own character exists and I can pass them back to whoever asked for it.
+                            val mpCharacter = OtherPlayerCharacterInformation(
+                                currentCharacter.characterName,
+                                currentCharacter.characterUUID,
+                                phoneName
+                            )
                             val mpCharacterAsJson = Gson().toJson(mpCharacter)
                             val senderArrayList = ArrayList<Hermez.HermezDevice>()
                             senderArrayList.add(hermezMessage.sendingDevice)
-                            hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "002", senderArrayList) //our own device is listed here?
+                            hermez.sendMessageToDevices(
+                                "Give me character details",
+                                mpCharacterAsJson,
+                                "002",
+                                senderArrayList
+                            ) //our own device is listed here?
                             Log.d(tag, "characterAsJson = $mpCharacterAsJson")
                             Log.d(tag, "arrayList who sent me message = $senderArrayList")
                         }
@@ -646,119 +841,195 @@ object DataMaster: Hermez.HermezDataInterface {
                 }
             }
 
-            "TRANSFER" ->{
-                if (hermezMessage.sendingDevice.name == phoneName){ //it is our phone so ignore.
-                }else{//it is someone else's phone
-                    if (hermezMessage.messageID.contains("W_T")){//make this prettier and change when statement syntax
+            "TRANSFER" -> {
+                if (hermezMessage.sendingDevice.name == phoneName) { //it is our phone so ignore.
+                } else {//it is someone else's phone
+                    if (hermezMessage.messageID.contains("W_T")) {//make this prettier and change when statement syntax
                         Log.d(tag, "W_T called")
-                        val receivedItemWeaponData = Gson().fromJson(hermezMessage.json, WeaponItemData::class.java)
+                        val receivedItemWeaponData = Gson().fromJson(
+                            hermezMessage.json,
+                            WeaponItemData::class.java
+                        )
                         val newItemOwner = retrieveCharacterInformation()
                         if (newItemOwner != null) {
                             saveItemWeapon(newItemOwner, receivedItemWeaponData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
                             Handler(Looper.getMainLooper()).postDelayed({
-                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemWeaponData.name}" , Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "${hermezMessage.sendingDevice.name} just sent you ${receivedItemWeaponData.name}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }, 500)
-                            hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
+                            hermez.sendMessageToDevices(
+                                "TRANSFER_SUCCESS",
+                                hermezMessage.json,
+                                hermezMessage.messageID,
+                                arrayListToReturnMessageTo
+                            )
                         }
                     }
-                    if (hermezMessage.messageID.contains("A_T")){//make this prettier and change when statement syntax
+                    if (hermezMessage.messageID.contains("A_T")) {//make this prettier and change when statement syntax
                         Log.d(tag, "A_T called")
-                        val receivedItemArmorData = Gson().fromJson(hermezMessage.json, ArmorItemData::class.java)
+                        val receivedItemArmorData = Gson().fromJson(
+                            hermezMessage.json,
+                            ArmorItemData::class.java
+                        )
                         val newItemOwner = retrieveCharacterInformation()
                         if (newItemOwner != null) {
                             saveItemArmor(newItemOwner, receivedItemArmorData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
                             Handler(Looper.getMainLooper()).postDelayed({
-                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemArmorData.armorName}" , Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "${hermezMessage.sendingDevice.name} just sent you ${receivedItemArmorData.armorName}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }, 500)
-                            hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
+                            hermez.sendMessageToDevices(
+                                "TRANSFER_SUCCESS",
+                                hermezMessage.json,
+                                hermezMessage.messageID,
+                                arrayListToReturnMessageTo
+                            )
                         }
                     }
-                    if (hermezMessage.messageID.contains("C_T")){//make this prettier and change when statement syntax
+                    if (hermezMessage.messageID.contains("C_T")) {//make this prettier and change when statement syntax
                         Log.d(tag, "C_T called")
-                        val receivedItemConsumableData = Gson().fromJson(hermezMessage.json, ConsumablesItemData::class.java)
+                        val receivedItemConsumableData = Gson().fromJson(
+                            hermezMessage.json,
+                            ConsumablesItemData::class.java
+                        )
                         val newItemOwner = retrieveCharacterInformation()
                         if (newItemOwner != null) {
                             saveItemConsumable(newItemOwner, receivedItemConsumableData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
                             Handler(Looper.getMainLooper()).postDelayed({
-                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemConsumableData.consumablesName}" , Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "${hermezMessage.sendingDevice.name} just sent you ${receivedItemConsumableData.consumablesName}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }, 500)
-                            hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
+                            hermez.sendMessageToDevices(
+                                "TRANSFER_SUCCESS",
+                                hermezMessage.json,
+                                hermezMessage.messageID,
+                                arrayListToReturnMessageTo
+                            )
                         }
                     }
-                    if (hermezMessage.messageID.contains("M_T")){//make this prettier and change when statement syntax
+                    if (hermezMessage.messageID.contains("M_T")) {//make this prettier and change when statement syntax
                         Log.d(tag, "M_T called")
-                        val receivedItemMiscData = Gson().fromJson(hermezMessage.json, MiscellaneousItemData::class.java)
+                        val receivedItemMiscData = Gson().fromJson(
+                            hermezMessage.json,
+                            MiscellaneousItemData::class.java
+                        )
                         val newItemOwner = retrieveCharacterInformation()
                         if (newItemOwner != null) {
                             saveItemMiscellaneous(newItemOwner, receivedItemMiscData)
                             val arrayListToReturnMessageTo = ArrayList<Hermez.HermezDevice>()
                             arrayListToReturnMessageTo.add(hermezMessage.sendingDevice)
                             Handler(Looper.getMainLooper()).postDelayed({
-                                Toast.makeText(applicationContext, "${hermezMessage.sendingDevice.name} just sent you ${receivedItemMiscData.miscName}" , Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "${hermezMessage.sendingDevice.name} just sent you ${receivedItemMiscData.miscName}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }, 500)
-                            hermez.sendMessageToDevices("TRANSFER_SUCCESS", hermezMessage.json, hermezMessage.messageID, arrayListToReturnMessageTo)
+                            hermez.sendMessageToDevices(
+                                "TRANSFER_SUCCESS",
+                                hermezMessage.json,
+                                hermezMessage.messageID,
+                                arrayListToReturnMessageTo
+                            )
                         }
                     }
                 }
             }
 
-            "TRANSFER_SUCCESS" ->{
-                if (hermezMessage.messageID.contains("W_T")){//make this prettier and change when statement syntax
+            "TRANSFER_SUCCESS" -> {
+                if (hermezMessage.messageID.contains("W_T")) {//make this prettier and change when statement syntax
                     Log.d(tag, "W_T success called")
-                    val receivedItemWeaponData = Gson().fromJson(hermezMessage.json, WeaponItemData::class.java)
+                    val receivedItemWeaponData = Gson().fromJson(
+                        hermezMessage.json,
+                        WeaponItemData::class.java
+                    )
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemWeapon(characterToRemoveItem, receivedItemWeaponData)
                         objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
-                        Log.d(tag, "Item deleted = $receivedItemWeaponData and character removed from = $characterToRemoveItem")
+                        Log.d(
+                            tag,
+                            "Item deleted = $receivedItemWeaponData and character removed from = $characterToRemoveItem"
+                        )
                     }
                 }
-                if (hermezMessage.messageID.contains("A_T")){//make this prettier and change when statement syntax
+                if (hermezMessage.messageID.contains("A_T")) {//make this prettier and change when statement syntax
                     Log.d(tag, "A_T success called")
-                    val receivedItemArmorData = Gson().fromJson(hermezMessage.json, ArmorItemData::class.java)
+                    val receivedItemArmorData = Gson().fromJson(
+                        hermezMessage.json,
+                        ArmorItemData::class.java
+                    )
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemArmor(characterToRemoveItem, receivedItemArmorData)
                         objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
-                        Log.d(tag, "Item deleted = $receivedItemArmorData and character removed from = $characterToRemoveItem")
+                        Log.d(
+                            tag,
+                            "Item deleted = $receivedItemArmorData and character removed from = $characterToRemoveItem"
+                        )
                     }
                 }
-                if (hermezMessage.messageID.contains("C_T")){//make this prettier and change when statement syntax
+                if (hermezMessage.messageID.contains("C_T")) {//make this prettier and change when statement syntax
                     Log.d(tag, "C_T success called")
-                    val receivedItemConsumableData = Gson().fromJson(hermezMessage.json, ConsumablesItemData::class.java)
+                    val receivedItemConsumableData = Gson().fromJson(
+                        hermezMessage.json,
+                        ConsumablesItemData::class.java
+                    )
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemConsumable(characterToRemoveItem, receivedItemConsumableData)
                         objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
-                        Log.d(tag, "Item deleted = $receivedItemConsumableData and character removed from = $characterToRemoveItem")
+                        Log.d(
+                            tag,
+                            "Item deleted = $receivedItemConsumableData and character removed from = $characterToRemoveItem"
+                        )
                     }
                 }
-                if (hermezMessage.messageID.contains("M_T")){//make this prettier and change when statement syntax
+                if (hermezMessage.messageID.contains("M_T")) {//make this prettier and change when statement syntax
                     Log.d(tag, "M_T success called")
-                    val receivedItemMiscData = Gson().fromJson(hermezMessage.json, MiscellaneousItemData::class.java)
+                    val receivedItemMiscData = Gson().fromJson(
+                        hermezMessage.json,
+                        MiscellaneousItemData::class.java
+                    )
                     val characterToRemoveItem = retrieveCharacterInformation()
                     if (characterToRemoveItem != null) {
                         deleteItemMiscellaneous(characterToRemoveItem, receivedItemMiscData)
                         objectToNotify!!.giveCharacterInfo(characterToRemoveItem)
-                        Log.d(tag, "Item deleted = $receivedItemMiscData and character removed from = $characterToRemoveItem")
+                        Log.d(
+                            tag,
+                            "Item deleted = $receivedItemMiscData and character removed from = $characterToRemoveItem"
+                        )
                     }
                 }
             }
-            "TRANSFER_FAILURE" ->{
+            "TRANSFER_FAILURE" -> {
                 print("x == 2")
             }
-            "WHISPER" ->{
+            "WHISPER" -> {
                 Log.d(tag, "Whisper recieved called")
                 val messageSender = hermezMessage.messageID
                 val whisperSent = hermezMessage.json
                 Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(applicationContext, "$messageSender just whispered: $whisperSent", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "$messageSender just whispered: $whisperSent",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -776,7 +1047,10 @@ object DataMaster: Hermez.HermezDataInterface {
         }
     }
 
-    override fun messageCannotBeSentToDevices(hermezMessage: Hermez.HermezMessage, error: Hermez.HermezError) {
+    override fun messageCannotBeSentToDevices(
+        hermezMessage: Hermez.HermezMessage,
+        error: Hermez.HermezError
+    ) {
         Log.d(tag, "messageCannotBeSentToDevices called")
     }
 
@@ -793,9 +1067,18 @@ object DataMaster: Hermez.HermezDataInterface {
                 val currentCharacter = retrieveCharacterInformation()
                 Log.d(tag, "arrayForSingleDevice = $arrayForSingleDevice")
                 if (currentCharacter != null){//our character exists
-                    val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
+                    val mpCharacter = OtherPlayerCharacterInformation(
+                        currentCharacter.characterName,
+                        currentCharacter.characterUUID,
+                        phoneName
+                    )
                     val mpCharacterAsJson = Gson().toJson(mpCharacter)
-                    hermez.sendMessageToDevices("Give me character details", mpCharacterAsJson, "001", arrayForSingleDevice) //our own device is listed here?
+                    hermez.sendMessageToDevices(
+                        "Give me character details",
+                        mpCharacterAsJson,
+                        "001",
+                        arrayForSingleDevice
+                    ) //our own device is listed here?
                 }else{//does not exist so send our device name instead
                     Log.d(tag, "We should make a character")
                 }

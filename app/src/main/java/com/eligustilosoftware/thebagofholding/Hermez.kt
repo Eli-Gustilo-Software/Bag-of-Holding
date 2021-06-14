@@ -131,7 +131,7 @@ class Hermez(context: Context, serviceType: String) {
         //HARD reset
         //While hopefully unnecessary it may be desirable to be able to throw the whole process away and begin again.
         hermezService?.resetRegistration()
-        Thread.sleep(500) //maybe we want to wait a second for registration to go
+        Thread.sleep(5000) //maybe we want to wait a second for registration to go
         hermezBrowser?.resetDiscovery()
     }
 
@@ -385,6 +385,8 @@ class Hermez(context: Context, serviceType: String) {
 
         fun cleanup(){
             nsdManagerClient?.stopServiceDiscovery(discoveryListener)
+            multicastLock?.release()
+            multicastLock = null
         }
 
         private val discoveryListener = object : DiscoveryListener {
@@ -398,8 +400,8 @@ class Hermez(context: Context, serviceType: String) {
                 val nameOfServiceFound = service.serviceName
                 if(!mHashtable.containsKey(nameOfServiceFound)) {
                     nsdManagerClient?.resolveService(service, MyResolveListener())
-                    multicastLock?.release()
-                    multicastLock = null
+//                    multicastLock?.release()
+//                    multicastLock = null
                 }
             }
 
@@ -407,8 +409,8 @@ class Hermez(context: Context, serviceType: String) {
                 // When the network service is no longer available.
                 // Internal bookkeeping code goes here.
                 Log.e(tag, "service lost: ${service.serviceName}")
-                multicastLock?.release()
-                multicastLock = null
+//                multicastLock?.release()
+//                multicastLock = null
                 objectToNotify?.serviceFailed(mServiceType, (service.serviceName),
                     HermezError.SERVICE_FAILED
                 )
@@ -416,15 +418,15 @@ class Hermez(context: Context, serviceType: String) {
 
             override fun onDiscoveryStopped(serviceType: String) {
                 Log.i(tag, "Discovery stopped: $serviceType")
-                multicastLock?.release()
-                multicastLock = null
+//                multicastLock?.release()
+//                multicastLock = null
                 objectToNotify?.serviceStopped(mServiceType, (unknownZeroConfigDevice.name))
             }
 
             override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
                 Log.e(tag, "Discovery failed: Error code:$errorCode")
-                multicastLock?.release()
-                multicastLock = null
+//                multicastLock?.release()
+//                multicastLock = null
                 objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name),
                     HermezError.SERVICE_FAILED
                 )
@@ -432,8 +434,8 @@ class Hermez(context: Context, serviceType: String) {
 
             override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
                 Log.e(tag, "Discovery failed: Error code:$errorCode")
-                multicastLock?.release()
-                multicastLock = null
+//                multicastLock?.release()
+//                multicastLock = null
                 objectToNotify?.serviceFailed(mServiceType, (unknownZeroConfigDevice.name),
                     HermezError.SERVICE_FAILED
                 )
