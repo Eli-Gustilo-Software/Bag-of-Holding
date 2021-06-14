@@ -142,10 +142,9 @@ class CampfireRecyclerAdapter(private var otherPlayersList: ArrayList<OtherPlaye
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val nameHolder = holder as CampfireOtherPlayersViewHolder
-        for (item in otherPlayersList){
-            nameHolder.otherPlayerNameTextView.text = item.otherPlayerCharacterName
-            nameHolder.otherPlayerCharacterInformation = OtherPlayerCharacterInformation(item.otherPlayerCharacterName, item.otherPlayerCharacterUUID, item.otherPlayerDeviceName)
-        }
+        val otherPlayer = otherPlayersList[position]
+        nameHolder.otherPlayerNameTextView.text = otherPlayer.otherPlayerCharacterName
+        nameHolder.otherPlayerCharacterInformation = OtherPlayerCharacterInformation(otherPlayer.otherPlayerCharacterName, otherPlayer.otherPlayerCharacterUUID, otherPlayer.otherPlayerDeviceName)
     }
 
     override fun getItemCount(): Int {

@@ -624,11 +624,13 @@ object DataMaster: Hermez.HermezDataInterface {
                     //it is our phone so ignore.
                 }else{//it is someone else's phone
                     val otherPlayerCharacterInformation = Gson().fromJson(hermezMessage.json, OtherPlayerCharacterInformation::class.java) //get their character
+                    Log.d(tag, "hermezMessage from give me character details = $hermezMessage")
                     if (otherPlayersArray.contains(otherPlayerCharacterInformation)){
                         //otherPlayer array already has it. aka do nothing? Or toast?
                         objectToNotify?.giveFriendsList(otherPlayersArray)
                     }else{
                         otherPlayersArray.add(otherPlayerCharacterInformation)
+                        Log.d(tag, "giveFriendsList = $otherPlayersArray")
                         objectToNotify?.giveFriendsList(otherPlayersArray)
                         val currentCharacter = retrieveCharacterInformation()
                         if (currentCharacter != null){//my own character exists and I can pass them back to whoever asked for it.
@@ -789,6 +791,7 @@ object DataMaster: Hermez.HermezDataInterface {
                 val arrayForSingleDevice = ArrayList<Hermez.HermezDevice>()
                 arrayForSingleDevice.add(Hermez.HermezDevice(item.name))
                 val currentCharacter = retrieveCharacterInformation()
+                Log.d(tag, "arrayForSingleDevice = $arrayForSingleDevice")
                 if (currentCharacter != null){//our character exists
                     val mpCharacter = OtherPlayerCharacterInformation(currentCharacter.characterName, currentCharacter.characterUUID, phoneName)
                     val mpCharacterAsJson = Gson().toJson(mpCharacter)
