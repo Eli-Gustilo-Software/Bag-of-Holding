@@ -49,7 +49,7 @@ class CampfireFragment : Fragment() {
                 campfireRecyclerView.adapter = campfireRecyclerAdapter
                 campfireRecyclerAdapter!!.notifyDataSetChanged()
             }else{//is created, so update.
-                campfireRecyclerAdapter!!.updateData(DataMaster.findOtherPlayers())
+                campfireRecyclerAdapter!!.updateData(it)
                 campfireRecyclerAdapter!!.notifyDataSetChanged()
             }
         })
