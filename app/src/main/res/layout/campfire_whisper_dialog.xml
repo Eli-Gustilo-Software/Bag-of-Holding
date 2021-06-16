@@ -40,6 +40,7 @@
         android:hint="Pss...you...hey you!"
         android:inputType="textAutoCorrect"
         android:textAlignment="center"
+        android:textCursorDrawable = "@null"
         app:layout_constraintEnd_toEndOf="@+id/other_character_whispering_to_name"
         app:layout_constraintStart_toStartOf="@+id/other_character_whispering_to_name"
         app:layout_constraintTop_toBottomOf="@+id/other_character_whispering_to_name" />
