@@ -131,9 +131,6 @@ object DataMaster: Hermez.HermezDataInterface {
         Log.d(tag, "Character information after GSON --> JSON = $characterInformationAsJSON")
         characterArray.add(character)
         objectToNotify?.giveAllCharactersInfo(characterArray)
-
-        //after save then start/restart Hermez Service
-        hermez.resetService()
     }
 
     fun changeCharacter(characterName: String){
@@ -145,9 +142,6 @@ object DataMaster: Hermez.HermezDataInterface {
         editor?.putString(CURRENT_CHARACTER_INFORMATION_KEY, characterName)
         editor?.apply()
         Log.d(tag, "Current character has been changed to $characterName")
-
-        //after change then start/restart Hermez Service
-        hermez.resetService()
     }
 
     fun deleteCharacter(character: CharacterInformation){
